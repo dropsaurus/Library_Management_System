@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/books.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>Public Affirmation Library</h1>
+            </div>
+            <div class="nav-buttons">
+                <button onclick="location.href='../index.html'" class="btn">Home</button>
+                <button onclick="location.href='register.html'" class="btn">Register</button>
+                <button onclick="location.href='login.html'" class="btn">Login</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="books-container">
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="Search books by title or author...">
+                <select id="categoryFilter">
+                    <option value="">All Topics</option>
+                    <!-- Topics will be loaded dynamically -->
+                </select>
+            </div>
+            <div id="booksGrid" class="books-grid">
+                <!-- Books will be loaded here dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/books.js"></script>
+</body>
+</html> 
