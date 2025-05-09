@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - Public Affirmation Library</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/contact.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h1>Public Affirmation Library</h1>
+      </div>
+      <div class="nav-buttons">
+        <a href="../index.html" class="btn">Home</a>
+        <a href="login.html" class="btn">Login</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-wrapper">
+      <h2>Contact Us</h2>
+
+      <div class="contact-info">
+        <p>Email: <a href="mailto:info@affirmationlibrary.org">info@affirmationlibrary.org</a></p>
+        <p>Phone: (123) 456-7890</p>
+        <p>Address: 123 Library Lane, Booktown, NY 10001</p>
+      </div>
+
+      <form onsubmit="handleContact(event)">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" required placeholder="Your name" />
+
+        <label for="email">Your Email</label>
+        <input type="email" id="email" required placeholder="you@example.com" />
+
+        <label for="message">Your Message</label>
+        <textarea id="message" rows="4" required placeholder="Write your message here..."></textarea>
+
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function handleContact(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      alert(`Thank you, ${name}, your message has been sent!`);
+    }
+  </script>
+</body>
+</html>

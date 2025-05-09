@@ -1,0 +1,60 @@
+.form-wrapper {
+  max-width: 550px;
+  margin: 4rem auto;
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.form-wrapper h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.contact-info {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.contact-info p {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin-top: 1rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+form input,
+form textarea {
+  padding: 0.7rem;
+  margin-top: 0.3rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+form textarea {
+  resize: vertical;
+}
+
+form button.btn {
+  margin-top: 2rem;
+  align-self: center;
+}
+
+@media (max-width: 600px) {
+  .form-wrapper {
+    padding: 1.5rem;
+  }
+}
