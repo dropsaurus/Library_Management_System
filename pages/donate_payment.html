@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donate Payment - Public Affirmation Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/donate.css" />
+  <style>
+    .form-wrapper {
+      max-width: 550px;
+      margin: 4rem auto;
+      background-color: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-wrapper h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #2c3e50;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 1rem;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    input, select, textarea {
+      padding: 0.7rem;
+      margin-top: 0.3rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button.btn {
+      margin-top: 2rem;
+      align-self: center;
+    }
+
+    @media (max-width: 600px) {
+      .form-wrapper {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h1>Public Affirmation Library</h1>
+      </div>
+      <div class="nav-buttons">
+        <button onclick="location.href='../index.html'" class="btn">Home</button>
+        <button onclick="location.href='donate.html'" class="btn">Back</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-wrapper">
+      <h2>Make a Donation</h2>
+      <form onsubmit="handleDonation(event)">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="Your name" />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="you@example.com" />
+
+        <label for="amount">Donation Amount ($)</label>
+        <input type="number" id="amount" required min="1" placeholder="e.g. 25" />
+
+        <label for="paymentMethod">Payment Method</label>
+        <select id="paymentMethod" required>
+          <option value="">Select method</option>
+          <option value="credit">Credit Card</option>
+          <option value="debit">Debit Card</option>
+          <option value="paypal">PayPal</option>
+        </select>
+
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" required placeholder="1234 5678 9012 3456" maxlength="19" />
+
+        <label for="expiry">Expiration Date</label>
+        <input type="text" id="expiry" required placeholder="MM/YY" maxlength="5" />
+
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" required placeholder="123" maxlength="4" />
+
+        <label for="message">Message (optional)</label>
+        <textarea id="message" rows="3" placeholder="Leave us a note..."></textarea>
+
+        <button type="submit" class="btn">Submit Donation</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function handleDonation(event) {
+      event.preventDefault();
+      const name = document.getElementById("name").value;
+      const amount = document.getElementById("amount").value;
+      alert(`Thank you, ${name}, for your donation of $${amount}!`);
+    }
+  </script>
+</body>
+</html>
