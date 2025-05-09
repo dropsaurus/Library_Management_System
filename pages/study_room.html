@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reserve a Study Room - Public Affirmation Library</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/contact.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <h1>Public Affirmation Library</h1>
+      </div>
+      <div class="nav-buttons">
+        <a href="customer_dashboard.html" class="btn">Dashboard</a>
+        <a href="login.html" class="btn">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-wrapper">
+      <h2>Reserve a Study Room</h2>
+      <form onsubmit="handleReservation(event)">
+        <label for="room">Select a Room</label>
+        <select id="room" required>
+          <option value="">-- Choose a Room --</option>
+          <option value="101">Room 101 (30)</option>
+          <option value="102">Room 102 (10)</option>
+          <option value="103">Room 103 (20)</option>
+          <option value="201">Room 201 (25)</option>
+          <option value="202">Room 202 (30)</option>
+          <option value="203">Room 203 (15)</option>
+          <option value="204">Room 204 (40)</option>
+          <option value="301">Room 301 (35)</option>
+          <option value="302">Room 302 (20)</option>
+          <option value="303">Room 303 (25)</option>
+          <option value="304">Room 304 (30)</option>
+          <option value="305">Room 305 (18)</option>
+          <option value="401">Room 401 (22)</option>
+          <option value="402">Room 402 (28)</option>
+          <option value="403">Room 403 (33)</option>
+          <option value="404">Room 404 (35)</option>
+          <option value="405">Room 405 (40)</option>
+          <option value="501">Room 501 (45)</option>
+          <option value="502">Room 502 (20)</option>
+          <option value="503">Room 503 (15)</option>
+          <option value="504">Room 504 (30)</option>
+          <option value="505">Room 505 (25)</option>
+          <option value="601">Room 601 (50)</option>
+          <option value="602">Room 602 (30)</option>
+          <option value="603">Room 603 (40)</option>
+        </select>
+
+        <label for="start">Start Time</label>
+        <input type="datetime-local" id="start" required />
+
+        <label for="end">End Time</label>
+        <input type="datetime-local" id="end" required />
+
+        <label for="count">Number of People</label>
+        <input type="number" id="count" min="1" max="50" required />
+
+        <label for="desc">Purpose</label>
+        <input type="text" id="desc" required placeholder="Study, project, exam prep..." />
+
+        <button type="submit" class="btn">Submit Reservation</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function handleReservation(e) {
+      e.preventDefault();
+      const room = document.getElementById("room").value;
+      const count = document.getElementById("count").value;
+      alert(`Reservation for Room ${room} confirmed for ${count} person(s).`);
+    }
+  </script>
+</body>
+</html>
