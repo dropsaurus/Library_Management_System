@@ -15,12 +15,12 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (
-        !isset($data['first_name']) ||
-        !isset($data['last_name']) ||
-        !isset($data['phone']) ||
-        !isset($data['email']) ||
-        !isset($data['uid_type']) ||
-        !isset($data['uid_number'])
+        !isset($data['start_time']) ||
+        !isset($data['end_time']) ||
+        !isset($data['description']) ||
+        !isset($data['count']) ||
+        !isset($data['cust_id']) ||
+        !isset($data['room_id'])
     ) {
         echo json_encode([
             'status' => 'error',
@@ -30,25 +30,23 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO JPN_CUSTOMER (
-            CUST_FNAME, CUST_LNAME, CUST_PHONE, CUST_EMAIL, CUST_UID_TYPE, CUST_UID_NO
-        ) VALUES (
-            :fname, :lname, :phone, :email, :uid_type, :uid_number
-        )
+        INSERT INTO JPN_RESERVATION 
+        (RES_STARTTIME, RES_ENDTIME, RES_DESC, RES_COUNT, CUST_ID, ROOM_ID)
+        VALUES (:start_time, :end_time, :description, :count, :cust_id, :room_id)
     ");
 
     $stmt->execute([
-        ':fname'      => $data['first_name'],
-        ':lname'      => $data['last_name'],
-        ':phone'      => $data['phone'],
-        ':email'      => $data['email'],
-        ':uid_type'   => $data['uid_type'],
-        ':uid_number' => $data['uid_number']
+        ':start_time'   => $data['start_time'],
+        ':end_time'     => $data['end_time'],
+        ':description'  => $data['description'],
+        ':count'        => $data['count'],
+        ':cust_id'      => $data['cust_id'],
+        ':room_id'      => $data['room_id']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Customer inserted successfully'
+        'message' => 'Reservation created successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -57,4 +55,3 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>

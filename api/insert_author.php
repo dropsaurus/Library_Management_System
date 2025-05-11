@@ -15,12 +15,14 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (
-        !isset($data['first_name']) ||
-        !isset($data['last_name']) ||
-        !isset($data['phone']) ||
-        !isset($data['email']) ||
-        !isset($data['uid_type']) ||
-        !isset($data['uid_number'])
+        !isset($data['fname']) ||
+        !isset($data['lname']) ||
+        !isset($data['street']) ||
+        !isset($data['city']) ||
+        !isset($data['state']) ||
+        !isset($data['country']) ||
+        !isset($data['zipcode']) ||
+        !isset($data['email'])
     ) {
         echo json_encode([
             'status' => 'error',
@@ -30,25 +32,25 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO JPN_CUSTOMER (
-            CUST_FNAME, CUST_LNAME, CUST_PHONE, CUST_EMAIL, CUST_UID_TYPE, CUST_UID_NO
-        ) VALUES (
-            :fname, :lname, :phone, :email, :uid_type, :uid_number
-        )
+        INSERT INTO JPN_AUTHOR 
+        (A_FNAME, A_LNAME, A_STREET, A_CITY, A_STATE, A_COUNTRY, A_ZIPCODE, A_EMAIL)
+        VALUES (:fname, :lname, :street, :city, :state, :country, :zipcode, :email)
     ");
 
     $stmt->execute([
-        ':fname'      => $data['first_name'],
-        ':lname'      => $data['last_name'],
-        ':phone'      => $data['phone'],
-        ':email'      => $data['email'],
-        ':uid_type'   => $data['uid_type'],
-        ':uid_number' => $data['uid_number']
+        ':fname'   => $data['fname'],
+        ':lname'   => $data['lname'],
+        ':street'  => $data['street'],
+        ':city'    => $data['city'],
+        ':state'   => $data['state'],
+        ':country' => $data['country'],
+        ':zipcode' => $data['zipcode'],
+        ':email'   => $data['email']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Customer inserted successfully'
+        'message' => 'Author inserted successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -57,4 +59,3 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>

@@ -15,12 +15,9 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (
-        !isset($data['first_name']) ||
-        !isset($data['last_name']) ||
-        !isset($data['phone']) ||
-        !isset($data['email']) ||
-        !isset($data['uid_type']) ||
-        !isset($data['uid_number'])
+        !isset($data['inv_date']) ||
+        !isset($data['inv_amount']) ||
+        !isset($data['r_id'])
     ) {
         echo json_encode([
             'status' => 'error',
@@ -30,25 +27,19 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO JPN_CUSTOMER (
-            CUST_FNAME, CUST_LNAME, CUST_PHONE, CUST_EMAIL, CUST_UID_TYPE, CUST_UID_NO
-        ) VALUES (
-            :fname, :lname, :phone, :email, :uid_type, :uid_number
-        )
+        INSERT INTO JPN_INVOICE (INV_DATE, INV_AMOUNT, R_ID)
+        VALUES (:inv_date, :inv_amount, :r_id)
     ");
 
     $stmt->execute([
-        ':fname'      => $data['first_name'],
-        ':lname'      => $data['last_name'],
-        ':phone'      => $data['phone'],
-        ':email'      => $data['email'],
-        ':uid_type'   => $data['uid_type'],
-        ':uid_number' => $data['uid_number']
+        ':inv_date'   => $data['inv_date'],
+        ':inv_amount' => $data['inv_amount'],
+        ':r_id'       => $data['r_id']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Customer inserted successfully'
+        'message' => 'Invoice inserted successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -57,4 +48,3 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>

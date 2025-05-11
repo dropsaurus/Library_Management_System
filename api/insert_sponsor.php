@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: PUT, OPTIONS');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -14,28 +14,29 @@ require_once '../config/db_connect.php';
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!isset($data['rental_id']) || !isset($data['return_date'])) {
+    if (!isset($data['sp_fname']) || !isset($data['sp_lname']) || !isset($data['sp_type'])) {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Missing required fields: rental_id or return_date'
+            'message' => 'Missing required fields: sp_fname, sp_lname, or sp_type'
         ]);
         exit;
     }
 
     $stmt = $pdo->prepare("
-        UPDATE JPN_RENTAL
-        SET R_AC_RETURNDATE = :return_date,
-            R_STATUS = 'RETURNED'
-        WHERE R_ID = :rental_id
+        INSERT INTO JPN_SPONSOR (SP_FNAME, SP_LNAME, SP_TYPE)
+        VALUES (:sp_fname, :sp_lname, :sp_type)
     ");
+
     $stmt->execute([
-        ':return_date' => $data['return_date'],
-        ':rental_id' => $data['rental_id']
+        ':sp_fname' => $data['sp_fname'],
+        ':sp_lname' => $data['sp_lname'],
+        ':sp_type' => $data['sp_type']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Book returned successfully'
+        'message' => 'Sponsor inserted successfully',
+        'sponsor_id' => $pdo->lastInsertId()
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -44,3 +45,4 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
+?>

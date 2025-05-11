@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: PUT, OPTIONS');
+header('Access-Control-Allow-Methods: DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -14,28 +14,20 @@ require_once '../config/db_connect.php';
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!isset($data['rental_id']) || !isset($data['return_date'])) {
+    if (!isset($data['id'])) {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Missing required fields: rental_id or return_date'
+            'message' => 'Missing required field: id'
         ]);
         exit;
     }
 
-    $stmt = $pdo->prepare("
-        UPDATE JPN_RENTAL
-        SET R_AC_RETURNDATE = :return_date,
-            R_STATUS = 'RETURNED'
-        WHERE R_ID = :rental_id
-    ");
-    $stmt->execute([
-        ':return_date' => $data['return_date'],
-        ':rental_id' => $data['rental_id']
-    ]);
+    $stmt = $pdo->prepare("DELETE FROM JPN_BOOK WHERE BOOK_ID = :id");
+    $stmt->execute([':id' => $data['id']]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Book returned successfully'
+        'message' => 'Book deleted successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

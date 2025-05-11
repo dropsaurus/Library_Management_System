@@ -65,5 +65,42 @@
   <footer>
     <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
   </footer>
+
+<script>
+document.querySelector('form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const role = document.getElementById('role').value;
+
+  if (!email || !password || !role) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  try {
+    const response = await fetch('../api/login.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password, role }) // role 也发过去
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      window.location.href = data.redirect;
+    } else {
+      alert(data.message || 'Login failed.');
+    }
+  } catch (err) {
+    alert("An error occurred. Please try again.");
+    console.error(err);
+  }
+});
+</script>
+
 </body>
 </html>

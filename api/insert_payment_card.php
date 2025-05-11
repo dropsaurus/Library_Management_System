@@ -15,12 +15,12 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (
-        !isset($data['first_name']) ||
-        !isset($data['last_name']) ||
-        !isset($data['phone']) ||
-        !isset($data['email']) ||
-        !isset($data['uid_type']) ||
-        !isset($data['uid_number'])
+        !isset($data['inv_id']) ||
+        !isset($data['pay_date']) ||
+        !isset($data['pay_amount']) ||
+        !isset($data['card_holder_name']) ||
+        !isset($data['card_number']) ||
+        !isset($data['card_type'])
     ) {
         echo json_encode([
             'status' => 'error',
@@ -29,26 +29,20 @@ try {
         exit;
     }
 
-    $stmt = $pdo->prepare("
-        INSERT INTO JPN_CUSTOMER (
-            CUST_FNAME, CUST_LNAME, CUST_PHONE, CUST_EMAIL, CUST_UID_TYPE, CUST_UID_NO
-        ) VALUES (
-            :fname, :lname, :phone, :email, :uid_type, :uid_number
-        )
-    ");
+    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_PAYMENT_CARD(:inv_id, :pay_date, :pay_amount, :card_holder_name, :card_number, :card_type)");
 
     $stmt->execute([
-        ':fname'      => $data['first_name'],
-        ':lname'      => $data['last_name'],
-        ':phone'      => $data['phone'],
-        ':email'      => $data['email'],
-        ':uid_type'   => $data['uid_type'],
-        ':uid_number' => $data['uid_number']
+        ':inv_id'            => $data['inv_id'],
+        ':pay_date'          => $data['pay_date'],
+        ':pay_amount'        => $data['pay_amount'],
+        ':card_holder_name'  => $data['card_holder_name'],
+        ':card_number'       => $data['card_number'],
+        ':card_type'         => $data['card_type']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Customer inserted successfully'
+        'message' => 'Card payment inserted successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

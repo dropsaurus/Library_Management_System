@@ -15,12 +15,11 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (
-        !isset($data['first_name']) ||
-        !isset($data['last_name']) ||
-        !isset($data['phone']) ||
-        !isset($data['email']) ||
-        !isset($data['uid_type']) ||
-        !isset($data['uid_number'])
+        !isset($data['r_status']) ||
+        !isset($data['r_borrowdate']) ||
+        !isset($data['r_ex_returndate']) ||
+        !isset($data['cust_id']) ||
+        !isset($data['copy_id'])
     ) {
         echo json_encode([
             'status' => 'error',
@@ -30,25 +29,21 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO JPN_CUSTOMER (
-            CUST_FNAME, CUST_LNAME, CUST_PHONE, CUST_EMAIL, CUST_UID_TYPE, CUST_UID_NO
-        ) VALUES (
-            :fname, :lname, :phone, :email, :uid_type, :uid_number
-        )
+        INSERT INTO JPN_RENTAL (R_STATUS, R_BORROWDATE, R_EX_RETURNDATE, CUST_ID, COPY_ID)
+        VALUES (:r_status, :r_borrowdate, :r_ex_returndate, :cust_id, :copy_id)
     ");
 
     $stmt->execute([
-        ':fname'      => $data['first_name'],
-        ':lname'      => $data['last_name'],
-        ':phone'      => $data['phone'],
-        ':email'      => $data['email'],
-        ':uid_type'   => $data['uid_type'],
-        ':uid_number' => $data['uid_number']
+        ':r_status'       => $data['r_status'],
+        ':r_borrowdate'   => $data['r_borrowdate'],
+        ':r_ex_returndate'=> $data['r_ex_returndate'],
+        ':cust_id'        => $data['cust_id'],
+        ':copy_id'        => $data['copy_id']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Customer inserted successfully'
+        'message' => 'Rental record inserted successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -57,4 +52,3 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>

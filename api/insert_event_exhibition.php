@@ -15,12 +15,11 @@ try {
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (
-        !isset($data['first_name']) ||
-        !isset($data['last_name']) ||
-        !isset($data['phone']) ||
-        !isset($data['email']) ||
-        !isset($data['uid_type']) ||
-        !isset($data['uid_number'])
+        !isset($data['e_name']) ||
+        !isset($data['e_starttime']) ||
+        !isset($data['e_endtime']) ||
+        !isset($data['t_id']) ||
+        !isset($data['expense'])
     ) {
         echo json_encode([
             'status' => 'error',
@@ -29,26 +28,19 @@ try {
         exit;
     }
 
-    $stmt = $pdo->prepare("
-        INSERT INTO JPN_CUSTOMER (
-            CUST_FNAME, CUST_LNAME, CUST_PHONE, CUST_EMAIL, CUST_UID_TYPE, CUST_UID_NO
-        ) VALUES (
-            :fname, :lname, :phone, :email, :uid_type, :uid_number
-        )
-    ");
+    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_EXHIBITION_EVENT(:e_name, :e_starttime, :e_endtime, :t_id, :expense)");
 
     $stmt->execute([
-        ':fname'      => $data['first_name'],
-        ':lname'      => $data['last_name'],
-        ':phone'      => $data['phone'],
-        ':email'      => $data['email'],
-        ':uid_type'   => $data['uid_type'],
-        ':uid_number' => $data['uid_number']
+        ':e_name'      => $data['e_name'],
+        ':e_starttime' => $data['e_starttime'],
+        ':e_endtime'   => $data['e_endtime'],
+        ':t_id'        => $data['t_id'],
+        ':expense'     => $data['expense']
     ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Customer inserted successfully'
+        'message' => 'Exhibition event inserted successfully'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Reservation</title>
+</head>
+<body>
+  <h3>Test Reserve Room API</h3>
+  <button onclick="submitReservation()">Submit Reservation</button>
+
+  <script>
+    function submitReservation() {
+      fetch('http://localhost/library_management/api/reserve_room.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cust_id: P123456,
+          room_id: 101,
+          start_time: "2025-11-01 10:00:00",
+          end_time: "2025-11-01 12:00:00",
+          description: "Test reservation from HTML",
+          count: 3
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        alert("Response:\n" + JSON.stringify(result, null, 2));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Request failed. Check console.');
+      });
+    }
+  </script>
+</body>
+</html>

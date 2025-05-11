@@ -4,41 +4,37 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
+
 require_once '../config/db_connect.php';
 
 try {
-    $sql = "
+    $query = "
         SELECT 
-            e.E_ID,
-            e.E_NAME,
-            e.E_STARTTIME,
-            e.E_ENDTIME,
-            e.E_TYPE,
-            t.T_NAME AS TOPIC_NAME
-        FROM JPN_EVENT e
-        JOIN JPN_TOPIC t ON e.T_ID = t.T_ID
-        ORDER BY e.E_STARTTIME DESC
+            c.COPY_ID,
+            c.COPY_STATUS,
+            b.BOOK_NAME
+        FROM JPN_COPIES c
+        LEFT JOIN JPN_BOOK b ON c.BOOK_ID = b.BOOK_ID
+        ORDER BY c.COPY_ID
     ";
 
-    $stmt = $pdo->prepare($sql);
+    $stmt = $pdo->prepare($query);
     $stmt->execute();
-
-    $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $copies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        "status" => "success",
-        "data" => $events
+        'status' => 'success',
+        'data' => $copies
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
-        "status" => "error",
-        "message" => $e->getMessage()
+        'status' => 'error',
+        'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
 ?>

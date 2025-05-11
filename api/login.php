@@ -1,48 +1,43 @@
 <?php
-header("Content-Type: application/json");
-require_once("../config/db.php");
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');  // 可根据需要限制来源
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
-$data = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($data['CUST_EMAIL']) || !isset($data['CUST_PASSWORD'])) {
-    http_response_code(400);
-    echo json_encode([
-        "status" => "error",
-        "message" => "Missing email or password"
-    ]);
-    exit();
-}
+require_once 'config/db_connect.php'; // 数据库连接文件
 
 try {
-    $stmt = $pdo->prepare("
-        SELECT CUST_ID, CUST_FNAME, CUST_LNAME, CUST_PASSWORD
-        FROM JPN_CUSTOMER
-        WHERE CUST_EMAIL = ?
-        LIMIT 1
-    ");
-    $stmt->execute([$data['CUST_EMAIL']]);
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // 检查字段是否完整
+    if (!isset($data['email']) || !isset($data['password'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Missing email or password']);
+        exit;
+    }
+
+    $email = $data['email'];
+    $password = $data['password'];
+
+    // 查询用户信息
+    $stmt = $pdo->prepare("SELECT id, password_hash, role FROM users WHERE email = :email");
+    $stmt->execute([':email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($data['CUST_PASSWORD'], $user['CUST_PASSWORD'])) {
-        
-        unset($user['CUST_PASSWORD']);
+    if ($user && password_verify($password, $user['password_hash'])) {
+        // 登录成功，根据角色返回跳转页面
+        $redirect = ($user['role'] === 'employee') ? 'employee_page.html' : 'customer_page.html';
+
         echo json_encode([
-            "status" => "success",
-            "message" => "Login successful",
-            "user" => $user
+            'status' => 'success',
+            'user_id' => $user['id'],
+            'role' => $user['role'],
+            'redirect' => $redirect
         ]);
     } else {
-        http_response_code(401);
-        echo json_encode([
-            "status" => "error",
-            "message" => "Invalid email or password"
-        ]);
+        echo json_encode(['status' => 'error', 'message' => 'Invalid credentials']);
     }
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        "status" => "error",
-        "message" => $e->getMessage()
-    ]);
+
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()]);
 }
 ?>

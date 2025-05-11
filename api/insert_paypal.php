@@ -1,13 +1,23 @@
 <?php
-header("Content-Type: application/json");
-require_once("../config/db.php");
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+require_once '../config/db_connect.php';
+
 
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (
     !isset($data['INV_ID']) ||
     !isset($data['PAY_DATE']) ||
-    !isset($data['PAY_AMOUNT'])
+    !isset($data['PAY_AMOUNT']) ||
+    !isset($data['PAYPAL_ID'])
 ) {
     http_response_code(400);
     echo json_encode([
@@ -18,16 +28,17 @@ if (
 }
 
 try {
-    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_PAYMENT_CASH(?, ?, ?)");
+    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_PAYMENT_PAYPAL(?, ?, ?, ?)");
     $stmt->execute([
         $data['INV_ID'],
         $data['PAY_DATE'],
-        $data['PAY_AMOUNT']
+        $data['PAY_AMOUNT'],
+        $data['PAYPAL_ID']
     ]);
 
     echo json_encode([
         "status" => "success",
-        "message" => "Cash payment processed successfully"
+        "message" => "PayPal payment processed successfully"
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
