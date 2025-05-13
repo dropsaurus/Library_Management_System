@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check Rentals - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .rentals-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .rentals-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .search-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .search-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .search-group input,
+      .search-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+
+      .rentals-table-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .rentals-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .rentals-table th,
+      .rentals-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      .rentals-table th {
+        background-color: #f8f9fa;
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .rentals-table tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .status-active {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .status-overdue {
+        background-color: #ffebee;
+        color: #c62828;
+      }
+
+      .status-returned {
+        background-color: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .btn-action {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.3s;
+      }
+
+      .btn-return {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .btn-extend {
+        background-color: #ff9800;
+        color: white;
+      }
+
+      .btn-details {
+        background-color: #2196f3;
+        color: white;
+      }
+
+      .btn-action:hover {
+        opacity: 0.9;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: white;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 8px;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        color: #2c3e50;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #7f8c8d;
+      }
+
+      .rental-details {
+        margin-bottom: 1.5rem;
+      }
+
+      .detail-row {
+        display: flex;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+      }
+
+      .detail-label {
+        width: 150px;
+        font-weight: 500;
+        color: #7f8c8d;
+      }
+
+      .detail-value {
+        flex: 1;
+        color: #2c3e50;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: #7f8c8d;
+        font-size: 0.875rem;
+      }
+
+      @media (max-width: 768px) {
+        .rentals-header {
+          flex-direction: column;
+        }
+
+        .search-filters {
+          flex-direction: column;
+        }
+
+        .search-group {
+          width: 100%;
+        }
+
+        .rentals-table {
+          display: block;
+          overflow-x: auto;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .btn-action {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <a href="../index.html" class="btn">Home</a>
+          <a href="login.html" class="btn">Logout</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="rentals-container">
+        <div class="rentals-header">
+          <h2>Rental Management</h2>
+        </div>
+
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-number" id="activeRentals">24</div>
+            <div class="stat-label">Active Rentals</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="overdueRentals">5</div>
+            <div class="stat-label">Overdue Rentals</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="returnsToday">8</div>
+            <div class="stat-label">Returns Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalBooks">156</div>
+            <div class="stat-label">Total Books Rented</div>
+          </div>
+        </div>
+
+        <div class="search-filters">
+          <div class="search-group">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by book title or member name..."
+            />
+          </div>
+          <div class="search-group">
+            <select id="statusFilter">
+              <option value="">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="overdue">Overdue</option>
+              <option value="returned">Returned</option>
+            </select>
+          </div>
+          <div class="search-group">
+            <input type="date" id="dateFilter" />
+          </div>
+        </div>
+
+        <div class="rentals-table-container">
+          <table class="rentals-table">
+            <thead>
+              <tr>
+                <th>Book Title</th>
+                <th>Member Name</th>
+                <th>Checkout Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rentalsTableBody">
+              <!-- Sample row - will be populated by JavaScript -->
+              <tr>
+                <td>The Great Gatsby</td>
+                <td>John Smith</td>
+                <td>2024-03-01</td>
+                <td>2024-03-15</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button
+                      class="btn-action btn-return"
+                      onclick="returnBook('1')"
+                    >
+                      Return
+                    </button>
+                    <button
+                      class="btn-action btn-extend"
+                      onclick="extendRental('1')"
+                    >
+                      Extend
+                    </button>
+                    <button
+                      class="btn-action btn-details"
+                      onclick="showDetails('1')"
+                    >
+                      Details
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <!-- More rows will be added dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rental Details Modal -->
+      <div id="rentalModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Rental Details</h2>
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+          </div>
+          <div class="rental-details">
+            <div class="detail-row">
+              <span class="detail-label">Book Title:</span>
+              <span class="detail-value" id="modalBookTitle"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Member Name:</span>
+              <span class="detail-value" id="modalMemberName"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Member ID:</span>
+              <span class="detail-value" id="modalMemberId"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Checkout Date:</span>
+              <span class="detail-value" id="modalCheckoutDate"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Due Date:</span>
+              <span class="detail-value" id="modalDueDate"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value" id="modalStatus"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Fine Amount:</span>
+              <span class="detail-value" id="modalFineAmount"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Notes:</span>
+              <span class="detail-value" id="modalNotes"></span>
+            </div>
+          </div>
+          <div class="modal-buttons">
+            <button class="btn-action" onclick="closeModal()">Close</button>
+            <button class="btn-action btn-return" id="modalReturnBtn">
+              Return Book
+            </button>
+            <button class="btn-action btn-extend" id="modalExtendBtn">
+              Extend Rental
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Filter functionality
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", filterRentals);
+      document
+        .getElementById("statusFilter")
+        .addEventListener("change", filterRentals);
+      document
+        .getElementById("dateFilter")
+        .addEventListener("change", filterRentals);
+
+      function filterRentals() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const statusFilter = document.getElementById("statusFilter").value;
+        const dateFilter = document.getElementById("dateFilter").value;
+
+        const rows = document.querySelectorAll("#rentalsTableBody tr");
+
+        rows.forEach((row) => {
+          const title = row.cells[0].textContent.toLowerCase();
+          const member = row.cells[1].textContent.toLowerCase();
+          const date = row.cells[2].textContent;
+          const status = row.cells[4].textContent.toLowerCase();
+
+          const matchesSearch =
+            title.includes(searchTerm) || member.includes(searchTerm);
+          const matchesStatus = !statusFilter || status.includes(statusFilter);
+          const matchesDate = !dateFilter || date === dateFilter;
+
+          row.style.display =
+            matchesSearch && matchesStatus && matchesDate ? "" : "none";
+        });
+      }
+
+      // Modal functionality
+      function showDetails(rentalId) {
+        const modal = document.getElementById("rentalModal");
+        modal.style.display = "block";
+
+        // Fetch rental details from backend and populate modal
+        // This is a mock implementation
+        const rentalDetails = {
+          bookTitle: "The Great Gatsby",
+          memberName: "John Smith",
+          memberId: "12345",
+          checkoutDate: "2024-03-01",
+          dueDate: "2024-03-15",
+          status: "Active",
+          fineAmount: "$0.00",
+          notes: "Book in good condition at checkout",
+        };
+
+        document.getElementById("modalBookTitle").textContent =
+          rentalDetails.bookTitle;
+        document.getElementById("modalMemberName").textContent =
+          rentalDetails.memberName;
+        document.getElementById("modalMemberId").textContent =
+          rentalDetails.memberId;
+        document.getElementById("modalCheckoutDate").textContent =
+          rentalDetails.checkoutDate;
+        document.getElementById("modalDueDate").textContent =
+          rentalDetails.dueDate;
+        document.getElementById("modalStatus").textContent =
+          rentalDetails.status;
+        document.getElementById("modalFineAmount").textContent =
+          rentalDetails.fineAmount;
+        document.getElementById("modalNotes").textContent = rentalDetails.notes;
+      }
+
+      function closeModal() {
+        document.getElementById("rentalModal").style.display = "none";
+      }
+
+      // Return book functionality
+      function returnBook(rentalId) {
+        if (confirm("Are you sure you want to mark this book as returned?")) {
+          // Make API call to backend to process return
+          console.log(`Processing return for rental ID: ${rentalId}`);
+          // Update UI after successful return
+          updateRentalStatus(rentalId, "returned");
+        }
+      }
+
+      // Extend rental functionality
+      function extendRental(rentalId) {
+        if (confirm("Do you want to extend this rental by 14 days?")) {
+          // Make API call to backend to process extension
+          console.log(`Processing extension for rental ID: ${rentalId}`);
+          // Update UI after successful extension
+          updateDueDate(rentalId);
+        }
+      }
+
+      function updateRentalStatus(rentalId, status) {
+        // Update the status badge in the table
+        const statusCell = document.querySelector(
+          `tr[data-rental-id="${rentalId}"] .status-badge`
+        );
+        if (statusCell) {
+          statusCell.className = `status-badge status-${status}`;
+          statusCell.textContent =
+            status.charAt(0).toUpperCase() + status.slice(1);
+        }
+      }
+
+      function updateDueDate(rentalId) {
+        // Update the due date in the table
+        const dueDateCell = document.querySelector(
+          `tr[data-rental-id="${rentalId}"] td:nth-child(4)`
+        );
+        if (dueDateCell) {
+          const currentDate = new Date(dueDateCell.textContent);
+          currentDate.setDate(currentDate.getDate() + 14);
+          dueDateCell.textContent = currentDate.toISOString().split("T")[0];
+        }
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        const modal = document.getElementById("rentalModal");
+        if (event.target === modal) {
+          closeModal();
+        }
+      };
+
+      // Update statistics
+      function updateStatistics() {
+        // This would typically fetch from your backend
+        // Mock implementation for demonstration
+        document.getElementById("activeRentals").textContent = "24";
+        document.getElementById("overdueRentals").textContent = "5";
+        document.getElementById("returnsToday").textContent = "8";
+        document.getElementById("totalBooks").textContent = "156";
+      }
+
+      // Initialize page
+      updateStatistics();
+    </script>
+  </body>
+</html>
