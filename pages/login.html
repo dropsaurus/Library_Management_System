@@ -1,55 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Public Affirmation Library</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/login.css" />
-</head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Public Affirmation Library</h1>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 011.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+              />
+            </svg>
+          </button>
+          <a href="../index.html" class="btn">Home</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="hero-section">
+        <h2>Welcome Back</h2>
+        <p>Sign in to access your library account</p>
       </div>
-      <div class="nav-buttons">
-        <button onclick="location.href='../index.html'" class="btn">Home</button>
-        <button onclick="location.href='register.html'" class="btn">Register</button>
+
+      <div
+        class="form-container"
+        style="max-width: 400px; margin: 2rem auto; padding: 0 1rem"
+      >
+        <form class="card" style="padding: 2rem">
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              required
+            />
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+            "
+          >
+            <label style="display: flex; align-items: center; gap: 0.5rem">
+              <input type="checkbox" style="width: auto" />
+              <span style="color: var(--text-secondary); font-size: 0.9rem"
+                >Remember me</span
+              >
+            </label>
+            <a
+              href="#"
+              style="
+                color: var(--accent-primary);
+                font-size: 0.9rem;
+                text-decoration: none;
+              "
+              >Forgot password?</a
+            >
+          </div>
+          <button type="submit" class="btn" style="width: 100%">Sign In</button>
+          <p
+            style="
+              text-align: center;
+              margin-top: 1.5rem;
+              color: var(--text-secondary);
+              font-size: 0.9rem;
+            "
+          >
+            Don't have an account?
+            <a
+              href="register.html"
+              style="color: var(--accent-primary); text-decoration: none"
+              >Register</a
+            >
+          </p>
+        </form>
       </div>
-    </nav>
-  </header>
+    </main>
 
-  <main>
-    <div class="form-wrapper">
-      <h2>Welcome Back</h2>
-      <!-- ✅ ADD FORM ID -->
-      <form id="loginForm">
-        <label for="email">Email</label>
-        <input type="email" id="email" required placeholder="you@example.com" />
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" required placeholder="Enter your password" />
-
-        <label for="role">Login As</label>
-        <select id="role" required>
-          <option value="">Select role</option>
-          <option value="customer">Customer</option>
-          <option value="employee">Employee</option>
-        </select>
-
-        <button type="submit" class="btn">Login</button>
-
-        <p>Don't have an account? <a href="register.html">Register here</a></p>
-      </form>
-    </div>
-  </main>
-
-  <footer>
-    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
-  </footer>
-
-  <script src="../js/login.js"></script>
-</body>
+    <script src="../js/theme-toggle.js"></script>
+  </body>
 </html>
