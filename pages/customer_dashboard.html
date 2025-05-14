@@ -26,14 +26,11 @@
         <h1>Public Affirmation Library</h1>
       </div>
       <div class="nav-menu">
-        <div class="nav-menu">
         <a href="#" class="nav-link active" onclick="loadPage('home.html', this)">Home</a>
         <a href="#" class="nav-link" onclick="loadPage('books.html', this)">Books</a>
         <a href="#" class="nav-link" onclick="loadPage('events.html', this)">Events</a>
         <a href="#" class="nav-link" onclick="loadPage('study_room.html', this)">Study Rooms</a>
         <a href="#" class="nav-link" onclick="loadPage('contact.html', this)">Contact</a>
-      </div>
-
       </div>
       <div class="dropdown">
         <button class="btn dropdown-toggle" id="user-button">👤</button>
@@ -51,7 +48,6 @@
 
   <main>
     <div id="content-area">
-      <!-- 默认欢迎内容 -->
       <h2>Welcome to Public Affirmation Library</h2>
       <p>Explore and interact with our library services</p>
     </div>
@@ -61,7 +57,6 @@
     <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
   </footer>
 
-  <!-- 通用加载逻辑 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const fname = localStorage.getItem('customer_fname') || '';
@@ -80,7 +75,7 @@
         seminarsLink.href = '#';
         seminarsLink.className = 'nav-link';
         seminarsLink.textContent = 'Seminars';
-        seminarsLink.onclick = () => loadPage('pages/seminars.html', seminarsLink);
+        seminarsLink.onclick = () => loadPage('seminars.html', seminarsLink);
         document.querySelector('.nav-menu').appendChild(seminarsLink);
       }
 
@@ -89,7 +84,7 @@
         sponsorLink.href = '#';
         sponsorLink.className = 'nav-link';
         sponsorLink.textContent = 'Sponsor Seminar';
-        sponsorLink.onclick = () => loadPage('pages/sponsor_seminar.html', sponsorLink);
+        sponsorLink.onclick = () => loadPage('sponsor_seminar.html', sponsorLink);
         document.querySelector('.nav-menu').appendChild(sponsorLink);
       }
     });
@@ -110,20 +105,17 @@
         .then(html => {
           document.getElementById('content-area').innerHTML = html;
 
-          // 切换高亮状态
           if (link) {
             document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
           }
 
-          // 自动调用页面初始化函数（如 initEventsPage）
-          if (url.includes('events.html') && typeof initEventsPage === 'function') {
-            initEventsPage();
-          }
-          if (url.includes('books.html') && typeof initBooksPage === 'function') {
-            initBooksPage();
-          }
-          // 可以继续加其他页面判断
+          // Page-specific initialization logic
+          if (url.includes('events.html') && typeof initEventsPage === 'function') initEventsPage();
+          if (url.includes('books.html') && typeof initBooksPage === 'function') initBooksPage();
+          if (url.includes('profile.html') && typeof initProfilePage === 'function') initProfilePage();
+          if (url.includes('my_rentals.html') && typeof initRentalsPage === 'function') initRentalsPage();
+          if (url.includes('my_bookings.html') && typeof initBookingsPage === 'function') initBookingsPage();
         })
         .catch(error => {
           console.error('Error loading page:', error);
@@ -131,7 +123,5 @@
         });
     }
   </script>
-
-  <!-- 预载入 JS（例如 events.js, books.js 会在页面里引入） -->
 </body>
 </html>
