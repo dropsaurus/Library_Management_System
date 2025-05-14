@@ -34,16 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.status === 'success') {
-                localStorage.setItem('customer_id', data.user_id);
-                localStorage.setItem('customer_fname', data.user_fname);
-                localStorage.setItem('customer_lname', data.user_lname);
+                
+                localStorage.setItem('user_id', data.user_id);
+                localStorage.setItem('user_fname', data.user_fname);
+                localStorage.setItem('user_lname', data.user_lname);
+                localStorage.setItem('user_role', data.role);
 
                 const fullName = data.user_fname + ' ' + data.user_lname;
-                localStorage.setItem('customer_name', fullName);
-                alert("✅ Login successful!");
-
-                // ✅ Safe redirect
-                window.location.href = data.redirect;
+                localStorage.setItem('user_name', fullName);
+                
+                
+                const redirectPath = data.role === 'employee' ? 'employee_dashboard.html' : 'customer_dashboard.html';
+                window.location.href = redirectPath;
             } else {
                 alert("❌ " + (data.message || 'Login failed.'));
             }

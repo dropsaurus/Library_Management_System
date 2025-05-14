@@ -19,7 +19,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 if (!isset($data['email']) || !isset($data['password'])) {
     echo json_encode([
         'status' => 'error',
-        'message' => 'Missing email or password'
+        'message' => '缺少邮箱或密码'
     ]);
     exit;
 }
@@ -28,46 +28,38 @@ $email = strtolower(trim($data['email']));
 $password = $data['password'];
 
 try {
-    // Retrieve user info from JPN_USER
+    // 获取用户信息
     $stmt = $pdo->prepare("SELECT USER_ID, USER_FNAME, USER_LNAME, USER_PASSWORD, ROLE FROM JPN_USER WHERE USER_EMAIL = :email");
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['USER_PASSWORD'])) {
+        // 设置会话变量
         $_SESSION['USER_ID'] = $user['USER_ID'];
         $_SESSION['ROLE'] = $user['ROLE'];
 
         if ($user['ROLE'] === 'customer') {
-        $_SESSION['CUST_ID'] = $user['USER_ID'];
+            $_SESSION['CUST_ID'] = $user['USER_ID'];
         }
 
-        $redirect = ($user['ROLE'] === 'employee') 
-        ? 'employee_dashboard.html' 
-        : 'customer_dashboard.html';
-
-        $redirect = ($user['ROLE'] === 'employee') 
-        ? 'employee_dashboard.html' 
-        : 'customer_dashboard.html';
-
+        // 返回用户信息
         echo json_encode([
-        'status' => 'success',
-        'user_id' => $user['USER_ID'],
-        'user_fname' => $user['USER_FNAME'],
-        'user_lname' => $user['USER_LNAME'],
-        'role' => $user['ROLE'],
-        'redirect' => $redirect
-
+            'status' => 'success',
+            'user_id' => $user['USER_ID'],
+            'user_fname' => $user['USER_FNAME'],
+            'user_lname' => $user['USER_LNAME'],
+            'role' => $user['ROLE']
         ]);
     } else {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Invalid email or password'
+            'message' => '邮箱或密码无效'
         ]);
     }
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => 'Server error: ' . $e->getMessage()
+        'message' => '服务器错误: ' . $e->getMessage()
     ]);
 }
