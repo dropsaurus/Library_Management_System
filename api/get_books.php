@@ -1,5 +1,5 @@
 <?php
-require_once "../config/db_connect.php";
+require_once __DIR__ . "/../config/db_connect.php";
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -20,10 +20,24 @@ try {
     if ($countOnly) {
         // Build the SQL query for count based on availability
         if ($availability === 'available') {
-            $sql = "SELECT COUNT(*) FROM JPN_COPIES WHERE COPY_STATUS = 'AVAILABLE'";
+            // Count distinct books that have at least one available copy
+            $sql = "SELECT COUNT(DISTINCT b.BOOK_ID) 
+                   FROM JPN_BOOK b 
+                   JOIN JPN_COPIES c ON b.BOOK_ID = c.BOOK_ID 
+                   WHERE c.COPY_STATUS = 'AVAILABLE'";
         } else if ($availability === 'borrowed') {
-            $sql = "SELECT COUNT(*) FROM JPN_COPIES WHERE COPY_STATUS = 'NOT AVAILABLE'";
+            // Count distinct books that have copies but none are available
+            $sql = "SELECT COUNT(DISTINCT b.BOOK_ID) 
+                   FROM JPN_BOOK b 
+                   JOIN JPN_COPIES c ON b.BOOK_ID = c.BOOK_ID 
+                   WHERE b.BOOK_ID NOT IN (
+                       SELECT DISTINCT b2.BOOK_ID 
+                       FROM JPN_BOOK b2 
+                       JOIN JPN_COPIES c2 ON b2.BOOK_ID = c2.BOOK_ID 
+                       WHERE c2.COPY_STATUS = 'AVAILABLE'
+                   )";
         } else {
+            // Count all books
             $sql = "SELECT COUNT(*) FROM JPN_BOOK";
         }
         

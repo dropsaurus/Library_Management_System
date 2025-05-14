@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-require_once '../config/db_connect.php';
+require_once __DIR__ . '/../config/db_connect.php';
 
 // Check if we only want count
 $countOnly = isset($_GET['countOnly']) && $_GET['countOnly'] === 'true';
