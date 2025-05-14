@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
-    const baseUrl = window.location.origin + '/library_management/api';
+    const baseUrl = '../api';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();

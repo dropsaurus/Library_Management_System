@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const eventList = document.getElementById('eventList');
-    const baseUrl = window.location.origin + '/library_management/api';
+    const baseUrl = '../api';
 
     async function fetchEvents() {
         try {

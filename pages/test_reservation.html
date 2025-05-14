@@ -10,7 +10,7 @@
 
   <script>
     function submitReservation() {
-      fetch('http://localhost/library_management/api/reserve_room.php', {
+      fetch('../api/reserve_room.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

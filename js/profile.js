@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const baseUrl = window.location.origin + '/library_management/api';
+  const baseUrl = '../api';
   const form = document.getElementById('profileForm');
   const msg = document.getElementById('profileMessage');
 

@@ -1,2 +1,3 @@
 # ignore the config folder
 config/
+test_connection.php

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allBooks = [];
     let allTopics = [];
 
-    const baseUrl = window.location.origin + '/library_management/api';
+    const baseUrl = '../api';
 
     async function fetchTopics() {
         try {
