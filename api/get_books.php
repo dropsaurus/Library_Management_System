@@ -1,55 +1,76 @@
 <?php
+require_once "../config/db_connect.php";
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-require_once '../config/db_connect.php';
+// Check if we only want counts
+$countOnly = isset($_GET['countOnly']) && $_GET['countOnly'] === 'true';
+$availability = isset($_GET['availability']) ? $_GET['availability'] : '';
 
 try {
-    $query = "
-        SELECT 
-            b.BOOK_ID,
-            b.BOOK_NAME,
-            t.T_NAME AS topic_name,
-            GROUP_CONCAT(CONCAT(a.A_FNAME, ' ', COALESCE(a.A_LNAME, '')) SEPARATOR ', ') AS authors,
-            COUNT(DISTINCT c.COPY_ID) AS total_copies,
-            SUM(CASE WHEN c.COPY_STATUS = 'AVAILABLE' THEN 1 ELSE 0 END) AS available_copies
-        FROM JPN_BOOK b
-        LEFT JOIN JPN_TOPIC t ON b.T_ID = t.T_ID
-        LEFT JOIN JPN_BOOK_AUTHOR ba ON b.BOOK_ID = ba.BOOK_ID
-        LEFT JOIN JPN_AUTHOR a ON ba.A_ID = a.A_ID
-        LEFT JOIN JPN_COPIES c ON b.BOOK_ID = c.BOOK_ID
-        GROUP BY b.BOOK_ID, b.BOOK_NAME, t.T_NAME
-    ";
-
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $formatted_books = array_map(function ($book) {
-        $available = (int)$book['available_copies'];
-        return [
-            'id' => $book['BOOK_ID'],
-            'title' => $book['BOOK_NAME'],
-            'authors' => $book['authors'],
-            'topic' => $book['topic_name'],
-            'total_copies' => (int)$book['total_copies'],
-            'available_copies' => $available,
-            'status' => $available > 0 ? 'Available' : 'Not Available'
-        ];
-    }, $books);
-
-    echo json_encode([
-        'status' => 'success',
-        'data' => $formatted_books
-    ], JSON_UNESCAPED_UNICODE);
-
+    if ($countOnly) {
+        // Build the SQL query for count based on availability
+        if ($availability === 'available') {
+            $sql = "SELECT COUNT(*) FROM JPN_COPIES WHERE COPY_STATUS = 'AVAILABLE'";
+        } else if ($availability === 'borrowed') {
+            $sql = "SELECT COUNT(*) FROM JPN_COPIES WHERE COPY_STATUS = 'NOT AVAILABLE'";
+        } else {
+            $sql = "SELECT COUNT(*) FROM JPN_BOOK";
+        }
+        
+        $stmt = $pdo->query($sql);
+        $count = $stmt->fetchColumn();
+        
+        echo json_encode([
+            'status' => 'success',
+            'count' => $count
+        ]);
+        
+    } else {
+        // Get books with details
+        $sql = "
+            SELECT 
+                b.BOOK_ID, 
+                b.BOOK_NAME, 
+                t.T_NAME as TOPIC_NAME,
+                COUNT(CASE WHEN c.COPY_STATUS = 'AVAILABLE' THEN 1 END) as AVAILABLE_COPIES,
+                GROUP_CONCAT(DISTINCT CONCAT(a.A_FNAME, ' ', a.A_LNAME) SEPARATOR ', ') as AUTHOR_NAME
+            FROM JPN_BOOK b
+            LEFT JOIN JPN_TOPIC t ON b.T_ID = t.T_ID
+            LEFT JOIN JPN_COPIES c ON b.BOOK_ID = c.BOOK_ID
+            LEFT JOIN JPN_BOOK_AUTHOR ba ON b.BOOK_ID = ba.BOOK_ID
+            LEFT JOIN JPN_AUTHOR a ON ba.A_ID = a.A_ID
+            GROUP BY b.BOOK_ID, b.BOOK_NAME, t.T_NAME
+        ";
+        
+        // Add availability filter if provided
+        if ($availability === 'available') {
+            $sql .= " HAVING AVAILABLE_COPIES > 0";
+        } else if ($availability === 'borrowed') {
+            $sql .= " HAVING AVAILABLE_COPIES = 0";
+        }
+        
+        // Add order and limit
+        $sql .= " ORDER BY b.BOOK_ID DESC LIMIT 20";
+        
+        $stmt = $pdo->query($sql);
+        $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'status' => 'success',
+            'books' => $books,
+            'total' => count($books)
+        ]);
+    }
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
@@ -57,3 +78,4 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
+?>

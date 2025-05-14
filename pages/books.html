@@ -10,6 +10,91 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      .book-card-content {
+        padding: 1.5rem;
+        border-radius: 8px;
+        background: var(--bg-secondary);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .book-card-content h3 {
+        margin-top: 0;
+        font-size: 1.25rem;
+        color: var(--text-primary);
+      }
+      
+      .status-success {
+        color: #10b981;
+        font-weight: 500;
+      }
+      
+      .status-danger {
+        color: #ef4444;
+        font-weight: 500;
+      }
+      
+      .no-results {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 2rem;
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+      }
+      
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      
+      .modal-content {
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+      }
+      
+      .detail-row {
+        display: flex;
+        margin-bottom: 0.75rem;
+      }
+      
+      .detail-label {
+        font-weight: 500;
+        width: 35%;
+        color: var(--text-secondary);
+      }
+      
+      .detail-value {
+        width: 65%;
+      }
+      
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -78,7 +163,7 @@
                   d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
                 ></path>
               </svg>
-              <span id="totalBooks">1,245</span>
+              <span id="totalBooks">Loading...</span>
             </h3>
             <p>Total Books</p>
           </div>
@@ -100,7 +185,7 @@
                 <line x1="9" y1="9" x2="9.01" y2="9"></line>
                 <line x1="15" y1="9" x2="15.01" y2="9"></line>
               </svg>
-              <span id="availableBooks">892</span>
+              <span id="availableBooks">Loading...</span>
             </h3>
             <p>Available Books</p>
           </div>
@@ -122,7 +207,7 @@
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
-              <span id="borrowedBooks">353</span>
+              <span id="borrowedBooks">Loading...</span>
             </h3>
             <p>Borrowed Books</p>
           </div>
@@ -144,7 +229,7 @@
                   d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
                 ></path>
               </svg>
-              <span id="categories">24</span>
+              <span id="categories">Loading...</span>
             </h3>
             <p>Categories</p>
           </div>
@@ -162,12 +247,7 @@
           <div class="form-group">
             <select id="categoryFilter" class="form-control">
               <option value="">All Categories</option>
-              <option value="fiction">Fiction</option>
-              <option value="non-fiction">Non-Fiction</option>
-              <option value="science">Science</option>
-              <option value="technology">Technology</option>
-              <option value="history">History</option>
-              <option value="biography">Biography</option>
+              <!-- Categories will be loaded dynamically -->
             </select>
           </div>
           <div class="form-group">
@@ -175,59 +255,13 @@
               <option value="">All Availability</option>
               <option value="available">Available</option>
               <option value="borrowed">Borrowed</option>
-              <option value="reserved">Reserved</option>
             </select>
           </div>
         </div>
 
-        <div class="features-grid">
-          <div class="feature-card">
-            <div style="position: relative">
-              <img
-                src="../images/books/great-gatsby.jpg"
-                alt="The Great Gatsby"
-                style="
-                  width: 100%;
-                  height: 300px;
-                  object-fit: cover;
-                  border-radius: 8px;
-                "
-              />
-              <span
-                class="status-success"
-                style="
-                  position: absolute;
-                  top: 1rem;
-                  right: 1rem;
-                  padding: 0.25rem 0.75rem;
-                  border-radius: 20px;
-                  background: var(--bg-primary);
-                  font-size: 0.875rem;
-                "
-                >Available</span
-              >
-            </div>
-            <h3>The Great Gatsby</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1rem">
-              F. Scott Fitzgerald
-            </p>
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 1rem;
-                font-size: 0.875rem;
-                color: var(--text-secondary);
-              "
-            >
-              <span>Fiction</span>
-              <span>ISBN: 978-0743273565</span>
-            </div>
-            <div style="display: flex; gap: 1rem">
-              <a href="#" class="btn" onclick="reserveBook('1')">Reserve</a>
-              <a href="#" class="btn" onclick="showBookDetails('1')">Details</a>
-            </div>
-          </div>
+        <div class="features-grid" id="booksGrid">
+          <!-- Books will be loaded dynamically -->
+          <div class="loading-message">Loading books...</div>
         </div>
       </div>
 
@@ -267,32 +301,16 @@
               <span class="detail-value" id="modalAuthor"></span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">ISBN:</span>
-              <span class="detail-value" id="modalISBN"></span>
-            </div>
-            <div class="detail-row">
               <span class="detail-label">Category:</span>
               <span class="detail-value" id="modalCategory"></span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Publisher:</span>
-              <span class="detail-value" id="modalPublisher"></span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Publication Year:</span>
-              <span class="detail-value" id="modalPublicationYear"></span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Status:</span>
               <span class="detail-value" id="modalStatus"></span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Location:</span>
-              <span class="detail-value" id="modalLocation"></span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Description:</span>
-              <span class="detail-value" id="modalDescription"></span>
+              <span class="detail-label">Available Copies:</span>
+              <span class="detail-value" id="modalAvailableCopies"></span>
             </div>
           </div>
           <div class="modal-buttons">
@@ -308,5 +326,248 @@
     </footer>
 
     <script src="../js/theme-toggle.js"></script>
+    <script>
+    // API endpoints
+    const API = {
+      BOOKS_STATS: '../api/books_stats.php',
+      SEARCH_BOOKS: '../api/search_books.php',
+      GET_BOOK: '../api/get_book.php',
+      GET_CATEGORIES: '../api/get_topics.php'
+    };
+    
+    // Load initial data when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load statistics
+      loadStatistics();
+      
+      // Load categories
+      loadCategories();
+      
+      // Load initial books
+      searchBooks();
+      
+      // Add event listeners for search and filters
+      const searchInput = document.getElementById('searchInput');
+      const categoryFilter = document.getElementById('categoryFilter');
+      const availabilityFilter = document.getElementById('availabilityFilter');
+      
+      // Add event listener for input change with debounce
+      let debounceTimer;
+      searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(searchBooks, 300);
+      });
+      
+      // Add event listeners for select changes
+      categoryFilter.addEventListener('change', searchBooks);
+      availabilityFilter.addEventListener('change', searchBooks);
+    });
+    
+    // Function to load statistics
+    function loadStatistics() {
+      // For now, use separate fetch requests for each statistic
+      // In a production environment, you'd create a dedicated API endpoint for all stats
+      
+      // Total books
+      fetch('../api/get_books.php?countOnly=true')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('totalBooks').textContent = data.count || 0;
+          }
+        })
+        .catch(error => {
+          console.error('Error loading total books:', error);
+          document.getElementById('totalBooks').textContent = 'Error';
+        });
+      
+      // Available books
+      fetch('../api/get_books.php?countOnly=true&availability=available')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('availableBooks').textContent = data.count || 0;
+          }
+        })
+        .catch(error => {
+          console.error('Error loading available books:', error);
+          document.getElementById('availableBooks').textContent = 'Error';
+        });
+      
+      // Borrowed books
+      fetch('../api/get_books.php?countOnly=true&availability=borrowed')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('borrowedBooks').textContent = data.count || 0;
+          }
+        })
+        .catch(error => {
+          console.error('Error loading borrowed books:', error);
+          document.getElementById('borrowedBooks').textContent = 'Error';
+        });
+      
+      // Categories
+      fetch('../api/get_topics.php?countOnly=true')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('categories').textContent = data.count || 0;
+          }
+        })
+        .catch(error => {
+          console.error('Error loading categories:', error);
+          document.getElementById('categories').textContent = 'Error';
+        });
+    }
+    
+    // Function to load categories
+    function loadCategories() {
+      fetch('../api/get_topics.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success' && data.topics && data.topics.length > 0) {
+            const categoryFilter = document.getElementById('categoryFilter');
+            
+            // Keep the default "All Categories" option
+            const defaultOption = categoryFilter.querySelector('option');
+            categoryFilter.innerHTML = '';
+            categoryFilter.appendChild(defaultOption);
+            
+            // Add each category as an option
+            data.topics.forEach(topic => {
+              const option = document.createElement('option');
+              option.value = topic.T_ID;
+              option.textContent = topic.T_NAME;
+              categoryFilter.appendChild(option);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error loading categories:', error);
+        });
+    }
+    
+    // Function to search books
+    function searchBooks() {
+      const searchTerm = document.getElementById('searchInput').value;
+      const category = document.getElementById('categoryFilter').value;
+      const availability = document.getElementById('availabilityFilter').value;
+      
+      // Build query URL
+      let url = '../api/search_books.php?';
+      if (searchTerm) url += `query=${encodeURIComponent(searchTerm)}&`;
+      if (category) url += `category=${encodeURIComponent(category)}&`;
+      if (availability) url += `availability=${encodeURIComponent(availability)}`;
+      
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            updateBooksList(data.books);
+          } else {
+            console.error('Search failed:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error searching books:', error);
+        });
+    }
+    
+    // Function to update the books list with search results
+    function updateBooksList(books) {
+      const booksGrid = document.getElementById('booksGrid');
+      
+      // Clear existing books
+      booksGrid.innerHTML = '';
+      
+      if (books.length === 0) {
+        booksGrid.innerHTML = '<div class="no-results">No books found matching your criteria.</div>';
+        return;
+      }
+      
+      // Add each book to the grid
+      books.forEach(book => {
+        const bookCard = document.createElement('div');
+        bookCard.className = 'feature-card';
+        bookCard.dataset.bookId = book.BOOK_ID;
+        
+        bookCard.innerHTML = `
+          <div class="book-card-content">
+            <h3>${escapeHtml(book.BOOK_NAME)}</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem">
+              ${escapeHtml(book.AUTHOR_NAME || 'Unknown Author')}
+            </p>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+              <span>${escapeHtml(book.TOPIC_NAME || 'Uncategorized')}</span>
+              <span class="${book.AVAILABLE_COPIES > 0 ? 'status-success' : 'status-danger'}">${book.AVAILABLE_COPIES > 0 ? 'Available' : 'Borrowed'}</span>
+            </div>
+            <div style="display: flex; gap: 1rem">
+              ${book.AVAILABLE_COPIES > 0 ? `<a href="#" class="btn" onclick="reserveBook('${book.BOOK_ID}')">Reserve</a>` : ''}
+              <a href="#" class="btn" onclick="showBookDetails('${book.BOOK_ID}')">Details</a>
+            </div>
+          </div>
+        `;
+        
+        booksGrid.appendChild(bookCard);
+      });
+    }
+    
+    // Function to get book details from the server
+    function showBookDetails(bookId) {
+      fetch(`../api/get_book.php?id=${bookId}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            const book = data.book;
+            document.getElementById('modalBookTitle').textContent = book.BOOK_NAME;
+            document.getElementById('modalAuthor').textContent = book.AUTHOR_NAME || 'Unknown Author';
+            document.getElementById('modalCategory').textContent = book.TOPIC_NAME || 'Uncategorized';
+            document.getElementById('modalStatus').textContent = book.AVAILABLE_COPIES > 0 ? 'Available' : 'Borrowed';
+            document.getElementById('modalAvailableCopies').textContent = book.AVAILABLE_COPIES;
+            
+            const reserveBtn = document.getElementById('modalReserveBtn');
+            if (book.AVAILABLE_COPIES > 0) {
+              reserveBtn.style.display = 'block';
+              reserveBtn.onclick = function() { reserveBook(book.BOOK_ID); };
+            } else {
+              reserveBtn.style.display = 'none';
+            }
+            
+            document.getElementById('bookModal').style.display = 'flex';
+          } else {
+            alert('Failed to load book details');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching book details:', error);
+          alert('An error occurred while fetching book details');
+        });
+    }
+
+    // Function to reserve a book
+    function reserveBook(bookId) {
+      // This would typically require a user to be logged in
+      alert('Please log in to reserve this book');
+      window.location.href = 'login.html';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      document.getElementById('bookModal').style.display = 'none';
+    }
+    
+    // Helper function to escape HTML
+    function escapeHtml(unsafe) {
+      if (!unsafe) return '';
+      return unsafe
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+    </script>
   </body>
 </html>
