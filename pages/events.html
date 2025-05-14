@@ -146,31 +146,49 @@
 
       async function fetchSeminars() {
         try {
-          const res = await fetch("/library_management/api/get_seminars.php");
+          const res = await fetch("../api/get_seminars.php");
           const json = await res.json();
-          if (json.status === "success") seminars = json.data;
+          console.log("Seminars API response:", json);
+          if (json.status === "success") {
+            seminars = json.data || [];
+          } else {
+            console.error("Seminar API error:", json.message || "Unknown error");
+          }
           renderEvents("all");
         } catch (e) {
-          console.error("Seminar error:", e);
+          console.error("Seminar fetch error:", e);
         }
       }
 
       async function fetchExhibitions() {
         try {
-          const res = await fetch(
-            "/library_management/api/get_exhibitions.php"
-          );
+          const res = await fetch("../api/get_exhibitions.php");
           const json = await res.json();
-          if (json.status === "success") exhibitions = json.data;
+          console.log("Exhibitions API response:", json);
+          if (json.status === "success") {
+            exhibitions = json.data || [];
+          } else {
+            console.error("Exhibition API error:", json.message || "Unknown error");
+          }
           renderEvents("all");
         } catch (e) {
-          console.error("Exhibition error:", e);
+          console.error("Exhibition fetch error:", e);
         }
       }
 
       function renderEvents(filter) {
         const container = document.getElementById("eventCards");
         container.innerHTML = "";
+        
+        if (seminars.length === 0 && exhibitions.length === 0) {
+          container.innerHTML = `
+            <div class="no-events-message">
+              <p>No events found. Please check back later.</p>
+            </div>
+          `;
+          return;
+        }
+        
         const all = [
           ...seminars.map((e, i) => ({
             type: "Seminar",
@@ -184,18 +202,28 @@
           })),
           ...exhibitions.map((e, i) => ({
             type: "Exhibition",
-            id: e.ex_ID,
+            id: e.ex_ID || e.E_ID,
             name: e.E_NAME,
             topic: e.topic_name,
             start: e.E_STARTTIME,
             end: e.E_ENDTIME,
-            extra: `Funding: $${parseFloat(e.EXPENSE).toFixed(2)}`,
+            extra: `Funding: $${parseFloat(e.EXPENSE || 0).toFixed(2)}`,
             img: `../images/event${((i + 5) % 5) + 1}.jpg`,
           })),
         ];
 
         const eventsToShow =
           filter === "all" ? all : all.filter((e) => e.type === filter);
+          
+        if (eventsToShow.length === 0) {
+          container.innerHTML = `
+            <div class="no-events-message">
+              <p>No ${filter} events found.</p>
+            </div>
+          `;
+          return;
+        }
+        
         eventsToShow.forEach((event) => {
           const card = document.createElement("div");
           card.className = "event-card";
@@ -212,24 +240,24 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
                 </svg>
-                <span>${event.topic}</span>
+                <span>${event.topic || 'General'}</span>
               </div>
               <div class="detail">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>${event.start} - ${event.end}</span>
+                <span>${event.start || 'TBD'} - ${event.end || 'TBD'}</span>
               </div>
               <div class="detail">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
-                <span>${event.extra}</span>
+                <span>${event.extra || 'Details forthcoming'}</span>
               </div>
             </div>
             <button onclick="location.href='event_register.html?event_id=${
               event.id
-            }&img=${encodeURIComponent(event.img)}'" class="btn">
+            }&type=${event.type}&img=${encodeURIComponent(event.img)}'" class="btn">
               Register Now
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
