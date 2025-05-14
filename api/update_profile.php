@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 require_once '../config/db_connect.php';
 
-if (!isset($_SESSION['CUST_ID'])) {
+if (!isset($_SESSION['USER_ID'])) {
     echo json_encode([
         'status' => 'error',
         'message' => 'User not logged in.'
@@ -38,11 +38,12 @@ $email = $data['CUST_EMAIL'];
 $phone = $data['CUST_PHONE'];
 
 try {
-    $query = "UPDATE JPN_CUSTOMER 
-              SET CUST_FNAME = ?, CUST_LNAME = ?, CUST_EMAIL = ?, CUST_PHONE = ?
-              WHERE CUST_ID = ?";
+    // Update USER table
+    $query = "UPDATE JPN_USER 
+              SET USER_FNAME = ?, USER_LNAME = ?, USER_EMAIL = ?, USER_PHONE = ?
+              WHERE USER_ID = ?";
     $stmt = $pdo->prepare($query);
-    $stmt->execute([$fname, $lname, $email, $phone, $_SESSION['CUST_ID']]);
+    $stmt->execute([$fname, $lname, $email, $phone, $_SESSION['USER_ID']]);
 
     echo json_encode([
         'status' => 'success',
