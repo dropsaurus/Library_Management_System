@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Reservations - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .reservation-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .reservation-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .tab-button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #ecf0f1;
+        color: #2c3e50;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .tab-button.active {
+        background-color: #2c3e50;
+        color: white;
+      }
+
+      .search-filters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .filter-group label {
+        font-weight: 500;
+        color: #2c3e50;
+      }
+
+      .filter-group select,
+      .filter-group input {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+      }
+
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .book-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+
+      .book-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .book-image {
+        width: 100%;
+        height: 200px;
+        background-color: #ecf0f1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .book-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover;
+      }
+
+      .book-details {
+        padding: 1rem;
+      }
+
+      .book-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+      }
+
+      .book-info {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .book-status {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .status-available {
+        background-color: #27ae60;
+        color: white;
+      }
+
+      .status-reserved {
+        background-color: #f39c12;
+        color: white;
+      }
+
+      .status-borrowed {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .reservation-button {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .reservation-button:hover {
+        background-color: #2980b9;
+      }
+
+      .reservation-button:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
+
+      .my-reservations {
+        display: none;
+      }
+
+      .reservation-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .reservation-table th,
+      .reservation-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .reservation-table th {
+        background-color: #2c3e50;
+        color: white;
+      }
+
+      .cancel-reservation {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #e74c3c;
+        color: white;
+        cursor: pointer;
+      }
+
+      .cancel-reservation:hover {
+        background-color: #c0392b;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 8px;
+      }
+
+      .modal-header {
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-header h2 {
+        color: #2c3e50;
+      }
+
+      .reservation-details {
+        margin-bottom: 1.5rem;
+      }
+
+      .reservation-details p {
+        margin-bottom: 0.5rem;
+        color: #7f8c8d;
+      }
+
+      .reservation-details strong {
+        color: #2c3e50;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .search-filters {
+          grid-template-columns: 1fr;
+        }
+
+        .books-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <a href="../index.html" class="btn">Home</a>
+          <a href="login.html" class="btn">Logout</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="reservation-container">
+        <div class="reservation-tabs">
+          <button
+            class="tab-button active"
+            onclick="switchTab('available-books')"
+          >
+            Available Books
+          </button>
+          <button class="tab-button" onclick="switchTab('my-reservations')">
+            My Reservations
+          </button>
+        </div>
+
+        <div id="available-books" class="tab-content">
+          <div class="search-filters">
+            <div class="filter-group">
+              <label for="category">Category</label>
+              <select id="category">
+                <option value="">All Categories</option>
+                <option value="fiction">Fiction</option>
+                <option value="non-fiction">Non-Fiction</option>
+                <option value="science">Science</option>
+                <option value="history">History</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="author">Author</label>
+              <input type="text" id="author" placeholder="Search by author" />
+            </div>
+            <div class="filter-group">
+              <label for="availability">Availability</label>
+              <select id="availability">
+                <option value="">All</option>
+                <option value="available">Available</option>
+                <option value="reserved">Reserved</option>
+                <option value="borrowed">Borrowed</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="search">Search</label>
+              <input
+                type="text"
+                id="search"
+                placeholder="Search by title, ISBN..."
+              />
+            </div>
+          </div>
+
+          <div class="books-grid">
+            <!-- Sample Book Cards -->
+            <div class="book-card">
+              <div class="book-image">
+                <img
+                  src="https://m.media-amazon.com/images/I/81QuEGw8VPL._AC_UF1000,1000_QL80_.jpg"
+                  alt="The Great Gatsby Cover"
+                />
+              </div>
+              <div class="book-details">
+                <h3 class="book-title">The Great Gatsby</h3>
+                <p class="book-info">Author: F. Scott Fitzgerald</p>
+                <p class="book-info">ISBN: 9780743273565</p>
+                <span class="book-status status-available">Available</span>
+                <button
+                  class="reservation-button"
+                  onclick="openReservationModal(this)"
+                >
+                  Reserve Book
+                </button>
+              </div>
+            </div>
+
+            <div class="book-card">
+              <div class="book-image">
+                <img
+                  src="https://m.media-amazon.com/images/I/71-qZ2Z754L._AC_UF1000,1000_QL80_.jpg"
+                  alt="1984 Cover"
+                />
+              </div>
+              <div class="book-details">
+                <h3 class="book-title">1984</h3>
+                <p class="book-info">Author: George Orwell</p>
+                <p class="book-info">ISBN: 9780451524935</p>
+                <span class="book-status status-reserved">Reserved</span>
+                <button class="reservation-button" disabled>Reserved</button>
+              </div>
+            </div>
+
+            <div class="book-card">
+              <div class="book-image">
+                <img
+                  src="https://m.media-amazon.com/images/I/81gepf1eMqL._AC_UF1000,1000_QL80_.jpg"
+                  alt="To Kill a Mockingbird Cover"
+                />
+              </div>
+              <div class="book-details">
+                <h3 class="book-title">To Kill a Mockingbird</h3>
+                <p class="book-info">Author: Harper Lee</p>
+                <p class="book-info">ISBN: 9780446310789</p>
+                <span class="book-status status-available">Available</span>
+                <button
+                  class="reservation-button"
+                  onclick="openReservationModal(this)"
+                >
+                  Reserve Book
+                </button>
+              </div>
+            </div>
+
+            <div class="book-card">
+              <div class="book-image">
+                <img
+                  src="https://m.media-amazon.com/images/I/710+HcoP38L._AC_UF1000,1000_QL80_.jpg"
+                  alt="The Hobbit Cover"
+                />
+              </div>
+              <div class="book-details">
+                <h3 class="book-title">The Hobbit</h3>
+                <p class="book-info">Author: J.R.R. Tolkien</p>
+                <p class="book-info">ISBN: 9780547928227</p>
+                <span class="book-status status-borrowed">Borrowed</span>
+                <button class="reservation-button" disabled>Borrowed</button>
+              </div>
+            </div>
+
+            <div class="book-card">
+              <div class="book-image">
+                <img
+                  src="https://m.media-amazon.com/images/I/91HPG31dTwL._AC_UF1000,1000_QL80_.jpg"
+                  alt="The Catcher in the Rye Cover"
+                />
+              </div>
+              <div class="book-details">
+                <h3 class="book-title">The Catcher in the Rye</h3>
+                <p class="book-info">Author: J.D. Salinger</p>
+                <p class="book-info">ISBN: 9780316769488</p>
+                <span class="book-status status-available">Available</span>
+                <button
+                  class="reservation-button"
+                  onclick="openReservationModal(this)"
+                >
+                  Reserve Book
+                </button>
+              </div>
+            </div>
+
+            <div class="book-card">
+              <div class="book-image">
+                <img
+                  src="https://m.media-amazon.com/images/I/71Q1tPupKjL._AC_UF1000,1000_QL80_.jpg"
+                  alt="Pride and Prejudice Cover"
+                />
+              </div>
+              <div class="book-details">
+                <h3 class="book-title">Pride and Prejudice</h3>
+                <p class="book-info">Author: Jane Austen</p>
+                <p class="book-info">ISBN: 9780141439518</p>
+                <span class="book-status status-available">Available</span>
+                <button
+                  class="reservation-button"
+                  onclick="openReservationModal(this)"
+                >
+                  Reserve Book
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="my-reservations" class="tab-content" style="display: none">
+          <table class="reservation-table">
+            <thead>
+              <tr>
+                <th>Book Title</th>
+                <th>Reservation Date</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>To Kill a Mockingbird</td>
+                <td>2024-03-15</td>
+                <td>2024-03-29</td>
+                <td>
+                  <span class="book-status status-reserved">Reserved</span>
+                </td>
+                <td>
+                  <button
+                    class="cancel-reservation"
+                    onclick="cancelReservation(this)"
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reservation Modal -->
+      <div id="reservationModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Confirm Reservation</h2>
+          </div>
+          <div class="reservation-details">
+            <p><strong>Book:</strong> <span id="modal-book-title"></span></p>
+            <p><strong>Author:</strong> <span id="modal-book-author"></span></p>
+            <p><strong>ISBN:</strong> <span id="modal-book-isbn"></span></p>
+            <p><strong>Reservation Period:</strong> 14 days</p>
+          </div>
+          <div class="modal-buttons">
+            <button class="btn" onclick="closeModal()">Cancel</button>
+            <button
+              class="btn reservation-button"
+              onclick="confirmReservation()"
+            >
+              Confirm Reservation
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Tab switching functionality
+      function switchTab(tabId) {
+        const tabs = document.getElementsByClassName("tab-content");
+        for (let tab of tabs) {
+          tab.style.display = "none";
+        }
+        document.getElementById(tabId).style.display = "block";
+
+        const buttons = document.getElementsByClassName("tab-button");
+        for (let button of buttons) {
+          button.classList.remove("active");
+        }
+        event.target.classList.add("active");
+      }
+
+      // Filter functionality
+      const filterInputs = document.querySelectorAll(
+        ".search-filters input, .search-filters select"
+      );
+      filterInputs.forEach((input) => {
+        input.addEventListener("input", filterBooks);
+      });
+
+      function filterBooks() {
+        const category = document
+          .getElementById("category")
+          .value.toLowerCase();
+        const author = document.getElementById("author").value.toLowerCase();
+        const availability = document
+          .getElementById("availability")
+          .value.toLowerCase();
+        const search = document.getElementById("search").value.toLowerCase();
+
+        const books = document.getElementsByClassName("book-card");
+
+        for (let book of books) {
+          const bookTitle = book
+            .querySelector(".book-title")
+            .textContent.toLowerCase();
+          const bookAuthor = book
+            .querySelector(".book-info")
+            .textContent.toLowerCase();
+          const bookStatus = book
+            .querySelector(".book-status")
+            .textContent.toLowerCase();
+
+          const matchesCategory = !category || bookTitle.includes(category);
+          const matchesAuthor = !author || bookAuthor.includes(author);
+          const matchesAvailability =
+            !availability || bookStatus.includes(availability);
+          const matchesSearch =
+            !search ||
+            bookTitle.includes(search) ||
+            bookAuthor.includes(search);
+
+          book.style.display =
+            matchesCategory &&
+            matchesAuthor &&
+            matchesAvailability &&
+            matchesSearch
+              ? ""
+              : "none";
+        }
+      }
+
+      // Modal functionality
+      function openReservationModal(button) {
+        const bookCard = button.closest(".book-card");
+        const title = bookCard.querySelector(".book-title").textContent;
+        const authorInfo = bookCard.querySelector(".book-info").textContent;
+        const isbn = bookCard.querySelectorAll(".book-info")[1].textContent;
+
+        document.getElementById("modal-book-title").textContent = title;
+        document.getElementById("modal-book-author").textContent =
+          authorInfo.replace("Author: ", "");
+        document.getElementById("modal-book-isbn").textContent = isbn.replace(
+          "ISBN: ",
+          ""
+        );
+
+        document.getElementById("reservationModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("reservationModal").style.display = "none";
+      }
+
+      function confirmReservation() {
+        const title = document.getElementById("modal-book-title").textContent;
+        // Here you would typically make an API call to your backend
+        alert(`Book "${title}" has been reserved successfully!`);
+        closeModal();
+
+        // Refresh the book's status
+        const books = document.getElementsByClassName("book-card");
+        for (let book of books) {
+          if (book.querySelector(".book-title").textContent === title) {
+            book.querySelector(".book-status").className =
+              "book-status status-reserved";
+            book.querySelector(".book-status").textContent = "Reserved";
+            book.querySelector(".reservation-button").disabled = true;
+            book.querySelector(".reservation-button").textContent = "Reserved";
+            break;
+          }
+        }
+      }
+
+      function cancelReservation(button) {
+        if (confirm("Are you sure you want to cancel this reservation?")) {
+          // Here you would typically make an API call to your backend
+          button.closest("tr").remove();
+        }
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        const modal = document.getElementById("reservationModal");
+        if (event.target === modal) {
+          closeModal();
+        }
+      };
+    </script>
+  </body>
+</html>

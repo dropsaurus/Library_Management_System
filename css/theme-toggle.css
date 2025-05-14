@@ -1,0 +1,243 @@
+/* Theme Variables */
+:root[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #fff0f3;
+  --text-primary: #2b2b2b;
+  --text-secondary: #666666;
+  --accent-primary: #be3455; /* PANTONE 18-1750 Viva Magenta */
+  --accent-secondary: #3b6b9b; /* PANTONE 18-4140 French Blue */
+  --border-color: #f4d5dc;
+  --card-bg: #ffffff;
+  --shadow-color: rgba(190, 52, 85, 0.1);
+  --modal-overlay: rgba(43, 43, 43, 0.5);
+  --success-color: #3b6b9b;
+  --error-color: #be3455;
+  --input-bg: #ffffff;
+  --input-border: #f4d5dc;
+  --input-focus: #be3455;
+  --table-header: #fff0f3;
+  --table-border: #f4d5dc;
+  --hover-bg: #fff5f7;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2b2b2b;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --accent-primary: #e84d6b; /* Lighter Viva Magenta for dark mode */
+  --accent-secondary: #4d7cac; /* Lighter French Blue for dark mode */
+  --border-color: #3d3d3d;
+  --card-bg: #2b2b2b;
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --success-color: #4d7cac;
+  --error-color: #e84d6b;
+  --input-bg: #2b2b2b;
+  --input-border: #3d3d3d;
+  --input-focus: #e84d6b;
+  --table-header: #2b2b2b;
+  --table-border: #3d3d3d;
+  --hover-bg: #333333;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--accent-primary);
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--accent-primary);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Show/hide icons based on theme */
+[data-theme="light"] .sun-icon {
+  display: none;
+}
+
+[data-theme="dark"] .moon-icon {
+  display: none;
+}
+
+/* Global transition for theme changes */
+* {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+/* Form Styles */
+input,
+select,
+textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 2px var(--shadow-color);
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+th {
+  background-color: var(--table-header);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--table-border);
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--table-border);
+  color: var(--text-primary);
+}
+
+tr:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+  border: none;
+}
+
+.btn-secondary {
+  background-color: var(--accent-secondary);
+  color: var(--bg-primary);
+  border: none;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* Card Styles */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.card:hover {
+  border-color: var(--accent-primary);
+}
+
+/* Modal Styles */
+.modal {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Status Indicators */
+.status-success {
+  color: var(--success-color);
+}
+
+.status-error {
+  color: var(--error-color);
+}
+
+/* Enhanced Feature Cards */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--accent-secondary);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+.feature-card svg {
+  color: var(--accent-primary);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover svg {
+  transform: scale(1.1);
+}
+
+/* Enhanced Buttons */
+.btn {
+  position: relative;
+  overflow: hidden;
+  font-weight: 500;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent-secondary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.btn:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}

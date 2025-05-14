@@ -1,55 +1,174 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Donate - Public Affirmation Library</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/donate.css" />
-</head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Public Affirmation Library</h1>
-      </div>
-      <div class="nav-buttons">
-        <button onclick="location.href='../index.html'" class="btn">Home</button>
-        <button onclick="location.href='books.html'" class="btn">Books</button>
-        <button onclick="location.href='login.html'" class="btn">Login</button>
-      </div>
-    </nav>
-  </header>
-
-  <main>
-    <section class="donate-section">
-      <h2>Support Our Mission</h2>
-      <p>Your generosity helps us inspire, educate, and uplift the community.</p>
-
-      <div class="donate-options">
-        <div class="donate-card">
-          <h3>💳 Donate Funds</h3>
-          <p>Help us purchase new books and expand our programs.</p>
-          <button class="btn" onclick="location.href='donate_payment.html'">Donate Now</button>
-
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donate - Public Affirmation Library</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
         </div>
-        <div class="donate-card">
-          <h3>📚 Donate Books</h3>
-          <p>Share your favorite books with others. We accept gently used donations.</p>
-          <p>Email: <a href="mailto:donate@affirmationlibrary.org">donate@affirmationlibrary.org</a></p>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 011.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+              />
+            </svg>
+          </button>
+          <a href="../index.html" class="btn">Home</a>
+          <a href="books.html" class="btn">Books</a>
+          <a href="login.html" class="btn">Login</a>
         </div>
-        <div class="donate-card">
-          <h3>🤝 Volunteer</h3>
-          <p>Join our volunteer team and make a difference in your neighborhood.</p>
-          <p>Email: <a href="mailto:volunteer@affirmationlibrary.org">volunteer@affirmationlibrary.org</a></p>
+      </nav>
+    </header>
+
+    <main>
+      <div class="hero-section">
+        <h2>Support Our Mission</h2>
+        <p>
+          Your generosity helps us inspire, educate, and uplift the community.
+          Choose how you'd like to contribute below.
+        </p>
+      </div>
+
+      <div
+        class="features-grid"
+        style="max-width: 1200px; margin: 0 auto; padding: 2rem"
+      >
+        <div
+          class="feature-card"
+          style="display: flex; flex-direction: column; height: 100%"
+        >
+          <div style="flex-grow: 1">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              Donate Funds
+            </h3>
+            <p>
+              Help us purchase new books and expand our programs. Your financial
+              support makes a direct impact on our community's growth and
+              learning.
+            </p>
+          </div>
+          <div style="margin-top: auto; padding-top: 1.5rem">
+            <a href="donate_payment.html" class="btn">Donate Now</a>
+          </div>
+        </div>
+
+        <div
+          class="feature-card"
+          style="display: flex; flex-direction: column; height: 100%"
+        >
+          <div style="flex-grow: 1">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              Donate Books
+            </h3>
+            <p>
+              Share your favorite books with others. We accept gently used
+              donations that can enrich our collection and benefit readers.
+            </p>
+          </div>
+          <div style="margin-top: auto; padding-top: 1.5rem">
+            <a href="donate_books.html" class="btn">Donate Books</a>
+          </div>
+        </div>
+
+        <div
+          class="feature-card"
+          style="display: flex; flex-direction: column; height: 100%"
+        >
+          <div style="flex-grow: 1">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Volunteer
+            </h3>
+            <p>
+              Join our volunteer team and make a difference in your
+              neighborhood. Share your time and skills to support our mission.
+            </p>
+          </div>
+          <div style="margin-top: auto; padding-top: 1.5rem">
+            <a href="volunteer.html" class="btn">Volunteer Now</a>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </main>
 
-  <footer>
-    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
-  </footer>
-</body>
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/theme-toggle.js"></script>
+  </body>
 </html>

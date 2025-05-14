@@ -1,45 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Books - Public Affirmation Library</title>
-  <link rel="stylesheet" href="/library_management/css/style.css" />
-  <link rel="stylesheet" href="/library_management/css/books.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Public Affirmation Library</h1>
-      </div>
-      <div class="nav-buttons">
-        <button onclick="location.href='/library_management/index.html'" class="btn">Home</button>
-        <button onclick="location.href='/library_management/pages/register.html'" class="btn">Register</button>
-        <button onclick="location.href='/library_management/pages/login.html'" class="btn">Login</button>
-      </div>
-    </nav>
-  </header>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Books - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 011.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+              />
+            </svg>
+          </button>
+          <a href="../index.html" class="btn">Home</a>
+          <a href="books.html" class="btn">Books</a>
+          <a href="login.html" class="btn">Login</a>
+        </div>
+      </nav>
+    </header>
 
-  <main>
-    <div class="books-container">
-      <div class="search-section">
-        <input type="text" id="searchInput" placeholder="Search books by title or author..." />
-        <select id="categoryFilter">
-          <option value="">All Topics</option>
-        </select>
+    <main>
+      <div class="hero-section">
+        <h2>Library Collection</h2>
+        <p>Explore our vast collection of books and resources</p>
       </div>
-      <div id="booksGrid" class="books-grid">
-        <!-- Books will render here -->
+
+      <div
+        class="container"
+        style="max-width: 1200px; margin: 0 auto; padding: 2rem"
+      >
+        <div class="features-grid" style="margin-bottom: 3rem">
+          <div class="feature-card">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              <span id="totalBooks">1,245</span>
+            </h3>
+            <p>Total Books</p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+              </svg>
+              <span id="availableBooks">892</span>
+            </h3>
+            <p>Available Books</p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span id="borrowedBooks">353</span>
+            </h3>
+            <p>Borrowed Books</p>
+          </div>
+          <div class="feature-card">
+            <h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                ></path>
+              </svg>
+              <span id="categories">24</span>
+            </h3>
+            <p>Categories</p>
+          </div>
+        </div>
+
+        <div class="search-filters">
+          <div class="form-group" style="flex: 1">
+            <input
+              type="text"
+              id="searchInput"
+              class="form-control"
+              placeholder="Search by title, author, or ISBN..."
+            />
+          </div>
+          <div class="form-group">
+            <select id="categoryFilter" class="form-control">
+              <option value="">All Categories</option>
+              <option value="fiction">Fiction</option>
+              <option value="non-fiction">Non-Fiction</option>
+              <option value="science">Science</option>
+              <option value="technology">Technology</option>
+              <option value="history">History</option>
+              <option value="biography">Biography</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select id="availabilityFilter" class="form-control">
+              <option value="">All Availability</option>
+              <option value="available">Available</option>
+              <option value="borrowed">Borrowed</option>
+              <option value="reserved">Reserved</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div style="position: relative">
+              <img
+                src="../images/books/great-gatsby.jpg"
+                alt="The Great Gatsby"
+                style="
+                  width: 100%;
+                  height: 300px;
+                  object-fit: cover;
+                  border-radius: 8px;
+                "
+              />
+              <span
+                class="status-success"
+                style="
+                  position: absolute;
+                  top: 1rem;
+                  right: 1rem;
+                  padding: 0.25rem 0.75rem;
+                  border-radius: 20px;
+                  background: var(--bg-primary);
+                  font-size: 0.875rem;
+                "
+                >Available</span
+              >
+            </div>
+            <h3>The Great Gatsby</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem">
+              F. Scott Fitzgerald
+            </p>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+              "
+            >
+              <span>Fiction</span>
+              <span>ISBN: 978-0743273565</span>
+            </div>
+            <div style="display: flex; gap: 1rem">
+              <a href="#" class="btn" onclick="reserveBook('1')">Reserve</a>
+              <a href="#" class="btn" onclick="showBookDetails('1')">Details</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </main>
 
-  <footer>
-    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
-  </footer>
+      <!-- Book Details Modal -->
+      <div id="bookModal" class="modal">
+        <div class="modal-content card">
+          <div class="modal-header">
+            <h2>Book Details</h2>
+            <button
+              class="theme-toggle"
+              onclick="closeModal()"
+              aria-label="Close modal"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="book-full-details">
+            <div class="detail-row">
+              <span class="detail-label">Title:</span>
+              <span class="detail-value" id="modalBookTitle"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Author:</span>
+              <span class="detail-value" id="modalAuthor"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">ISBN:</span>
+              <span class="detail-value" id="modalISBN"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Category:</span>
+              <span class="detail-value" id="modalCategory"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Publisher:</span>
+              <span class="detail-value" id="modalPublisher"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Publication Year:</span>
+              <span class="detail-value" id="modalPublicationYear"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value" id="modalStatus"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Location:</span>
+              <span class="detail-value" id="modalLocation"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Description:</span>
+              <span class="detail-value" id="modalDescription"></span>
+            </div>
+          </div>
+          <div class="modal-buttons">
+            <button class="btn" onclick="closeModal()">Close</button>
+            <button class="btn" id="modalReserveBtn">Reserve Book</button>
+          </div>
+        </div>
+      </div>
+    </main>
 
-  <script src="/library_management/js/books.js"></script>
-</body>
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/theme-toggle.js"></script>
+  </body>
 </html>
