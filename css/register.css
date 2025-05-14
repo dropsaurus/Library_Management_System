@@ -1,67 +1,203 @@
 .form-wrapper {
-  max-width: 550px;
-  margin: 4rem auto;
-  background-color: white;
-  padding: 2.5rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.form-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--accent-secondary);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.form-wrapper:hover::before {
+  opacity: 1;
 }
 
 .form-wrapper h2 {
-  text-align: center;
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 300;
   margin-bottom: 2rem;
-  color: #2c3e50;
+  text-align: center;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.form-wrapper h2 svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent-primary);
 }
 
 form {
   display: flex;
   flex-direction: column;
+  gap: 1.25rem;
 }
 
 label {
-  margin-top: 1rem;
-  margin-bottom: 0.3rem;
-  font-weight: 500;
-  color: #2c3e50;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+label svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-primary);
 }
 
 input,
 select {
-  padding: 0.7rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
 }
 
 input:focus,
 select:focus {
-  border-color: #3498db;
   outline: none;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 2px var(--shadow-color);
+  transform: translateY(-1px);
 }
 
-form button.btn {
-  margin-top: 2rem;
+input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
 }
 
-form p {
-  text-align: center;
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+}
+
+button[type="submit"] {
   margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #2c3e50;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 25px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-form a {
-  color: #3498db;
+button[type="submit"]::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--accent-secondary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--accent-secondary);
+  transform: translateY(-2px);
+}
+
+button[type="submit"]:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.login-link {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.login-link svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-primary);
+}
+
+.login-link a {
+  color: var(--accent-primary);
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
 }
 
-form a:hover {
-  text-decoration: underline;
+.login-link a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--accent-secondary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.login-link a:hover {
+  color: var(--accent-secondary);
+}
+
+.login-link a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 @media (max-width: 600px) {
   .form-wrapper {
+    margin: 2rem 1rem;
     padding: 1.5rem;
+  }
+
+  .form-wrapper h2 {
+    font-size: 1.75rem;
+  }
+
+  button[type="submit"] {
+    padding: 0.875rem;
   }
 }
