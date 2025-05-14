@@ -1,3 +1,5 @@
+/* Events Page Styles */
+
 .hero-section {
   text-align: center;
   margin: 3rem auto;
@@ -46,11 +48,21 @@
   border-radius: 25px;
   font-weight: 500;
   transition: all 0.3s ease;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.filter-buttons .btn:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .filter-buttons .btn svg {
   width: 20px;
   height: 20px;
+  color: var(--accent-primary);
 }
 
 .events-grid {
@@ -68,11 +80,13 @@
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
   position: relative;
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .event-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px var(--shadow-color);
+  border-color: var(--accent-primary);
 }
 
 .event-image {
@@ -146,6 +160,14 @@
   border-radius: 25px;
   font-weight: 500;
   transition: all 0.3s ease;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.event-content .btn:hover {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
 }
 
 .event-content .btn svg {
@@ -156,6 +178,31 @@
 
 .event-content .btn:hover svg {
   transform: translateX(4px);
+}
+
+.no-events-message {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+/* Dark theme enhancements */
+body[data-theme="dark"] .event-card {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+body[data-theme="dark"] .event-content h3 {
+  color: var(--text-primary);
+}
+
+body[data-theme="dark"] .detail {
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {

@@ -1,129 +1,116 @@
-<!-- My Rentals Page -->
-<div class="page-header">
-  <h2>My Rental History</h2>
-  <p>View your current and past book rentals</p>
-</div>
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Rentals - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <link rel="stylesheet" href="../css/my_rentals.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 111.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <a href="customer_dashboard.html" class="btn">Dashboard</a>
+          <a href="login.html" class="btn">Logout</a>
+        </div>
+      </nav>
+    </header>
 
-<div class="rentals-container">
-  <div class="rentals-filters">
-    <select id="status-filter" class="form-control">
-      <option value="all">All Status</option>
-      <option value="active">Currently Borrowed</option>
-      <option value="returned">Returned</option>
-      <option value="overdue">Overdue</option>
-    </select>
-    <input type="text" id="search-input" class="form-control" placeholder="Search by book title...">
-  </div>
+    <main>
+      <div class="page-header">
+        <h2>My Rental History</h2>
+        <p>View your current and past book rentals</p>
+      </div>
 
-  <div class="rentals-table-container">
-    <table class="rentals-table">
-      <thead>
-        <tr>
-          <th>Book Title</th>
-          <th>Borrow Date</th>
-          <th>Expected Return</th>
-          <th>Actual Return</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="rentals-table-body">
-        <!-- Data will be loaded dynamically via JavaScript -->
-      </tbody>
-    </table>
-  </div>
+      <div class="rentals-container">
+        <div class="rentals-filters">
+          <select id="status-filter" class="form-control">
+            <option value="all">All Status</option>
+            <option value="active">Currently Borrowed</option>
+            <option value="returned">Returned</option>
+            <option value="overdue">Overdue</option>
+          </select>
+          <input
+            type="text"
+            id="search-input"
+            class="form-control"
+            placeholder="Search by book title..."
+          />
+        </div>
 
-  <div id="no-rentals" class="no-data-message" style="display: none;">
-    <p>No rental records found</p>
-  </div>
+        <div class="rentals-table-container">
+          <table class="rentals-table">
+            <thead>
+              <tr>
+                <th>Book Title</th>
+                <th>Borrow Date</th>
+                <th>Expected Return</th>
+                <th>Actual Return</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rentals-table-body">
+              <!-- Data will be loaded dynamically via JavaScript -->
+            </tbody>
+          </table>
+        </div>
 
-  <div id="loading-spinner" class="loading-spinner">
-    <div class="spinner"></div>
-  </div>
-</div>
+        <div id="no-rentals" class="no-data-message" style="display: none">
+          <p>No rental records found</p>
+        </div>
 
-<style>
-.rentals-container {
-  padding: 20px;
-}
+        <div id="loading-spinner" class="loading-spinner">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </main>
 
-.rentals-filters {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
 
-.rentals-table-container {
-  background: var(--surface);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
-}
-
-.rentals-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.rentals-table th,
-.rentals-table td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-
-.rentals-table th {
-  background-color: var(--surface-variant);
-  font-weight: 600;
-}
-
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.status-active {
-  background-color: var(--success-bg);
-  color: var(--success);
-}
-
-.status-returned {
-  background-color: var(--info-bg);
-  color: var(--info);
-}
-
-.status-overdue {
-  background-color: var(--error-bg);
-  color: var(--error);
-}
-
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  padding: 40px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--surface-variant);
-  border-top: 4px solid var(--accent-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.no-data-message {
-  text-align: center;
-  padding: 40px;
-  color: var(--text-secondary);
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>
-
-<script src="../js/my_rentals.js"></script>
+    <script src="../js/theme-toggle.js"></script>
+    <script src="../js/my_rentals.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeTheme();
+      });
+    </script>
+  </body>
+</html>

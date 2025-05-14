@@ -1,81 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reserve a Study Room - Public Affirmation Library</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/contact.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Public Affirmation Library</h1>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reserve a Study Room - Public Affirmation Library</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <link rel="stylesheet" href="../css/study_room.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 111.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <a href="customer_dashboard.html" class="btn">Dashboard</a>
+          <a href="login.html" class="btn">Logout</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="form-wrapper">
+        <h2>Reserve a Study Room</h2>
+        <div id="success-message" class="success-message">
+          Your reservation has been confirmed!
+        </div>
+        <div id="error-message" class="error-message">
+          Unable to complete reservation. Please try again.
+        </div>
+        <form onsubmit="handleReservation(event)">
+          <div>
+            <label for="room">Select a Room</label>
+            <select id="room" required>
+              <option value="">-- Choose a Room --</option>
+              <option value="101">Room 101 (5)</option>
+              <option value="102">Room 102 (5)</option>
+              <option value="103">Room 103 (5)</option>
+              <option value="201">Room 201 (5)</option>
+              <option value="202">Room 202 (5)</option>
+              <option value="203">Room 203 (10)</option>
+              <option value="204">Room 204 (10)</option>
+              <option value="301">Room 301 (10)</option>
+              <option value="302">Room 302 (10)</option>
+              <option value="303">Room 303 (10)</option>
+              <option value="304">Room 304 (15)</option>
+              <option value="305">Room 305 (15)</option>
+              <option value="401">Room 401 (15)</option>
+              <option value="402">Room 402 (15)</option>
+              <option value="403">Room 403 (15)</option>
+              <option value="404">Room 404 (20)</option>
+              <option value="405">Room 405 (20)</option>
+              <option value="501">Room 501 (20)</option>
+              <option value="502">Room 502 (20)</option>
+              <option value="503">Room 503 (20)</option>
+              <option value="504">Room 504 (5)</option>
+              <option value="505">Room 505 (5)</option>
+              <option value="601">Room 601 (5)</option>
+              <option value="602">Room 602 (5)</option>
+              <option value="603">Room 603 (5)</option>
+            </select>
+            <div class="capacity-info" id="capacity-info"></div>
+          </div>
+
+          <div>
+            <label for="start">Start Time</label>
+            <input type="datetime-local" id="start" required />
+          </div>
+
+          <div>
+            <label for="end">End Time</label>
+            <input type="datetime-local" id="end" required />
+          </div>
+
+          <div>
+            <label for="count">Number of People</label>
+            <input type="number" id="count" min="1" max="50" required />
+          </div>
+
+          <div>
+            <label for="desc">Purpose</label>
+            <input
+              type="text"
+              id="desc"
+              required
+              placeholder="Study, project, exam prep..."
+            />
+          </div>
+
+          <button type="submit" class="btn">Submit Reservation</button>
+        </form>
       </div>
-      <div class="nav-buttons">
-        <a href="customer_dashboard.html" class="btn">Dashboard</a>
-        <a href="login.html" class="btn">Logout</a>
-      </div>
-    </nav>
-  </header>
+    </main>
 
-  <main>
-    <div class="form-wrapper">
-      <h2>Reserve a Study Room</h2>
-      <form onsubmit="handleReservation(event)">
-        <label for="room">Select a Room</label>
-        <select id="room" required>
-          <option value="">-- Choose a Room --</option>
-          <option value="101">Room 101 (5)</option>
-          <option value="102">Room 102 (5)</option>
-          <option value="103">Room 103 (5)</option>
-          <option value="201">Room 201 (5)</option>
-          <option value="202">Room 202 (5)</option>
-          <option value="203">Room 203 (10)</option>
-          <option value="204">Room 204 (10)</option>
-          <option value="301">Room 301 (10)</option>
-          <option value="302">Room 302 (10)</option>
-          <option value="303">Room 303 (10)</option>
-          <option value="304">Room 304 (15)</option>
-          <option value="305">Room 305 (15)</option>
-          <option value="401">Room 401 (15)</option>
-          <option value="402">Room 402 (15)</option>
-          <option value="403">Room 403 (15)</option>
-          <option value="404">Room 404 (20)</option>
-          <option value="405">Room 405 (20)</option>
-          <option value="501">Room 501 (20)</option>
-          <option value="502">Room 502 (20)</option>
-          <option value="503">Room 503 (20)</option>
-          <option value="504">Room 504 (5)</option>
-          <option value="505">Room 505 (5)</option>
-          <option value="601">Room 601 (5)</option>
-          <option value="602">Room 602 (5)</option>
-          <option value="603">Room 603 (5)</option>
-        </select>
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
 
-        <label for="start">Start Time</label>
-        <input type="datetime-local" id="start" required />
+    <script src="../js/theme-toggle.js"></script>
+    <script src="../js/reserve_study_room.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeTheme();
 
-        <label for="end">End Time</label>
-        <input type="datetime-local" id="end" required />
+        // Show room capacity when selected
+        const roomSelect = document.getElementById("room");
+        const capacityInfo = document.getElementById("capacity-info");
 
-        <label for="count">Number of People</label>
-        <input type="number" id="count" min="1" max="50" required />
-
-        <label for="desc">Purpose</label>
-        <input type="text" id="desc" required placeholder="Study, project, exam prep..." />
-
-        <button type="submit" class="btn">Submit Reservation</button>
-      </form>
-    </div>
-  </main>
-
-  <footer>
-    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
-  </footer>
-
-  <script src="../js/reserve_study_room.js"></script>
-</body>
+        roomSelect.addEventListener("change", function () {
+          if (this.value) {
+            const capacity =
+              this.options[this.selectedIndex].text.match(/\((\d+)\)/)[1];
+            capacityInfo.textContent = `This room can accommodate up to ${capacity} people.`;
+          } else {
+            capacityInfo.textContent = "";
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

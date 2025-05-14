@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once '../config/db_connect.php';
+require_once __DIR__ . '/../config/db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -19,7 +19,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 if (!isset($data['email']) || !isset($data['password'])) {
     echo json_encode([
         'status' => 'error',
-        'message' => '缺少邮箱或密码'
+        'message' => 'Missing email or password'
     ]);
     exit;
 }
@@ -28,13 +28,13 @@ $email = strtolower(trim($data['email']));
 $password = $data['password'];
 
 try {
-    // 获取用户信息
+    // Get user information
     $stmt = $pdo->prepare("SELECT USER_ID, USER_FNAME, USER_LNAME, USER_PASSWORD, ROLE FROM JPN_USER WHERE USER_EMAIL = :email");
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['USER_PASSWORD'])) {
-        // 设置会话变量
+        // Set session variables
         $_SESSION['USER_ID'] = $user['USER_ID'];
         $_SESSION['ROLE'] = $user['ROLE'];
 
@@ -42,7 +42,7 @@ try {
             $_SESSION['CUST_ID'] = $user['USER_ID'];
         }
 
-        // 返回用户信息
+        // Return user information
         echo json_encode([
             'status' => 'success',
             'user_id' => $user['USER_ID'],
@@ -53,13 +53,13 @@ try {
     } else {
         echo json_encode([
             'status' => 'error',
-            'message' => '邮箱或密码无效'
+            'message' => 'Invalid email or password'
         ]);
     }
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => '服务器错误: ' . $e->getMessage()
+        'message' => 'Server error: ' . $e->getMessage()
     ]);
 }

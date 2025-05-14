@@ -11,6 +11,77 @@
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme-toggle.css" />
     <link rel="stylesheet" href="../css/customer_dashboard.css" />
+    <style>
+      /* Ensure content area has proper background color */
+      #dashboard-content {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        border-radius: 12px;
+        min-height: 400px;
+        padding: 20px;
+      }
+
+      /* Fix for loaded content pages */
+      #dashboard-content > div {
+        background-color: var(--bg-primary);
+        padding: 15px;
+      }
+
+      /* Ensure tables and other elements inherit the theme colors */
+      #dashboard-content table {
+        color: var(--text-primary);
+        background-color: var(--card-bg);
+        border-spacing: 0;
+        padding: 10px;
+      }
+
+      #dashboard-content .table-container {
+        background-color: var(--card-bg);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      /* Ensure forms and inputs match the theme */
+      #dashboard-content form {
+        background-color: var(--bg-primary);
+        padding: 15px;
+      }
+
+      /* Reduce icon sizes */
+      .timeline-icon svg,
+      .sidebar-nav-item svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Add padding to cards and elements */
+      .stats-card,
+      .event-card,
+      .timeline-item {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      /* Add spacing between elements */
+      .dashboard-title {
+        margin-bottom: 20px;
+        padding: 10px 0;
+      }
+
+      /* Better spacing for text elements */
+      p,
+      h3,
+      h4 {
+        margin: 8px 0;
+      }
+
+      /* Table cell padding */
+      td,
+      th {
+        padding: 10px 15px;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -43,22 +114,6 @@
               />
             </svg>
           </button>
-          <a href="customer_dashboard.html" class="nav-link">Home</a>
-          <a href="#" class="nav-link" onclick="loadPage('books.html', this)"
-            >Books</a
-          >
-          <a href="#" class="nav-link" onclick="loadPage('events.html', this)"
-            >Events</a
-          >
-          <a
-            href="#"
-            class="nav-link"
-            onclick="loadPage('study_room.html', this)"
-            >Study Rooms</a
-          >
-          <a href="#" class="nav-link" onclick="loadPage('contact.html', this)"
-            >Contact</a
-          >
           <div class="dropdown">
             <button class="btn dropdown-toggle" id="user-button">👤</button>
             <div class="dropdown-content">
@@ -82,16 +137,160 @@
       </nav>
     </header>
 
-    <main>
-      <div id="content-area">
-        <div class="hero-section">
-          <h2>Welcome to Your Dashboard</h2>
-          <p>Explore and interact with our library services</p>
+    <div class="dashboard-container">
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-profile">
+          <img
+            src="../images/avatar-placeholder.svg"
+            alt="User Avatar"
+            id="user-avatar"
+          />
+          <div class="sidebar-profile-info">
+            <div class="sidebar-profile-name" id="sidebar-user-name">
+              User Name
+            </div>
+            <div class="sidebar-profile-role">Library Member</div>
+          </div>
         </div>
 
-        <div id="dashboard-content"></div>
+        <ul class="sidebar-nav">
+          <li class="sidebar-nav-item active" onclick="loadDashboardContent()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            Dashboard
+          </li>
+          <li class="sidebar-nav-item" onclick="loadPage('books.html', this)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+            Books
+          </li>
+          <li class="sidebar-nav-item" onclick="loadPage('events.html', this)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            Events
+          </li>
+          <li
+            class="sidebar-nav-item"
+            onclick="loadPage('study_room.html', this)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
+            </svg>
+            Study Rooms
+          </li>
+          <li
+            class="sidebar-nav-item"
+            onclick="loadPage('my_rentals.html', this)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            My Rentals
+          </li>
+          <li
+            class="sidebar-nav-item"
+            onclick="loadPage('my_bookings.html', this)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              />
+            </svg>
+            My Bookings
+          </li>
+          <li class="sidebar-nav-item" onclick="loadPage('contact.html', this)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            Contact
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div id="content-area">
+          <div class="hero-section">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Explore and interact with our library services</p>
+          </div>
+
+          <div id="dashboard-content"></div>
+        </div>
       </div>
-    </main>
+    </div>
 
     <footer>
       <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
@@ -103,40 +302,58 @@
         // Initialize theme
         initializeTheme();
 
-        // Set up user name in button
+        // Set up user name in button and sidebar
         const fname = localStorage.getItem("user_fname") || "";
         const lname = localStorage.getItem("user_lname") || "";
-        const name = fname && lname ? `${fname} ${lname}` : fname || lname || "Guest";
+        const name =
+          fname && lname ? `${fname} ${lname}` : fname || lname || "Guest";
+
+        // Update dropdown button
         const userBtn = document.getElementById("user-button");
         if (userBtn) {
           userBtn.textContent = `👤 ${name} ▼`;
+        }
+
+        // Update sidebar profile
+        const sidebarName = document.getElementById("sidebar-user-name");
+        if (sidebarName) {
+          sidebarName.textContent = name;
         }
 
         // Add dynamic links for users with special roles
         const isAuthor = localStorage.getItem("is_author") === "true";
         const isSponsor = localStorage.getItem("is_sponsor") === "true";
 
-        if (isAuthor) {
-          const seminarsLink = document.createElement("a");
-          seminarsLink.href = "#";
-          seminarsLink.className = "nav-link";
-          seminarsLink.textContent = "Seminars";
-          seminarsLink.onclick = () => loadPage("seminars.html", seminarsLink);
-          document
-            .querySelector(".nav-buttons")
-            .insertBefore(seminarsLink, document.querySelector(".dropdown"));
-        }
+        if (isAuthor || isSponsor) {
+          const sidebarNav = document.querySelector(".sidebar-nav");
 
-        if (isSponsor) {
-          const sponsorLink = document.createElement("a");
-          sponsorLink.href = "#";
-          sponsorLink.className = "nav-link";
-          sponsorLink.textContent = "Sponsor Seminar";
-          sponsorLink.onclick = () =>
-            loadPage("sponsor_seminar.html", sponsorLink);
-          document
-            .querySelector(".nav-buttons")
-            .insertBefore(sponsorLink, document.querySelector(".dropdown"));
+          if (isAuthor) {
+            const seminarsItem = document.createElement("li");
+            seminarsItem.className = "sidebar-nav-item";
+            seminarsItem.onclick = () =>
+              loadPage("seminars.html", seminarsItem);
+            seminarsItem.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+              Seminars
+            `;
+            sidebarNav.appendChild(seminarsItem);
+          }
+
+          if (isSponsor) {
+            const sponsorItem = document.createElement("li");
+            sponsorItem.className = "sidebar-nav-item";
+            sponsorItem.onclick = () =>
+              loadPage("sponsor_seminar.html", sponsorItem);
+            sponsorItem.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Sponsor Seminar
+            `;
+            sidebarNav.appendChild(sponsorItem);
+          }
         }
 
         // Load initial dashboard content
@@ -157,7 +374,15 @@
         window.location.href = "login.html";
       }
 
-      function loadPage(url, link = null) {
+      function loadPage(url, menuItem = null) {
+        // Set active menu item
+        if (menuItem) {
+          document.querySelectorAll(".sidebar-nav-item").forEach((item) => {
+            item.classList.remove("active");
+          });
+          menuItem.classList.add("active");
+        }
+
         fetch(url)
           .then((response) => {
             if (!response.ok) throw new Error(`Failed to load ${url}`);
@@ -165,194 +390,204 @@
           })
           .then((html) => {
             // Clear existing content first
-            const dashboardContent = document.getElementById("dashboard-content");
+            const dashboardContent =
+              document.getElementById("dashboard-content");
             dashboardContent.innerHTML = "";
-            
+
             // Remove any existing hero section
             const existingHero = document.querySelector(".hero-section");
             if (existingHero) {
               existingHero.remove();
             }
 
-            // Add the new content
-            dashboardContent.innerHTML = html;
+            // Create a temporary element to parse the HTML
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
 
-            if (link) {
-              document.querySelectorAll(".nav-link").forEach((a) => a.classList.remove("active"));
-              link.classList.add("active");
+            // Extract only the main content, excluding header and footer
+            const mainContent = tempDiv.querySelector("main");
+
+            if (mainContent) {
+              // Add only the main content to the dashboard
+              dashboardContent.innerHTML = mainContent.innerHTML;
+            } else {
+              // If no main element found, add the entire content
+              dashboardContent.innerHTML = html;
             }
 
+            // Apply theme colors to any white backgrounds
+            applyThemeColors();
+
             // Page-specific initialization logic
-            if (url.includes("events.html") && typeof initEventsPage === "function")
+            if (
+              url.includes("events.html") &&
+              typeof initEventsPage === "function"
+            )
               initEventsPage();
-            if (url.includes("books.html") && typeof initBooksPage === "function")
+            if (
+              url.includes("books.html") &&
+              typeof initBooksPage === "function"
+            )
               initBooksPage();
-            if (url.includes("cust_profile.html") && typeof initProfilePage === "function")
+            if (
+              url.includes("cust_profile.html") &&
+              typeof initProfilePage === "function"
+            )
               initProfilePage();
-            if (url.includes("my_rentals.html") && typeof initRentalsPage === "function")
+            if (
+              url.includes("my_rentals.html") &&
+              typeof initRentalsPage === "function"
+            )
               initRentalsPage();
-            if (url.includes("my_bookings.html") && typeof initBookingsPage === "function")
+            if (
+              url.includes("my_bookings.html") &&
+              typeof initBookingsPage === "function"
+            )
               initBookingsPage();
           })
           .catch((error) => {
             console.error("Error loading page:", error);
-            document.getElementById("dashboard-content").innerHTML = 
-              `<p class="error">Failed to load content. Please try again later.</p>`;
+            document.getElementById(
+              "dashboard-content"
+            ).innerHTML = `<p class="error">Failed to load content. Please try again later.</p>`;
           });
       }
 
+      // Function to apply theme colors to elements with white backgrounds
+      function applyThemeColors() {
+        // Find elements with white backgrounds
+        const contentArea = document.getElementById("dashboard-content");
+        if (!contentArea) return;
+
+        // Apply background color to any elements that might have white backgrounds
+        const elementsToStyle = contentArea.querySelectorAll(
+          "div, section, table, form"
+        );
+        elementsToStyle.forEach((el) => {
+          const computedStyle = window.getComputedStyle(el);
+          if (
+            computedStyle.backgroundColor === "rgb(255, 255, 255)" ||
+            computedStyle.backgroundColor === "#ffffff" ||
+            computedStyle.backgroundColor === "white"
+          ) {
+            el.style.backgroundColor = "var(--bg-primary)";
+          }
+        });
+      }
+
       function loadDashboardContent() {
+        // Set active menu item for Dashboard
+        document.querySelectorAll(".sidebar-nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        document
+          .querySelector(".sidebar-nav-item:first-child")
+          .classList.add("active");
+
         // Create dashboard content with stats, feature cards, recent activity
         const dashboardHTML = `
-          <div class="dashboard-stats">
-            <div class="stat-card">
-              <div class="stat-value" id="books-borrowed">0</div>
-              <div class="stat-label">Books Currently Borrowed</div>
+          <h1 class="dashboard-title">Library Dashboard</h1>
+          
+          <div class="stats-cards" style="gap: 20px; margin-bottom: 30px;">
+            <div class="stats-card" style="background: linear-gradient(135deg, #f5a623 0%, #f7b733 100%); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Books Borrowed</h3>
+              <div class="stats-value" id="books-borrowed" style="font-size: 2rem;">0</div>
             </div>
             
-            <div class="stat-card">
-              <div class="stat-value" id="upcoming-reservations">0</div>
-              <div class="stat-label">Upcoming Reservations</div>
+            <div class="stats-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Study Rooms Reserved</h3>
+              <div class="stats-value" id="rooms-reserved" style="font-size: 2rem;">0</div>
             </div>
             
-            <div class="stat-card">
-              <div class="stat-value" id="reading-streak">0</div>
-              <div class="stat-label">Day Reading Streak</div>
+            <div class="stats-card" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Events Registered</h3>
+              <div class="stats-value" id="events-registered" style="font-size: 2rem;">0</div>
             </div>
             
-            <div class="stat-card">
-              <div class="stat-value" id="event-registrations">0</div>
-              <div class="stat-label">Event Registrations</div>
-            </div>
-          </div>
-        
-          <div class="features-grid">
-            <div class="feature-card" onclick="window.location.href='books.html'">
-              <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" 
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Browse Books
-              </h3>
-              <p>Search and browse our collection of books and resources</p>
-            </div>
-            
-            <div class="feature-card" onclick="loadPage('study_room.html')">
-              <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" 
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Study Rooms
-              </h3>
-              <p>Book a study room for individual or group study</p>
-            </div>
-            
-            <div class="feature-card" onclick="loadPage('events.html')">
-              <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" 
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Events
-              </h3>
-              <p>Browse upcoming events and workshops at the library</p>
-            </div>
-            
-            <div class="feature-card" onclick="loadPage('contact.html')">
-              <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" 
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Contact
-              </h3>
-              <p>Get in touch with our librarians and staff</p>
-            </div>
-            
-            <div class="feature-card" onclick="loadPage('sponsor.html')">
-              <h3>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" 
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Sponsor
-              </h3>
-              <p>Support our library's mission and help us grow our collection</p>
+            <div class="stats-card" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h3 style="font-size: 1.2rem; margin-bottom: 10px;">Reading Streak</h3>
+              <div class="stats-value" id="reading-streak" style="font-size: 2rem;">0</div>
+              <div style="font-size: 0.9rem;">days</div>
             </div>
           </div>
           
-          <div class="dashboard-grid-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
-            <div>
-              <h3 class="section-title">Recent Activity</h3>
+          <div class="chart-container" style="padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <h2 class="chart-title" style="margin-bottom: 15px; padding: 0 10px;">Library Usage Statistics</h2>
+            <div id="statistics-chart" style="padding: 10px;">
+              <canvas id="usage-chart" width="800" height="400"></canvas>
+            </div>
+          </div>
+          
+          <div class="dashboard-grid-layout" style="gap: 25px;">
+            <div style="padding: 15px; background: var(--card-bg); border-radius: 10px;">
+              <h3 class="section-title" style="margin-bottom: 15px; padding: 0 5px;">Recent Activity</h3>
               <div class="activity-timeline">
-                <div class="timeline-item">
-                  <div class="timeline-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="timeline-item" style="border-radius: 8px; margin-bottom: 12px;">
+                  <div class="timeline-icon" style="padding: 8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" 
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </div>
-                  <div class="timeline-content">
-                    <div class="timeline-title">You borrowed "The Great Gatsby"</div>
-                    <div class="timeline-date">3 days ago</div>
-                    <div class="timeline-description">Due date: June 15, 2024</div>
+                  <div class="timeline-content" style="padding: 0 10px;">
+                    <div class="timeline-title" style="font-weight: 500;">You borrowed "The Great Gatsby"</div>
+                    <div class="timeline-date" style="font-size: 0.85rem; opacity: 0.8;">3 days ago</div>
+                    <div class="timeline-description" style="font-size: 0.9rem;">Due date: June 15, 2024</div>
                   </div>
                 </div>
                 
-                <div class="timeline-item">
-                  <div class="timeline-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="timeline-item" style="border-radius: 8px; margin-bottom: 12px;">
+                  <div class="timeline-icon" style="padding: 8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" 
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </div>
-                  <div class="timeline-content">
-                    <div class="timeline-title">You registered for "Summer Reading Workshop"</div>
-                    <div class="timeline-date">1 week ago</div>
-                    <div class="timeline-description">Event date: July 10, 2024</div>
+                  <div class="timeline-content" style="padding: 0 10px;">
+                    <div class="timeline-title" style="font-weight: 500;">You registered for "Summer Reading Workshop"</div>
+                    <div class="timeline-date" style="font-size: 0.85rem; opacity: 0.8;">1 week ago</div>
+                    <div class="timeline-description" style="font-size: 0.9rem;">Event date: July 10, 2024</div>
                   </div>
                 </div>
                 
-                <div class="timeline-item">
-                  <div class="timeline-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="timeline-item" style="border-radius: 8px; margin-bottom: 12px;">
+                  <div class="timeline-icon" style="padding: 8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                   </div>
-                  <div class="timeline-content">
-                    <div class="timeline-title">You reserved Study Room #2</div>
-                    <div class="timeline-date">2 weeks ago</div>
-                    <div class="timeline-description">Reservation date: May 30, 2024</div>
+                  <div class="timeline-content" style="padding: 0 10px;">
+                    <div class="timeline-title" style="font-weight: 500;">You reserved Study Room #2</div>
+                    <div class="timeline-date" style="font-size: 0.85rem; opacity: 0.8;">2 weeks ago</div>
+                    <div class="timeline-description" style="font-size: 0.9rem;">Reservation date: May 30, 2024</div>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div>
-              <h3 class="section-title">Upcoming Events</h3>
+            <div style="padding: 15px; background: var(--card-bg); border-radius: 10px;">
+              <h3 class="section-title" style="margin-bottom: 15px; padding: 0 5px;">Upcoming Events</h3>
               <div class="event-list">
-                <div class="card event-card">
-                  <h4 class="event-title">Summer Reading Workshop</h4>
-                  <p class="event-date">July 10, 2024 • 2:00 PM</p>
-                  <p class="event-desc">Join us for tips and strategies to make the most of your summer reading.</p>
+                <div class="event-card" style="border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                  <h4 class="event-title" style="font-size: 1.1rem; margin-bottom: 5px;">Summer Reading Workshop</h4>
+                  <p class="event-date" style="font-size: 0.85rem; opacity: 0.8;">July 10, 2024 • 2:00 PM</p>
+                  <p class="event-desc" style="font-size: 0.9rem;">Join us for tips and strategies to make the most of your summer reading.</p>
                 </div>
                 
-                <div class="card event-card">
-                  <h4 class="event-title">Book Club: Mystery Novels</h4>
-                  <p class="event-date">July 15, 2024 • 6:30 PM</p>
-                  <p class="event-desc">This month we're discussing "The Silent Patient" by Alex Michaelides.</p>
+                <div class="event-card" style="border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                  <h4 class="event-title" style="font-size: 1.1rem; margin-bottom: 5px;">Book Club: Mystery Novels</h4>
+                  <p class="event-date" style="font-size: 0.85rem; opacity: 0.8;">July 15, 2024 • 6:30 PM</p>
+                  <p class="event-desc" style="font-size: 0.9rem;">This month we're discussing "The Silent Patient" by Alex Michaelides.</p>
                 </div>
                 
-                <div class="card event-card">
-                  <h4 class="event-title">Children's Story Time</h4>
-                  <p class="event-date">July 18, 2024 • 10:00 AM</p>
-                  <p class="event-desc">Interactive storytelling session for children ages 3-8.</p>
+                <div class="event-card" style="border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                  <h4 class="event-title" style="font-size: 1.1rem; margin-bottom: 5px;">Children's Story Time</h4>
+                  <p class="event-date" style="font-size: 0.85rem; opacity: 0.8;">July 18, 2024 • 10:00 AM</p>
+                  <p class="event-desc" style="font-size: 0.9rem;">Interactive storytelling session for children ages 3-8.</p>
                 </div>
                 
-                <a href="#" onclick="loadPage('events.html')" class="view-all-link">View All Events</a>
+                <a href="#" onclick="loadPage('events.html')" class="view-all-link" style="display: block; text-align: center; margin-top: 15px; padding: 8px; border-radius: 6px;">View All Events</a>
               </div>
             </div>
           </div>
@@ -360,13 +595,200 @@
 
         document.getElementById("dashboard-content").innerHTML = dashboardHTML;
 
-        // Simulate loading data for statistics
-        setTimeout(() => {
-          document.getElementById("books-borrowed").textContent = "3";
-          document.getElementById("upcoming-reservations").textContent = "1";
+        // Load Chart.js dynamically
+        if (!document.getElementById("chartjs-script")) {
+          const script = document.createElement("script");
+          script.id = "chartjs-script";
+          script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+          script.onload = initializeChart;
+          document.head.appendChild(script);
+        } else {
+          initializeChart();
+        }
+
+        // Load real statistics data
+        loadUserStatistics();
+      }
+
+      async function loadUserStatistics() {
+        try {
+          const userId = localStorage.getItem("user_id");
+          if (!userId) {
+            console.error("User ID not found in localStorage");
+            return;
+          }
+
+          // Fetch books borrowed
+          fetch(`../api/get_user_rentals.php?user_id=${userId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                const borrowedCount = data.rentals ? data.rentals.length : 0;
+                document.getElementById("books-borrowed").textContent =
+                  borrowedCount;
+                updateChartData("Books Borrowed", borrowedCount);
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching borrowed books:", error);
+              document.getElementById("books-borrowed").textContent = "0";
+            });
+
+          // Fetch room reservations
+          fetch(`../api/get_user_bookings.php?user_id=${userId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                const roomsCount = data.bookings ? data.bookings.length : 0;
+                document.getElementById("rooms-reserved").textContent =
+                  roomsCount;
+                updateChartData("Rooms Reserved", roomsCount);
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching room reservations:", error);
+              document.getElementById("rooms-reserved").textContent = "0";
+            });
+
+          // Fetch event registrations
+          fetch(`../api/get_user_events.php?user_id=${userId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                const eventsCount = data.events ? data.events.length : 0;
+                document.getElementById("events-registered").textContent =
+                  eventsCount;
+                updateChartData("Events Registered", eventsCount);
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching event registrations:", error);
+              document.getElementById("events-registered").textContent = "0";
+            });
+
+          // For reading streak, we might not have an API yet, so use a placeholder
           document.getElementById("reading-streak").textContent = "14";
-          document.getElementById("event-registrations").textContent = "2";
-        }, 500);
+          updateChartData("Reading Streak", 14);
+        } catch (error) {
+          console.error("Error loading user statistics:", error);
+          // Set default values as fallback
+          document.getElementById("books-borrowed").textContent = "3";
+          document.getElementById("rooms-reserved").textContent = "2";
+          document.getElementById("events-registered").textContent = "4";
+          document.getElementById("reading-streak").textContent = "14";
+        }
+      }
+
+      // Global chart reference
+      let userStatsChart;
+
+      function updateChartData(label, value) {
+        if (!userStatsChart) return;
+
+        const datasetIndex = 0;
+        const labelIndex = userStatsChart.data.labels.indexOf(label);
+
+        if (labelIndex !== -1) {
+          userStatsChart.data.datasets[datasetIndex].data[labelIndex] = value;
+          userStatsChart.update();
+        }
+      }
+
+      function initializeChart() {
+        // Get data from API or use sample data
+        const labels = [
+          "Books Borrowed",
+          "Rooms Reserved",
+          "Events Registered",
+          "Reading Streak",
+        ];
+        const data = [0, 0, 0, 0]; // Start with zeros, will be updated by API calls
+        const backgroundColors = [
+          "rgba(247, 183, 51, 0.8)",
+          "rgba(52, 152, 219, 0.8)",
+          "rgba(46, 204, 113, 0.8)",
+          "rgba(155, 89, 182, 0.8)",
+        ];
+
+        const ctx = document.getElementById("usage-chart").getContext("2d");
+
+        userStatsChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Library Activity",
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: backgroundColors.map((color) =>
+                  color.replace("0.8", "1")
+                ),
+                borderWidth: 1,
+                barThickness: 40,
+                maxBarThickness: 60,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y", // Horizontal bar chart
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: "WOW Library Statistics",
+                font: {
+                  size: 18,
+                  weight: "bold",
+                },
+                color: "#fff",
+                padding: 20,
+              },
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "#fff",
+                },
+                title: {
+                  display: true,
+                  text: "Count",
+                  color: "#fff",
+                },
+              },
+              y: {
+                grid: {
+                  display: false,
+                },
+                ticks: {
+                  color: "#fff",
+                },
+              },
+            },
+            layout: {
+              padding: {
+                left: 10,
+                right: 25,
+                top: 0,
+                bottom: 0,
+              },
+            },
+            backgroundColor: "#1e1e1e",
+          },
+        });
+
+        // Set chart background color
+        document.querySelector(".chart-container").style.backgroundColor =
+          "#1e1e1e";
+        document.querySelector(".chart-title").style.color = "#fff";
       }
     </script>
   </body>
