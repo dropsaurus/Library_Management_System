@@ -1,127 +1,393 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Dashboard - Public Affirmation Library</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/customer_dashboard.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <style>
-    #content-area {
-      padding: 20px;
-      min-height: 500px;
-    }
-
-    .nav-link.active {
-      font-weight: bold;
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Public Affirmation Library</h1>
-      </div>
-      <div class="nav-menu">
-        <a href="#" class="nav-link active" onclick="loadPage('home.html', this)">Home</a>
-        <a href="#" class="nav-link" onclick="loadPage('books.html', this)">Books</a>
-        <a href="#" class="nav-link" onclick="loadPage('events.html', this)">Events</a>
-        <a href="#" class="nav-link" onclick="loadPage('study_room.html', this)">Study Rooms</a>
-        <a href="#" class="nav-link" onclick="loadPage('contact.html', this)">Contact</a>
-      </div>
-      <div class="dropdown">
-        <button class="btn dropdown-toggle" id="user-button">👤</button>
-        <div class="dropdown-content">
-          <a href="#" onclick="loadPage('profile.html')">👤 Profile Settings</a>
-          <a href="#" onclick="loadPage('change_password.html')">🔒 Update Password</a>
-          <a href="#" onclick="loadPage('my_rentals.html')">📄 My Rentals</a>
-          <a href="#" onclick="loadPage('my_bookings.html')">📝 My Bookings</a>
-          <hr>
-          <a href="#" class="sign-out" onclick="logout()">🚪 Sign Out</a>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Dashboard - Public Affirmation Library</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <link rel="stylesheet" href="../css/customer_dashboard.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
         </div>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 111.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+              />
+            </svg>
+          </button>
+          <a href="#" class="nav-link" onclick="loadPage('home.html', this)"
+            >Home</a
+          >
+          <a href="#" class="nav-link" onclick="loadPage('books.html', this)"
+            >Books</a
+          >
+          <a href="#" class="nav-link" onclick="loadPage('events.html', this)"
+            >Events</a
+          >
+          <a
+            href="#"
+            class="nav-link"
+            onclick="loadPage('study_room.html', this)"
+            >Study Rooms</a
+          >
+          <a href="#" class="nav-link" onclick="loadPage('contact.html', this)"
+            >Contact</a
+          >
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" id="user-button">👤</button>
+            <div class="dropdown-content">
+              <a href="#" onclick="loadPage('profile.html')"
+                >👤 Profile Settings</a
+              >
+              <a href="#" onclick="loadPage('change_password.html')"
+                >🔒 Update Password</a
+              >
+              <a href="#" onclick="loadPage('my_rentals.html')"
+                >📄 My Rentals</a
+              >
+              <a href="#" onclick="loadPage('my_bookings.html')"
+                >📝 My Bookings</a
+              >
+              <hr />
+              <a href="#" class="sign-out" onclick="logout()">🚪 Sign Out</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div id="content-area">
+        <div class="hero-section">
+          <h2>Welcome to Your Dashboard</h2>
+          <p>Explore and interact with our library services</p>
+        </div>
+
+        <div id="dashboard-content"></div>
       </div>
-    </nav>
-  </header>
+    </main>
 
-  <main>
-    <div id="content-area">
-      <h2>Welcome to Public Affirmation Library</h2>
-      <p>Explore and interact with our library services</p>
-    </div>
-  </main>
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
 
-  <footer>
-    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
-  </footer>
+    <script src="../js/theme-toggle.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialize theme
+        initializeTheme();
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const fname = localStorage.getItem('customer_fname') || '';
-      const lname = localStorage.getItem('customer_lname') || '';
-      const name = (fname + ' ' + lname).trim() || 'Customer';
-      const userBtn = document.getElementById('user-button');
-      if (userBtn) {
-        userBtn.textContent = `👤 ${name} ▼`;
-      }
+        // Set up user name in button
+        const fname = localStorage.getItem("customer_fname") || "";
+        const lname = localStorage.getItem("customer_lname") || "";
+        const name = (fname + " " + lname).trim() || "Customer";
+        const userBtn = document.getElementById("user-button");
+        if (userBtn) {
+          userBtn.textContent = `👤 ${name} ▼`;
+        }
 
-      const isAuthor = localStorage.getItem('is_author') === 'true';
-      const isSponsor = localStorage.getItem('is_sponsor') === 'true';
+        // Add dynamic links for users with special roles
+        const isAuthor = localStorage.getItem("is_author") === "true";
+        const isSponsor = localStorage.getItem("is_sponsor") === "true";
 
-      if (isAuthor) {
-        const seminarsLink = document.createElement('a');
-        seminarsLink.href = '#';
-        seminarsLink.className = 'nav-link';
-        seminarsLink.textContent = 'Seminars';
-        seminarsLink.onclick = () => loadPage('seminars.html', seminarsLink);
-        document.querySelector('.nav-menu').appendChild(seminarsLink);
-      }
+        if (isAuthor) {
+          const seminarsLink = document.createElement("a");
+          seminarsLink.href = "#";
+          seminarsLink.className = "nav-link";
+          seminarsLink.textContent = "Seminars";
+          seminarsLink.onclick = () => loadPage("seminars.html", seminarsLink);
+          document
+            .querySelector(".nav-buttons")
+            .insertBefore(seminarsLink, document.querySelector(".dropdown"));
+        }
 
-      if (isSponsor) {
-        const sponsorLink = document.createElement('a');
-        sponsorLink.href = '#';
-        sponsorLink.className = 'nav-link';
-        sponsorLink.textContent = 'Sponsor Seminar';
-        sponsorLink.onclick = () => loadPage('sponsor_seminar.html', sponsorLink);
-        document.querySelector('.nav-menu').appendChild(sponsorLink);
-      }
-    });
+        if (isSponsor) {
+          const sponsorLink = document.createElement("a");
+          sponsorLink.href = "#";
+          sponsorLink.className = "nav-link";
+          sponsorLink.textContent = "Sponsor Seminar";
+          sponsorLink.onclick = () =>
+            loadPage("sponsor_seminar.html", sponsorLink);
+          document
+            .querySelector(".nav-buttons")
+            .insertBefore(sponsorLink, document.querySelector(".dropdown"));
+        }
 
-    function logout() {
-      ['customer_id', 'customer_fname', 'customer_lname', 'user_role', 'is_author', 'is_sponsor'].forEach(key => {
-        localStorage.removeItem(key);
+        // Load initial dashboard content
+        loadDashboardContent();
       });
-      window.location.href = 'login.html';
-    }
 
-    function loadPage(url, link = null) {
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error(`Failed to load ${url}`);
-          return response.text();
-        })
-        .then(html => {
-          document.getElementById('content-area').innerHTML = html;
-
-          if (link) {
-            document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
-            link.classList.add('active');
-          }
-
-          // Page-specific initialization logic
-          if (url.includes('events.html') && typeof initEventsPage === 'function') initEventsPage();
-          if (url.includes('books.html') && typeof initBooksPage === 'function') initBooksPage();
-          if (url.includes('profile.html') && typeof initProfilePage === 'function') initProfilePage();
-          if (url.includes('my_rentals.html') && typeof initRentalsPage === 'function') initRentalsPage();
-          if (url.includes('my_bookings.html') && typeof initBookingsPage === 'function') initBookingsPage();
-        })
-        .catch(error => {
-          console.error('Error loading page:', error);
-          document.getElementById('content-area').innerHTML = `<p class="error">Failed to load content. Please try again later.</p>`;
+      function logout() {
+        [
+          "customer_id",
+          "customer_fname",
+          "customer_lname",
+          "user_role",
+          "is_author",
+          "is_sponsor",
+        ].forEach((key) => {
+          localStorage.removeItem(key);
         });
-    }
-  </script>
-</body>
+        window.location.href = "login.html";
+      }
+
+      function loadPage(url, link = null) {
+        fetch(url)
+          .then((response) => {
+            if (!response.ok) throw new Error(`Failed to load ${url}`);
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById("dashboard-content").innerHTML = html;
+
+            if (link) {
+              document
+                .querySelectorAll(".nav-link")
+                .forEach((a) => a.classList.remove("active"));
+              link.classList.add("active");
+            }
+
+            // Page-specific initialization logic
+            if (
+              url.includes("events.html") &&
+              typeof initEventsPage === "function"
+            )
+              initEventsPage();
+            if (
+              url.includes("books.html") &&
+              typeof initBooksPage === "function"
+            )
+              initBooksPage();
+            if (
+              url.includes("profile.html") &&
+              typeof initProfilePage === "function"
+            )
+              initProfilePage();
+            if (
+              url.includes("my_rentals.html") &&
+              typeof initRentalsPage === "function"
+            )
+              initRentalsPage();
+            if (
+              url.includes("my_bookings.html") &&
+              typeof initBookingsPage === "function"
+            )
+              initBookingsPage();
+          })
+          .catch((error) => {
+            console.error("Error loading page:", error);
+            document.getElementById(
+              "dashboard-content"
+            ).innerHTML = `<p class="error">Failed to load content. Please try again later.</p>`;
+          });
+      }
+
+      function loadDashboardContent() {
+        // Create dashboard content with stats, feature cards, recent activity
+        const dashboardHTML = `
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <div class="stat-value" id="books-borrowed">0</div>
+              <div class="stat-label">Books Currently Borrowed</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-value" id="upcoming-reservations">0</div>
+              <div class="stat-label">Upcoming Reservations</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-value" id="reading-streak">0</div>
+              <div class="stat-label">Day Reading Streak</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-value" id="event-registrations">0</div>
+              <div class="stat-label">Event Registrations</div>
+            </div>
+          </div>
+        
+          <div class="features-grid">
+            <div class="feature-card" onclick="loadPage('books.html')">
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Browse Books
+              </h3>
+              <p>Search and browse our collection of books and resources</p>
+            </div>
+            
+            <div class="feature-card" onclick="loadPage('my_rentals.html')">
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                My Rentals
+              </h3>
+              <p>View your current rentals and rental history</p>
+            </div>
+            
+            <div class="feature-card" onclick="loadPage('study_room.html')">
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Study Rooms
+              </h3>
+              <p>Book a study room for individual or group study</p>
+            </div>
+            
+            <div class="feature-card" onclick="loadPage('events.html')">
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Events
+              </h3>
+              <p>Browse upcoming events and workshops at the library</p>
+            </div>
+            
+            <div class="feature-card" onclick="loadPage('profile.html')">
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                My Profile
+              </h3>
+              <p>Update your profile information and settings</p>
+            </div>
+            
+            <div class="feature-card" onclick="loadPage('contact.html')">
+              <h3>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Contact
+              </h3>
+              <p>Get in touch with our librarians and staff</p>
+            </div>
+          </div>
+          
+          <div class="dashboard-grid-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
+            <div>
+              <h3 class="section-title">Recent Activity</h3>
+              <div class="activity-timeline">
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" 
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">You borrowed "The Great Gatsby"</div>
+                    <div class="timeline-date">3 days ago</div>
+                    <div class="timeline-description">Due date: June 15, 2024</div>
+                  </div>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" 
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">You registered for "Summer Reading Workshop"</div>
+                    <div class="timeline-date">1 week ago</div>
+                    <div class="timeline-description">Event date: July 10, 2024</div>
+                  </div>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">You reserved Study Room #2</div>
+                    <div class="timeline-date">2 weeks ago</div>
+                    <div class="timeline-description">Reservation date: May 30, 2024</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="section-title">Upcoming Events</h3>
+              <div class="event-list">
+                <div class="card event-card">
+                  <h4 class="event-title">Summer Reading Workshop</h4>
+                  <p class="event-date">July 10, 2024 • 2:00 PM</p>
+                  <p class="event-desc">Join us for tips and strategies to make the most of your summer reading.</p>
+                </div>
+                
+                <div class="card event-card">
+                  <h4 class="event-title">Book Club: Mystery Novels</h4>
+                  <p class="event-date">July 15, 2024 • 6:30 PM</p>
+                  <p class="event-desc">This month we're discussing "The Silent Patient" by Alex Michaelides.</p>
+                </div>
+                
+                <div class="card event-card">
+                  <h4 class="event-title">Children's Story Time</h4>
+                  <p class="event-date">July 18, 2024 • 10:00 AM</p>
+                  <p class="event-desc">Interactive storytelling session for children ages 3-8.</p>
+                </div>
+                
+                <a href="#" onclick="loadPage('events.html')" class="view-all-link">View All Events</a>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById("dashboard-content").innerHTML = dashboardHTML;
+
+        // Simulate loading data for statistics
+        setTimeout(() => {
+          document.getElementById("books-borrowed").textContent = "3";
+          document.getElementById("upcoming-reservations").textContent = "1";
+          document.getElementById("reading-streak").textContent = "14";
+          document.getElementById("event-registrations").textContent = "2";
+        }, 500);
+      }
+    </script>
+  </body>
 </html>
