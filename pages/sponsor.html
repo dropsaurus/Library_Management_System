@@ -3,13 +3,85 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Donate - Public Affirmation Library</title>
+    <title>Sponsor - Public Affirmation Library</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <style>
+      .sponsor-options {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .sponsor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+
+      .sponsor-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .sponsor-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-primary);
+        box-shadow: 0 8px 15px var(--shadow-color);
+      }
+
+      .sponsor-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .sponsor-card p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+      }
+
+      .sponsor-card .cta {
+        margin-top: auto;
+      }
+
+      .required-badge {
+        display: inline-block;
+        background-color: var(--accent-primary);
+        color: white;
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+        font-weight: 500;
+      }
+
+      .optional-badge {
+        display: inline-block;
+        background-color: var(--bg-secondary);
+        color: var(--text-secondary);
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        margin-left: 0.5rem;
+        font-weight: 500;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -58,15 +130,9 @@
         </p>
       </div>
 
-      <div
-        class="features-grid"
-        style="max-width: 1200px; margin: 0 auto; padding: 2rem"
-      >
-        <div
-          class="feature-card"
-          style="display: flex; flex-direction: column; height: 100%"
-        >
-          <div style="flex-grow: 1">
+      <div class="sponsor-options">
+        <div class="sponsor-grid">
+          <div class="sponsor-card">
             <h3>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -82,24 +148,21 @@
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                 <line x1="1" y1="10" x2="23" y2="10"></line>
               </svg>
-              Donate Funds
+              Financial Sponsorship
+              <span class="required-badge">Required Fields Only</span>
             </h3>
             <p>
               Help us purchase new books and expand our programs. Your financial
               support makes a direct impact on our community's growth and
-              learning.
+              learning. We only collect essential information needed for your
+              donation.
             </p>
+            <div class="cta">
+              <a href="sponsor_payment.html" class="btn">Sponsor Now</a>
+            </div>
           </div>
-          <div style="margin-top: auto; padding-top: 1.5rem">
-            <a href="donate_payment.html" class="btn">Donate Now</a>
-          </div>
-        </div>
 
-        <div
-          class="feature-card"
-          style="display: flex; flex-direction: column; height: 100%"
-        >
-          <div style="flex-grow: 1">
+          <div class="sponsor-card">
             <h3>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,23 +180,21 @@
                   d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
                 ></path>
               </svg>
-              Donate Books
+              Book Donation
+              <span class="optional-badge">Optional Fields Available</span>
             </h3>
             <p>
-              Share your favorite books with others. We accept gently used
-              donations that can enrich our collection and benefit readers.
+              Share your favorite books with others. We require only basic
+              information about you and the books. Additional details are
+              optional but help us better catalog and utilize your generous
+              donations.
             </p>
+            <div class="cta">
+              <a href="sponsor_books.html" class="btn">Donate Books</a>
+            </div>
           </div>
-          <div style="margin-top: auto; padding-top: 1.5rem">
-            <a href="donate_books.html" class="btn">Donate Books</a>
-          </div>
-        </div>
 
-        <div
-          class="feature-card"
-          style="display: flex; flex-direction: column; height: 100%"
-        >
-          <div style="flex-grow: 1">
+          <div class="sponsor-card">
             <h3>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -151,15 +212,18 @@
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
-              Volunteer
+              Volunteer Program
+              <span class="required-badge">Basic Info Required</span>
             </h3>
             <p>
               Join our volunteer team and make a difference in your
-              neighborhood. Share your time and skills to support our mission.
+              neighborhood. We need just your contact details to get started.
+              Additional skills and preferences can be shared during
+              orientation.
             </p>
-          </div>
-          <div style="margin-top: auto; padding-top: 1.5rem">
-            <a href="volunteer.html" class="btn">Volunteer Now</a>
+            <div class="cta">
+              <a href="volunteer.html" class="btn">Volunteer Now</a>
+            </div>
           </div>
         </div>
       </div>
