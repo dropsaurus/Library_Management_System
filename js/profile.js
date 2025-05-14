@@ -14,15 +14,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('CUST_LNAME').value = data.CUST_LNAME || '';
         document.getElementById('CUST_EMAIL').value = data.CUST_EMAIL || '';
         document.getElementById('CUST_PHONE').value = data.CUST_PHONE || '';
+
+        // Update localStorage with new data
+        localStorage.setItem('customer_fname', data.CUST_FNAME || '');
+        localStorage.setItem('customer_lname', data.CUST_LNAME || '');
       } else {
-        msg.textContent = result.message || 'Failed to load profile.';
-        msg.style.color = 'red';
+        showMessage(result.message || 'Failed to load profile.', 'error');
       }
     } catch (err) {
       console.error(err);
-      msg.textContent = 'Error loading profile.';
-      msg.style.color = 'red';
+      showMessage('Error loading profile.', 'error');
     }
+  }
+
+  function showMessage(text, type = 'error') {
+    msg.textContent = text;
+    msg.className = `message ${type}`;
+    msg.style.display = 'block';
   }
 
   form.addEventListener('submit', async (e) => {
@@ -44,19 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await res.json();
 
       if (result.status === 'success') {
-        showPopupMessage('Profile updated successfully!', 'success');
-        msg.textContent = 'Profile updated successfully!';
-        msg.style.color = 'green';
+        showMessage('Profile updated successfully!', 'success');
+        
+        // Update localStorage and dashboard display
+        localStorage.setItem('customer_fname', payload.CUST_FNAME);
+        localStorage.setItem('customer_lname', payload.CUST_LNAME);
+        
+        // Update user button in dashboard if it exists
+        const userBtn = document.getElementById('user-button');
+        if (userBtn) {
+          const name = `${payload.CUST_FNAME} ${payload.CUST_LNAME}`.trim() || 'Customer';
+          userBtn.textContent = `👤 ${name} ▼`;
+        }
       } else {
-        msg.textContent = result.message || 'Update failed.';
-        msg.style.color = 'red';
+        showMessage(result.message || 'Update failed.', 'error');
       }
     } catch (err) {
       console.error(err);
-      msg.textContent = 'Error updating profile.';
-      msg.style.color = 'red';
+      showMessage('Error updating profile.', 'error');
     }
   });
 
+  // Load profile data when page loads
   loadProfile();
 });

@@ -62,7 +62,7 @@
           <div class="dropdown">
             <button class="btn dropdown-toggle" id="user-button">👤</button>
             <div class="dropdown-content">
-              <a href="#" onclick="loadPage('profile.html')"
+              <a href="#" onclick="loadPage('cust_profile.html')"
                 >👤 Profile Settings</a
               >
               <a href="#" onclick="loadPage('change_password.html')"
@@ -164,47 +164,40 @@
             return response.text();
           })
           .then((html) => {
-            document.getElementById("dashboard-content").innerHTML = html;
+            // Clear existing content first
+            const dashboardContent = document.getElementById("dashboard-content");
+            dashboardContent.innerHTML = "";
+            
+            // Remove any existing hero section
+            const existingHero = document.querySelector(".hero-section");
+            if (existingHero) {
+              existingHero.remove();
+            }
+
+            // Add the new content
+            dashboardContent.innerHTML = html;
 
             if (link) {
-              document
-                .querySelectorAll(".nav-link")
-                .forEach((a) => a.classList.remove("active"));
+              document.querySelectorAll(".nav-link").forEach((a) => a.classList.remove("active"));
               link.classList.add("active");
             }
 
             // Page-specific initialization logic
-            if (
-              url.includes("events.html") &&
-              typeof initEventsPage === "function"
-            )
+            if (url.includes("events.html") && typeof initEventsPage === "function")
               initEventsPage();
-            if (
-              url.includes("books.html") &&
-              typeof initBooksPage === "function"
-            )
+            if (url.includes("books.html") && typeof initBooksPage === "function")
               initBooksPage();
-            if (
-              url.includes("profile.html") &&
-              typeof initProfilePage === "function"
-            )
+            if (url.includes("cust_profile.html") && typeof initProfilePage === "function")
               initProfilePage();
-            if (
-              url.includes("my_rentals.html") &&
-              typeof initRentalsPage === "function"
-            )
+            if (url.includes("my_rentals.html") && typeof initRentalsPage === "function")
               initRentalsPage();
-            if (
-              url.includes("my_bookings.html") &&
-              typeof initBookingsPage === "function"
-            )
+            if (url.includes("my_bookings.html") && typeof initBookingsPage === "function")
               initBookingsPage();
           })
           .catch((error) => {
             console.error("Error loading page:", error);
-            document.getElementById(
-              "dashboard-content"
-            ).innerHTML = `<p class="error">Failed to load content. Please try again later.</p>`;
+            document.getElementById("dashboard-content").innerHTML = 
+              `<p class="error">Failed to load content. Please try again later.</p>`;
           });
       }
 

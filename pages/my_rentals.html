@@ -1,0 +1,129 @@
+<!-- My Rentals Page -->
+<div class="page-header">
+  <h2>My Rental History</h2>
+  <p>View your current and past book rentals</p>
+</div>
+
+<div class="rentals-container">
+  <div class="rentals-filters">
+    <select id="status-filter" class="form-control">
+      <option value="all">All Status</option>
+      <option value="active">Currently Borrowed</option>
+      <option value="returned">Returned</option>
+      <option value="overdue">Overdue</option>
+    </select>
+    <input type="text" id="search-input" class="form-control" placeholder="Search by book title...">
+  </div>
+
+  <div class="rentals-table-container">
+    <table class="rentals-table">
+      <thead>
+        <tr>
+          <th>Book Title</th>
+          <th>Borrow Date</th>
+          <th>Expected Return</th>
+          <th>Actual Return</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="rentals-table-body">
+        <!-- Data will be loaded dynamically via JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <div id="no-rentals" class="no-data-message" style="display: none;">
+    <p>No rental records found</p>
+  </div>
+
+  <div id="loading-spinner" class="loading-spinner">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<style>
+.rentals-container {
+  padding: 20px;
+}
+
+.rentals-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.rentals-table-container {
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.rentals-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rentals-table th,
+.rentals-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.rentals-table th {
+  background-color: var(--surface-variant);
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-active {
+  background-color: var(--success-bg);
+  color: var(--success);
+}
+
+.status-returned {
+  background-color: var(--info-bg);
+  color: var(--info);
+}
+
+.status-overdue {
+  background-color: var(--error-bg);
+  color: var(--error);
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--surface-variant);
+  border-top: 4px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script src="../js/my_rentals.js"></script>
