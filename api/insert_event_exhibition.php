@@ -11,36 +11,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../config/db_connect.php';
 
-try {
-    $data = json_decode(file_get_contents("php://input"), true);
+$data = json_decode(file_get_contents("php://input"), true);
 
-    if (
-        !isset($data['e_name']) ||
-        !isset($data['e_starttime']) ||
-        !isset($data['e_endtime']) ||
-        !isset($data['t_id']) ||
-        !isset($data['expense'])
-    ) {
+if (!isset($data['CUST_ID']) || !isset($data['E_ID'])) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Missing CUST_ID or E_ID'
+    ]);
+    exit;
+}
+
+$custId = $data['CUST_ID'];
+$eventId = $data['E_ID'];
+
+try {
+    $checkType = $pdo->prepare("SELECT E_TYPE FROM JPN_EVENT WHERE E_ID = :eid");
+    $checkType->execute([':eid' => $eventId]);
+    $typeRow = $checkType->fetch(PDO::FETCH_ASSOC);
+
+    if (!$typeRow || $typeRow['E_TYPE'] !== 'E') {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Missing required fields'
+            'message' => 'This event is not an exhibition.'
         ]);
         exit;
     }
 
-    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_EXHIBITION_EVENT(:e_name, :e_starttime, :e_endtime, :t_id, :expense)");
+    $checkExist = $pdo->prepare("SELECT COUNT(*) FROM JPN_CUSTOMER_EXHIBITION WHERE CUST_ID = :cid AND E_ID = :eid");
+    $checkExist->execute([':cid' => $custId, ':eid' => $eventId]);
+    $alreadyRegistered = $checkExist->fetchColumn();
 
-    $stmt->execute([
-        ':e_name'      => $data['e_name'],
-        ':e_starttime' => $data['e_starttime'],
-        ':e_endtime'   => $data['e_endtime'],
-        ':t_id'        => $data['t_id'],
-        ':expense'     => $data['expense']
-    ]);
+    if ($alreadyRegistered > 0) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'You have already registered for this exhibition.'
+        ]);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO JPN_CUSTOMER_EXHIBITION (CUST_ID, E_ID) VALUES (:cid, :eid)");
+    $stmt->execute([':cid' => $custId, ':eid' => $eventId]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Exhibition event inserted successfully'
+        'message' => 'Successfully registered for the exhibition!'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
@@ -49,4 +63,3 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>

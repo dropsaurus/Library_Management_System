@@ -13,15 +13,16 @@ require_once '../config/db_connect.php';
 
 try {
     $query = "SELECT 
-                ex.E_ID,
-                e.E_NAME,
-                e.E_STARTTIME,
-                e.E_ENDTIME,
-                t.T_NAME AS topic_name,
-                ex.EXPENSE
-              FROM JPN_EXHIBITION ex
-              JOIN JPN_EVENT e ON ex.E_ID = e.E_ID
-              JOIN JPN_TOPIC t ON e.T_ID = t.T_ID";
+            ex.E_ID,
+            e.E_NAME,
+            e.E_STARTTIME,
+            e.E_ENDTIME,
+            t.T_NAME AS topic_name,
+            ex.EXPENSE
+          FROM JPN_EXHIBITION ex
+          JOIN JPN_EVENT e ON ex.E_ID = e.E_ID
+          JOIN JPN_TOPIC t ON e.T_ID = t.T_ID
+          ORDER BY e.E_STARTTIME ASC";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute();

@@ -19,12 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${baseUrl}/login.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(payload)
             });
 
             const text = await response.text();
-
             let data;
+
             try {
                 data = JSON.parse(text);
             } catch (e) {
@@ -33,9 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.status === 'success') {
-                alert("✅ Login successful!");
-                window.location.href = window.location.origin + '/library_management/' + data.redirect;
+                localStorage.setItem('customer_id', data.user_id);
+                localStorage.setItem('customer_fname', data.user_fname);
+                localStorage.setItem('customer_lname', data.user_lname);
 
+                const fullName = data.user_fname + ' ' + data.user_lname;
+                localStorage.setItem('customer_name', fullName);
+                alert("✅ Login successful!");
+
+                // ✅ Safe redirect
+                window.location.href = data.redirect;
             } else {
                 alert("❌ " + (data.message || 'Login failed.'));
             }
@@ -46,4 +54,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-

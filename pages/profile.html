@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Settings - Public Affirmation Library</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/profile.css" />
+  <style>
+    main {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px 40px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    form input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn {
+      margin-top: 25px;
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #084ec1;
+    }
+
+    .msg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo"><h1>Public Affirmation Library</h1></div>
+      <div class="nav-buttons">
+        <a href="customer_dashboard.html" class="btn">Dashboard</a>
+        <a href="login.html" class="btn">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <h2>👤 Profile Settings</h2>
+    <form id="profileForm">
+      <label for="CUST_FNAME">First Name</label>
+      <input type="text" id="CUST_FNAME" required />
+
+      <label for="CUST_LNAME">Last Name</label>
+      <input type="text" id="CUST_LNAME" />
+
+      <label for="CUST_EMAIL">Email</label>
+      <input type="email" id="CUST_EMAIL" required />
+
+      <label for="CUST_PHONE">Phone</label>
+      <input type="text" id="CUST_PHONE" required pattern="\d{10}" />
+
+      <button type="submit" class="btn">Update</button>
+      <p id="profileMessage" class="msg"></p>
+    </form>
+  </main>
+
+  <script src="../js/profile.js"></script>
+  <script src="../js/popup.js"></script>
+
+</body>
+</html>
+
