@@ -104,9 +104,9 @@
         initializeTheme();
 
         // Set up user name in button
-        const fname = localStorage.getItem("customer_fname") || "";
-        const lname = localStorage.getItem("customer_lname") || "";
-        const name = (fname + " " + lname).trim() || "Customer";
+        const fname = localStorage.getItem("user_fname") || "";
+        const lname = localStorage.getItem("user_lname") || "";
+        const name = fname && lname ? `${fname} ${lname}` : fname || lname || "Guest";
         const userBtn = document.getElementById("user-button");
         if (userBtn) {
           userBtn.textContent = `👤 ${name} ▼`;
@@ -145,9 +145,9 @@
 
       function logout() {
         [
-          "customer_id",
-          "customer_fname",
-          "customer_lname",
+          "user_id",
+          "user_fname",
+          "user_lname",
           "user_role",
           "is_author",
           "is_sponsor",
