@@ -206,6 +206,97 @@
         color: var(--accent-primary);
         font-weight: 500;
       }
+      
+      /* Sponsor styles */
+      .sponsor-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+      }
+
+      .sponsor-container h2 {
+        font-size: 2.5rem;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        font-weight: 300;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      .form-group select,
+      .form-group input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--input-bg);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      .form-group select:focus,
+      .form-group input:focus {
+        border-color: var(--accent-primary);
+        outline: none;
+        box-shadow: 0 0 0 2px var(--shadow-color);
+      }
+
+      .btn-submit {
+        padding: 0.75rem 1.5rem;
+        background-color: var(--accent-primary);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+        font-size: 1rem;
+        margin-top: 1rem;
+        width: 100%;
+      }
+
+      .btn-submit:hover {
+        background-color: var(--accent-secondary);
+        transform: translateY(-2px);
+      }
+
+      #resultMessage {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 8px;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        text-align: center;
+        display: none;
+      }
+
+      #resultMessage.show {
+        display: block;
+        animation: fadeIn 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     </style>
   </head>
   <body>
@@ -217,7 +308,7 @@
         <div class="nav-buttons">
           <a href="#" class="btn active" id="home-btn">Home</a>
           <a href="#" class="btn" id="contact-btn">Contact</a>
-          <a href="sponsor.html" class="btn">Sponsor</a>
+          <a href="#" class="btn" id="sponsor-btn">Sponsor</a>
           <a href="books.html" class="btn">Books</a>
           <a href="events.html" class="btn">Events</a>
           <a href="rooms.html" class="btn">Rooms</a>
@@ -328,6 +419,75 @@
             </div>
           </div>
         </div>
+        
+        <div id="sponsor-content" style="display: none;">
+          <div class="sponsor-container">
+            <h2>
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Sponsor a Seminar
+            </h2>
+
+            <form id="sponsorForm" onsubmit="handleSponsor(event)">
+              <div class="form-group">
+                <label for="seminarSelect">Select Seminar *</label>
+                <select id="seminarSelect" required>
+                  <option value="">Loading seminars...</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="sponsorType">Sponsor Type *</label>
+                <select id="sponsorType" required onchange="toggleSponsorFields()">
+                  <option value="">-- Select Type --</option>
+                  <option value="individual">Individual</option>
+                  <option value="organization">Organization</option>
+                </select>
+              </div>
+
+              <div id="individualFields">
+                <div class="form-group">
+                  <label for="fname">First Name *</label>
+                  <input type="text" id="fname" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="lname">Last Name *</label>
+                  <input type="text" id="lname" required />
+                </div>
+              </div>
+
+              <div id="organizationFields" style="display: none;">
+                <div class="form-group">
+                  <label for="orgName">Organization Name *</label>
+                  <input type="text" id="orgName" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="amount">Sponsorship Amount ($) *</label>
+                <input type="number" id="amount" required min="1" step="0.01" />
+              </div>
+
+              <button type="submit" class="btn-submit">Submit Sponsorship</button>
+            </form>
+
+            <div id="resultMessage"></div>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -342,13 +502,16 @@
         // Handle Contact button
         const contactBtn = document.getElementById('contact-btn');
         const homeBtn = document.getElementById('home-btn');
+        const sponsorBtn = document.getElementById('sponsor-btn');
         const homeContent = document.getElementById('home-content');
         const contactContent = document.getElementById('contact-content');
+        const sponsorContent = document.getElementById('sponsor-content');
         
         contactBtn.addEventListener('click', function(e) {
           e.preventDefault();
           homeContent.style.display = 'none';
           contactContent.style.display = 'block';
+          sponsorContent.style.display = 'none';
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -363,10 +526,31 @@
           showHomeContent();
         });
         
+        // Handle Sponsor button
+        sponsorBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          homeContent.style.display = 'none';
+          contactContent.style.display = 'none';
+          sponsorContent.style.display = 'block';
+          
+          // Update active state in navigation
+          document.querySelectorAll('.nav-buttons a').forEach(link => {
+            link.classList.remove('active');
+          });
+          sponsorBtn.classList.add('active');
+          
+          // Load seminars if needed
+          if (!window.seminarsLoaded) {
+            loadSeminars();
+            window.seminarsLoaded = true;
+          }
+        });
+        
         // Function to show home content
         function showHomeContent() {
           homeContent.style.display = 'block';
           contactContent.style.display = 'none';
+          sponsorContent.style.display = 'none';
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -616,6 +800,165 @@
         fetchBooks();
         fetchEvents();
       });
+      
+      // Sponsor functionality
+      function loadSeminars() {
+        fetch("../api/get_seminars.php")
+          .then((res) => res.json())
+          .then((data) => {
+            const select = document.getElementById("seminarSelect");
+            select.innerHTML = '<option value="">-- Select Seminar --</option>';
+
+            if (data.status === "success" && data.data.length > 0) {
+              // Store seminar data globally to access names later
+              window.seminarData = data.data;
+              
+              data.data.forEach((seminar) => {
+                const opt = document.createElement("option");
+                opt.value = seminar.E_ID;
+                opt.textContent = seminar.E_NAME;
+                select.appendChild(opt);
+              });
+            } else {
+              select.innerHTML =
+                '<option value="">No seminars available</option>';
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            document.getElementById("seminarSelect").innerHTML =
+              '<option value="">Error loading</option>';
+          });
+      }
+
+      function toggleSponsorFields() {
+        const sponsorType = document.getElementById("sponsorType").value;
+        const individualFields = document.getElementById("individualFields");
+        const organizationFields = document.getElementById("organizationFields");
+        const fnameInput = document.getElementById("fname");
+        const lnameInput = document.getElementById("lname");
+        const orgNameInput = document.getElementById("orgName");
+
+        if (sponsorType === "individual") {
+          individualFields.style.display = "block";
+          organizationFields.style.display = "none";
+          fnameInput.setAttribute("required", "");
+          lnameInput.setAttribute("required", "");
+          orgNameInput.removeAttribute("required");
+        } else if (sponsorType === "organization") {
+          individualFields.style.display = "none";
+          organizationFields.style.display = "block";
+          fnameInput.removeAttribute("required");
+          lnameInput.removeAttribute("required");
+          orgNameInput.setAttribute("required", "");
+        } else {
+          // Default case when nothing is selected
+          individualFields.style.display = "block";
+          organizationFields.style.display = "none";
+        }
+      }
+
+      function handleSponsor(e) {
+        e.preventDefault();
+        const seminarId = document.getElementById("seminarSelect").value;
+        const sponsorType = document.getElementById("sponsorType").value;
+        const amount = document.getElementById("amount").value;
+        
+        let name = "";
+        let sp_fname = "";
+        let sp_lname = null;
+        
+        if (sponsorType === "individual") {
+          sp_fname = document.getElementById("fname").value;
+          sp_lname = document.getElementById("lname").value;
+          name = `${sp_fname} ${sp_lname}`;
+        } else if (sponsorType === "organization") {
+          sp_fname = document.getElementById("orgName").value;
+          name = sp_fname;
+        }
+
+        if (!seminarId) {
+          alert("Please select a seminar.");
+          return;
+        }
+
+        if (!sponsorType) {
+          alert("Please select a sponsor type.");
+          return;
+        }
+        
+        // Get the seminar name from our stored data
+        let seminarName = 'the selected seminar';
+        if (window.seminarData) {
+          const seminar = window.seminarData.find(s => s.E_ID === seminarId);
+          if (seminar) {
+            seminarName = seminar.E_NAME;
+          } else {
+            // Try with string comparison in case E_ID is stored as string
+            const seminarWithStringId = window.seminarData.find(s => String(s.E_ID) === String(seminarId));
+            if (seminarWithStringId) {
+              seminarName = seminarWithStringId.E_NAME;
+            }
+          }
+        }
+
+        // Send data to API
+        const sponsorData = {
+          sp_fname: sp_fname,
+          sp_lname: sp_lname,
+          sp_type: sponsorType === "individual" ? "I" : "O"
+        };
+
+        // Insert sponsor first
+        fetch("../api/insert_sponsor.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sponsorData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              // Now create the sponsor-seminar relationship
+              return fetch("../api/insert_sponsor_seminar.php", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  sp_id: data.sponsor_id,
+                  e_id: seminarId,
+                  amount: amount
+                }),
+              });
+            } else {
+              throw new Error(data.message || "Failed to add sponsor");
+            }
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              const resultMsg = document.getElementById("resultMessage");
+              resultMsg.textContent = `Thank you, ${name}, for sponsoring "${seminarName}" with $${amount}!`;
+              resultMsg.classList.add("show");
+              
+              document.getElementById("sponsorForm").reset();
+              toggleSponsorFields(); // Reset form fields visibility
+              
+              // Hide the message after 5 seconds
+              setTimeout(() => {
+                resultMsg.classList.remove("show");
+              }, 5000);
+            } else {
+              alert(data.message || "Failed to link sponsor with seminar");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("There was an error processing your request: " + error.message);
+          });
+      }
     </script>
   </body>
 </html> 
