@@ -52,9 +52,6 @@ function renderExhibitionCards(exhibitions) {
           <div class="detail">
             <span>${ex.E_STARTTIME || "TBD"} - ${ex.E_ENDTIME || "TBD"}</span>
           </div>
-          <div class="detail">
-            <span>Funding: $${parseFloat(ex.EXPENSE || 0).toFixed(2)}</span>
-          </div>
         </div>
         <button class="btn" onclick="location.href='event_register.html?event_id=${ex.E_ID}&type=Exhibition&title=${encodeURIComponent(
       ex.E_NAME
