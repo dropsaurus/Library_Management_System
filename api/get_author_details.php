@@ -24,37 +24,40 @@ if (!$authorId) {
 }
 
 try {
-    // Query to get all seminars the author is registered for
+    // Query to get author details from JPN_AUTHOR and JPN_USER tables
     $query = "
         SELECT 
-            ase.INVITATION_ID,
-            ase.A_ID,
-            ase.E_ID,
-            e.E_NAME AS seminar_name,
-            e.E_STARTTIME AS start_time,
-            e.E_ENDTIME AS end_time,
-            e.E_TYPE,
-            s.SPEAKER_FNAME,
-            s.SPEAKER_LNAME,
-            t.T_NAME AS topic_name
-        FROM JPN_AUTHOR_SEMINAR ase
-        JOIN JPN_EVENT e ON ase.E_ID = e.E_ID
-        JOIN JPN_SEMINAR s ON e.E_ID = s.E_ID
-        LEFT JOIN JPN_TOPIC t ON e.T_ID = t.T_ID
-        WHERE ase.A_ID = :author_id
-        ORDER BY e.E_STARTTIME ASC
+            a.A_ID,
+            u.U_FNAME AS A_FNAME,
+            u.U_LNAME AS A_LNAME,
+            u.U_EMAIL AS A_EMAIL,
+            a.A_STREET,
+            a.A_CITY,
+            a.A_STATE,
+            a.A_COUNTRY,
+            a.A_ZIPCODE
+        FROM JPN_AUTHOR a
+        JOIN JPN_USER u ON a.A_ID = u.U_ID
+        WHERE a.A_ID = :author_id
     ";
 
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':author_id', $authorId, PDO::PARAM_INT);
     $stmt->execute();
     
-    $authorSeminars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $authorDetails = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    echo json_encode([
-        'status' => 'success',
-        'data' => $authorSeminars
-    ]);
+    if ($authorDetails) {
+        echo json_encode([
+            'status' => 'success',
+            'data' => $authorDetails
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Author not found'
+        ]);
+    }
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
@@ -62,4 +65,4 @@ try {
         'message' => 'Database error: ' . $e->getMessage()
     ]);
 }
-?>
+?> 
