@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/events.css" />
     <link rel="stylesheet" href="../css/user-dropdown.css" />
     <link rel="stylesheet" href="../css/dashboard-rooms.css" />
+    <link rel="stylesheet" href="../css/dashboard-books.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
@@ -310,8 +311,8 @@
           <a href="#" class="btn active" id="home-btn">Home</a>
           <a href="#" class="btn" id="contact-btn">Contact</a>
           <a href="#" class="btn" id="sponsor-btn">Sponsor</a>
+          <a href="#" class="btn" id="books-btn">Books</a>
           <a href="#" class="btn" id="rooms-btn">Rooms</a>
-          <a href="books.html" class="btn">Books</a>
           <a href="events.html" class="btn">Events</a>
           <div class="dropdown">
             <a href="#" class="btn dropdown-toggle" id="username-btn">Loading...</a>
@@ -370,7 +371,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </button>
-            <a href="books.html" class="btn action-btn">Rent a Book</a>
+            <a href="login.html" class="btn action-btn">Rent a Book</a>
           </div>
 
           <h2 class="section-heading">Events</h2>
@@ -490,6 +491,72 @@
           </div>
         </div>
         
+        <div id="books-content" style="display: none;">
+          <div class="book-container">
+            <div class="book-tabs">
+              <button class="book-tab-button active" data-tab="available-books" onclick="switchBookTab('available-books')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Available Books
+              </button>
+              <button class="book-tab-button" data-tab="my-rentals" onclick="switchBookTab('my-rentals')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9" 
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                My Rentals
+              </button>
+            </div>
+            
+            <div id="available-books" class="book-tab-content">
+              <div id="book-filters" class="book-filters">
+                <div class="filter-group">
+                  <label for="book-category">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" 
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M6 6h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Category
+                  </label>
+                  <select id="book-category">
+                    <option value="">All Categories</option>
+                    <!-- Categories will be loaded by JavaScript -->
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label for="book-search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" 
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Search
+                  </label>
+                  <input type="text" id="book-search" placeholder="Search by title or author..." />
+                </div>
+              </div>
+              
+              <div id="books-grid" class="books-grid">
+                <!-- Book cards will be loaded here by JavaScript -->
+                <div class="loading-indicator">
+                  <p>Loading books...</p>
+                </div>
+              </div>
+            </div>
+            
+            <div id="my-rentals" class="book-tab-content" style="display: none;">
+              <div id="my-rentals-content">
+                <!-- Rentals will be loaded here by JavaScript -->
+                <div class="loading-indicator">
+                  <p>Loading your rentals...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div id="rooms-content" style="display: none;">
           <div class="room-container">
             <div class="room-tabs">
@@ -587,6 +654,7 @@
     <script src="../js/theme-toggle.js"></script>
     <script src="../js/user-auth.js"></script>
     <script src="../js/dashboard-rooms.js"></script>
+    <script src="../js/dashboard-books.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         // Handle Contact button
@@ -594,10 +662,12 @@
         const homeBtn = document.getElementById('home-btn');
         const sponsorBtn = document.getElementById('sponsor-btn');
         const roomsBtn = document.getElementById('rooms-btn');
+        const booksBtn = document.getElementById('books-btn');
         const homeContent = document.getElementById('home-content');
         const contactContent = document.getElementById('contact-content');
         const sponsorContent = document.getElementById('sponsor-content');
         const roomsContent = document.getElementById('rooms-content');
+        const booksContent = document.getElementById('books-content');
         
         contactBtn.addEventListener('click', function(e) {
           e.preventDefault();
@@ -605,6 +675,7 @@
           contactContent.style.display = 'block';
           sponsorContent.style.display = 'none';
           roomsContent.style.display = 'none';
+          booksContent.style.display = 'none';
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -626,6 +697,7 @@
           contactContent.style.display = 'none';
           sponsorContent.style.display = 'block';
           roomsContent.style.display = 'none';
+          booksContent.style.display = 'none';
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -647,6 +719,7 @@
           contactContent.style.display = 'none';
           sponsorContent.style.display = 'none';
           roomsContent.style.display = 'block';
+          booksContent.style.display = 'none';
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -658,12 +731,32 @@
           initializeRooms();
         });
         
+        // Handle Books button
+        booksBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          homeContent.style.display = 'none';
+          contactContent.style.display = 'none';
+          sponsorContent.style.display = 'none';
+          roomsContent.style.display = 'none';
+          booksContent.style.display = 'block';
+          
+          // Update active state in navigation
+          document.querySelectorAll('.nav-buttons a').forEach(link => {
+            link.classList.remove('active');
+          });
+          booksBtn.classList.add('active');
+          
+          // Initialize books functionality when tab is clicked
+          initializeBooks();
+        });
+        
         // Function to show home content
         function showHomeContent() {
           homeContent.style.display = 'block';
           contactContent.style.display = 'none';
           sponsorContent.style.display = 'none';
           roomsContent.style.display = 'none';
+          booksContent.style.display = 'none';
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {

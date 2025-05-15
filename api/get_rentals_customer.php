@@ -23,19 +23,38 @@ if (!$userId) {
 }
 
 try {
+    // Get customer ID from user ID
+    $custStmt = $pdo->prepare("SELECT CUST_ID FROM JPN_CUSTOMER WHERE CUST_ID = ?");
+    $custStmt->execute([$userId]);
+    $customer = $custStmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$customer) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Customer not found'
+        ]);
+        exit;
+    }
+    
+    $customerId = $customer['CUST_ID'];
+    
+    // Get rental records for this customer - Updated to match JPN_RENTAL table structure
     $stmt = $pdo->prepare("
         SELECT 
             r.R_ID,
-            r.R_BORROWDATE,
-            r.R_EX_RETURNDATE,
-            r.R_AC_RETURNDATE,
-            b.BOOK_NAME
+            c.COPY_ID,
+            b.BOOK_ID,
+            b.BOOK_NAME,
+            r.R_BORROWDATE as RENT_DATE,
+            r.R_AC_RETURNDATE as RETURN_DATE
         FROM JPN_RENTAL r
-        JOIN JPN_BOOK b ON r.BOOK_ID = b.BOOK_ID
-        WHERE r.USER_ID = :user_id
+        JOIN JPN_COPIES c ON r.COPY_ID = c.COPY_ID
+        JOIN JPN_BOOK b ON c.BOOK_ID = b.BOOK_ID
+        WHERE r.CUST_ID = ?
         ORDER BY r.R_BORROWDATE DESC
     ");
-    $stmt->execute([':user_id' => $userId]);
+    
+    $stmt->execute([$customerId]);
     $rentals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (count($rentals) === 0) {
