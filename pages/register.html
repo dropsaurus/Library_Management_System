@@ -482,7 +482,6 @@
         }
       }
 
-      // Execute once on page load
       document.addEventListener("DOMContentLoaded", function () {
         console.log("DOM loaded - initializing form");
 
@@ -506,11 +505,112 @@
           }
         });
         
-        // Form validation
-        document.getElementById("registrationForm").addEventListener("submit", function(e) {
+        // Override the form submit to make sure our validation happens first
+        const registrationForm = document.getElementById("registrationForm");
+        
+        // Add our validation event listener
+        registrationForm.addEventListener("submit", function(e) {
+          // Always prevent the default form submission first
           e.preventDefault();
+          e.stopPropagation();
           
-          // Basic validation
+          // Perform our custom validation
+          const isValid = validateForm();
+          
+          // Only if validation passes, call the API
+          if (isValid) {
+            // Get all the form values
+            const firstName = document.getElementById("firstName").value.trim();
+            const lastName = document.getElementById("lastName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+            
+            let payload;
+            let endpoint = "../api/register.php";
+            
+            if (role === "customer") {
+              const idType = document.getElementById("idType").value;
+              const idNumber = document.getElementById("idNumber").value.trim();
+              
+              payload = {
+                USER_FNAME: firstName,
+                USER_LNAME: lastName,
+                USER_EMAIL: email,
+                USER_PHONE: phone,
+                USER_PASSWORD: password,
+                USER_UID_TYPE: idType,
+                USER_UID_NO: idNumber,
+                ROLE: role
+              };
+            } else if (role === "author") {
+              const street = document.getElementById("street").value.trim();
+              const city = document.getElementById("city").value.trim();
+              const state = document.getElementById("state").value.trim();
+              const country = document.getElementById("country").value.trim();
+              const zipcode = document.getElementById("zipcode").value.trim();
+              
+              payload = {
+                USER_FNAME: firstName,
+                USER_LNAME: lastName,
+                USER_EMAIL: email,
+                USER_PHONE: phone,
+                USER_PASSWORD: password,
+                USER_STREET: street,
+                USER_CITY: city,
+                USER_STATE: state,
+                USER_COUNTRY: country,
+                USER_ZIPCODE: zipcode,
+                ROLE: role
+              };
+              endpoint = "../api/register_author.php";
+            }
+            
+            // Show loading indicator
+            document.body.style.cursor = 'wait';
+            
+            // Make the API call
+            fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            })
+            .then(response => response.text())
+            .then(text => {
+              // Reset cursor
+              document.body.style.cursor = 'default';
+              
+              // Parse JSON response
+              let data;
+              try {
+                data = JSON.parse(text);
+              } catch (e) {
+                console.error("Invalid JSON response:", text);
+                throw new Error("Invalid server response");
+              }
+              
+              if (data.status === "success") {
+                alert("Registration Successful");
+                window.location.href = "login.html";
+              } else {
+                alert("Registration failed: " + (data.message || "Unknown error"));
+              }
+            })
+            .catch(error => {
+              // Reset cursor
+              document.body.style.cursor = 'default';
+              console.error("Error:", error);
+              alert("Server error. Please try again later.");
+            });
+          }
+          
+          // Always return false to prevent any default form submission
+          return false;
+        });
+        
+        // Form validation function
+        function validateForm() {
           let isValid = true;
           let errorMsg = "";
           
@@ -519,6 +619,17 @@
           if (!role) {
             isValid = false;
             errorMsg = "Please select a role.";
+          }
+          
+          // Validate required common fields
+          const commonFields = ["firstName", "lastName", "email", "phone", "password"];
+          for (const field of commonFields) {
+            const input = document.getElementById(field);
+            if (!input.value.trim()) {
+              isValid = false;
+              errorMsg = `Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}.`;
+              break;
+            }
           }
           
           // Validate phone format
@@ -558,14 +669,14 @@
             
             // Check if state is exactly 2 characters
             const state = document.getElementById("state").value;
-            if (state.length !== 2) {
+            if (state && state.length !== 2) {
               isValid = false;
               errorMsg = "State must be a 2-letter code.";
             }
             
             // Check if zipcode is exactly 5 digits
             const zipcode = document.getElementById("zipcode").value;
-            if (!/^\d{5}$/.test(zipcode)) {
+            if (zipcode && !/^\d{5}$/.test(zipcode)) {
               isValid = false;
               errorMsg = "Zipcode must be 5 digits.";
             }
@@ -578,16 +689,14 @@
             errorMsg = "Password must be at least 8 characters long.";
           }
           
-          if (isValid) {
-            alert("Registration successful! Form would be submitted here.");
-            // In a real app, we would submit the form here
-            // this.submit();
-          } else {
+          // If validation fails, show error message
+          if (!isValid) {
             alert(errorMsg);
           }
-        });
+          
+          return isValid;
+        }
       });
     </script>
-    <script src="../js/register.js"></script>
   </body>
 </html>

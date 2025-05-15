@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (data.status === "success") {
-          alert("✅ Registration successful! Redirecting to login page...");
+          alert("Registration Successful");
           window.location.href = "login.html";
         } else {
           alert(
