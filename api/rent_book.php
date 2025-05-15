@@ -37,12 +37,26 @@ try {
 
     $copy_id = $copy['COPY_ID'];
 
-    // Step 2: Create rental record
-    $stmt = $pdo->prepare("INSERT INTO JPN_RENTALS (CUST_ID, COPY_ID, RENT_DATE) VALUES (?, ?, NOW())");
+    // Step 2: Create rental record - Updated to match the JPN_RENTAL table structure
+    $stmt = $pdo->prepare("
+        INSERT INTO JPN_RENTAL (
+            CUST_ID, 
+            COPY_ID, 
+            R_BORROWDATE, 
+            R_EX_RETURNDATE, 
+            R_STATUS
+        ) VALUES (
+            ?, 
+            ?, 
+            NOW(), 
+            DATE_ADD(NOW(), INTERVAL 14 DAY), 
+            'BORROWED'
+        )
+    ");
     $stmt->execute([$customer_id, $copy_id]);
 
     // Step 3: Update copy status
-    $stmt = $pdo->prepare("UPDATE JPN_COPIES SET COPY_STATUS = 'RENTED' WHERE COPY_ID = ?");
+    $stmt = $pdo->prepare("UPDATE JPN_COPIES SET COPY_STATUS = 'NOT AVAILABLE' WHERE COPY_ID = ?");
     $stmt->execute([$copy_id]);
 
     echo json_encode(['status' => 'success', 'message' => 'Book rented successfully']);

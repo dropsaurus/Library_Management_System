@@ -50,6 +50,10 @@ try {
         ]);
         
     } else {
+        // Get search and topic filter parameters
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        $topicId = isset($_GET['topic_id']) ? intval($_GET['topic_id']) : 0;
+        
         // Get books with details
         $sql = "
             SELECT 
@@ -64,8 +68,26 @@ try {
             LEFT JOIN JPN_BOOK_AUTHOR ba ON b.BOOK_ID = ba.BOOK_ID
             LEFT JOIN JPN_AUTHOR a ON ba.A_ID = a.A_ID
             LEFT JOIN JPN_USER u ON a.A_ID = u.U_ID
-            GROUP BY b.BOOK_ID, b.BOOK_NAME, t.T_NAME
+            WHERE 1=1
         ";
+        
+        $params = [];
+        
+        // Add search condition if provided
+        if (!empty($search)) {
+            $sql .= " AND (b.BOOK_NAME LIKE ? OR CONCAT(u.U_FNAME, ' ', u.U_LNAME) LIKE ?)";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+        
+        // Add topic filter if provided
+        if ($topicId > 0) {
+            $sql .= " AND b.T_ID = ?";
+            $params[] = $topicId;
+        }
+        
+        // Group by to avoid duplicates
+        $sql .= " GROUP BY b.BOOK_ID, b.BOOK_NAME, t.T_NAME";
         
         // Add availability filter if provided
         if ($availability === 'available') {
@@ -75,9 +97,10 @@ try {
         }
         
         // Add order and limit
-        $sql .= " ORDER BY b.BOOK_ID DESC LIMIT 20";
+        $sql .= " ORDER BY b.BOOK_NAME ASC";
         
-        $stmt = $pdo->query($sql);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
         $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         echo json_encode([
