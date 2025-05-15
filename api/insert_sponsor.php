@@ -22,15 +22,15 @@ try {
         exit;
     }
 
-    // For organization type, sp_lname can be empty
-    $sp_lname = '';
-    if ($data['sp_type'] === 'Individual' && (!isset($data['sp_lname']) || empty($data['sp_lname']))) {
+    // For organization type (O), sp_lname should be NULL
+    $sp_lname = null;
+    if ($data['sp_type'] === 'I' && (!isset($data['sp_lname']) || empty($data['sp_lname']))) {
         echo json_encode([
             'status' => 'error',
             'message' => 'Last name is required for Individual sponsor type'
         ]);
         exit;
-    } else if (isset($data['sp_lname'])) {
+    } else if (isset($data['sp_lname']) && $data['sp_lname'] !== null) {
         $sp_lname = $data['sp_lname'];
     }
 
