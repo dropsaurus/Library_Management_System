@@ -13,48 +13,34 @@ require_once '../config/db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($data['CUST_ID']) || !isset($data['E_ID'])) {
+// Input validation
+if (
+    !isset($data['E_NAME']) ||
+    !isset($data['E_STARTTIME']) ||
+    !isset($data['E_ENDTIME']) ||
+    !isset($data['T_ID']) ||
+    !isset($data['EXPENSE'])
+) {
     echo json_encode([
         'status' => 'error',
-        'message' => 'Missing CUST_ID or E_ID'
+        'message' => 'Missing required fields.'
     ]);
     exit;
 }
 
-$custId = $data['CUST_ID'];
-$eventId = $data['E_ID'];
-
 try {
-    $checkType = $pdo->prepare("SELECT E_TYPE FROM JPN_EVENT WHERE E_ID = :eid");
-    $checkType->execute([':eid' => $eventId]);
-    $typeRow = $checkType->fetch(PDO::FETCH_ASSOC);
-
-    if (!$typeRow || $typeRow['E_TYPE'] !== 'E') {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'This event is not an exhibition.'
-        ]);
-        exit;
-    }
-
-    $checkExist = $pdo->prepare("SELECT COUNT(*) FROM JPN_CUSTOMER_EXHIBITION WHERE CUST_ID = :cid AND E_ID = :eid");
-    $checkExist->execute([':cid' => $custId, ':eid' => $eventId]);
-    $alreadyRegistered = $checkExist->fetchColumn();
-
-    if ($alreadyRegistered > 0) {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'You have already registered for this exhibition.'
-        ]);
-        exit;
-    }
-
-    $stmt = $pdo->prepare("INSERT INTO JPN_CUSTOMER_EXHIBITION (CUST_ID, E_ID) VALUES (:cid, :eid)");
-    $stmt->execute([':cid' => $custId, ':eid' => $eventId]);
+    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_EXHIBITION_EVENT(:ename, :starttime, :endtime, :tid, :expense)");
+    $stmt->execute([
+        ':ename'     => $data['E_NAME'],
+        ':starttime' => $data['E_STARTTIME'],
+        ':endtime'   => $data['E_ENDTIME'],
+        ':tid'       => $data['T_ID'],
+        ':expense'   => $data['EXPENSE']
+    ]);
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Successfully registered for the exhibition!'
+        'message' => 'Exhibition created successfully.'
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

@@ -592,19 +592,144 @@
 
       function loadManageExhibitionContent() {
         const pageContent = document.getElementById("pageContent");
+
         pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Exhibition</h2>
-          <button class="btn-primary">New Exhibition</button>
+          <div class="content-header">
+            <button class="btn-primary" id="newExhibitionBtn">New Exhibition</button>
+          </div>
+          <div class="search-filters">
+            <input type="text" placeholder="Search exhibitions..." class="search-input">
+            <select class="filter-select">
+              <option value="">All Status</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Exhibition ID</th>
+                  <th>Title</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Topic</th>
+                  <th>Expense</th>
+                </tr>
+              </thead>
+              <tbody id="exhibitionTableBody">
+                <tr><td colspan="6">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        document.getElementById("newExhibitionBtn").addEventListener("click", () => {
+          loadAddExhibitionForm();
+        });
+
+        fetch("../api/get_exhibition.php")
+          .then((res) => res.json())
+          .then((data) => {
+            const tbody = document.getElementById("exhibitionTableBody");
+            if (!tbody) return;
+
+            if (data.status === "success") {
+              tbody.innerHTML = "";
+              data.data.forEach((item) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${item.E_ID}</td>
+                  <td>${item.E_NAME}</td>
+                  <td>${item.E_STARTTIME}</td>
+                  <td>${item.E_ENDTIME}</td>
+                  <td>${item.topic_name}</td>
+                  <td>$${Number(item.EXPENSE).toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+              });
+            } else {
+              tbody.innerHTML = `<tr><td colspan="6">Failed to load exhibitions.</td></tr>`;
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            const tbody = document.getElementById("exhibitionTableBody");
+            if (tbody)
+              tbody.innerHTML = `<tr><td colspan="6">Error loading exhibitions.</td></tr>`;
+          });
+}
+
+      function loadAddExhibitionForm() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="form-container">
+      <h2>Add New Exhibition</h2>
+      <form id="exhibitionForm">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" required />
         </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search exhibitions..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-          </select>
+        <div class="form-group">
+          <label for="start">Start Date & Time</label>
+          <input type="datetime-local" id="start" required />
+        </div>
+        <div class="form-group">
+          <label for="end">End Date & Time</label>
+          <input type="datetime-local" id="end" required />
+        </div>
+        <div class="form-group">
+          <label for="topicId">Topic ID</label>
+          <input type="number" id="topicId" required />
+        </div>
+        <div class="form-group">
+          <label for="expense">Expense ($)</label>
+          <input type="number" step="0.01" id="expense" required />
+        </div>
+        <button type="submit" class="btn-primary">Submit</button>
+      </form>
+    </div>
+  `;
+
+  document.getElementById("exhibitionForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = {
+      E_NAME: document.getElementById("title").value.trim(),
+      E_STARTTIME: document.getElementById("start").value,
+      E_ENDTIME: document.getElementById("end").value,
+      T_ID: parseInt(document.getElementById("topicId").value),
+      EXPENSE: parseFloat(document.getElementById("expense").value)
+    };
+
+    fetch("../api/insert_event_exhibition.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          alert("Exhibition added successfully!");
+          loadManageExhibitionContent();
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch((err) => {
+        console.error("Request failed:", err);
+        alert("Failed to submit the exhibition.");
+      });
+  });
+}
+
+
+    function loadManageExhibitionContent() {
+      const pageContent = document.getElementById("pageContent");
+      pageContent.innerHTML = `
+        <div class="content-header">
+          <button class="btn-primary" onclick="loadAddExhibitionForm()">New Exhibition</button>
         </div>
         <div class="table-container">
           <table class="data-table">
@@ -614,56 +739,179 @@
                 <th>Title</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>Topic</th>
+                <th>Expense</th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Exhibition data will be loaded dynamically -->
+            <tbody id="exhibitionTableBody">
+              <tr><td colspan="6">Loading...</td></tr>
             </tbody>
           </table>
         </div>
       `;
-      }
+
+      fetch('../api/get_exhibitions.php')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById("exhibitionTableBody");
+          if (data.status === 'success') {
+            tbody.innerHTML = '';
+            data.data.forEach(row => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td>${row.E_ID}</td>
+                <td>${row.E_NAME}</td>
+                <td>${row.E_STARTTIME}</td>
+                <td>${row.E_ENDTIME}</td>
+                <td>${row.topic_name}</td>
+                <td>$${parseFloat(row.EXPENSE).toFixed(2)}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          } else {
+            tbody.innerHTML = `<tr><td colspan="6">Failed to load exhibitions.</td></tr>`;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("exhibitionTableBody").innerHTML =
+            `<tr><td colspan="6">Error loading exhibitions.</td></tr>`;
+        });
+    }
+
+
 
       function loadManageSeminarContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Seminar</h2>
-          <button class="btn-primary">New Seminar</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search seminars..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Seminar ID</th>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Room</th>
-                <th>Speaker</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Seminar data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="content-header">
+      <button class="btn-primary" id="newSeminarBtn">New Seminar</button>
+    </div>
+    
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Seminar ID</th>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Topic</th>
+            <th>Speaker</th>
+          </tr>
+        </thead>
+        <tbody id="seminarTableBody">
+          <tr><td colspan="6">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch('../api/get_seminars.php')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById('seminarTableBody');
+      if (!tbody) return;
+
+      if (data.status === 'success') {
+        tbody.innerHTML = '';
+        data.data.forEach(seminar => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${seminar.E_ID}</td>
+            <td>${seminar.E_NAME}</td>
+            <td>${seminar.E_STARTTIME}</td>
+            <td>${seminar.E_ENDTIME}</td>
+            <td>${seminar.topic_name}</td>
+            <td>${seminar.SPEAKER_FNAME} ${seminar.SPEAKER_LNAME ?? ''}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="6">Failed to load seminars.</td></tr>`;
       }
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+      const tbody = document.getElementById('seminarTableBody');
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan="6">Error loading seminars.</td></tr>`;
+    });
+
+  
+  document.getElementById("newSeminarBtn").addEventListener("click", () => {
+    loadAddSeminarForm();
+  });
+}
+
+      function loadAddSeminarForm() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="form-container">
+      <h2>Add New Seminar</h2>
+      <form id="seminarForm">
+        <div class="form-group">
+          <label for="seminarTitle">Seminar Title</label>
+          <input type="text" id="seminarTitle" required />
+        </div>
+        <div class="form-group">
+          <label for="seminarStart">Start Time</label>
+          <input type="datetime-local" id="seminarStart" required />
+        </div>
+        <div class="form-group">
+          <label for="seminarEnd">End Time</label>
+          <input type="datetime-local" id="seminarEnd" required />
+        </div>
+        <div class="form-group">
+          <label for="topicId">Topic ID</label>
+          <input type="number" id="topicId" required />
+        </div>
+        <div class="form-group">
+          <label for="speakerFname">Speaker First Name</label>
+          <input type="text" id="speakerFname" required />
+        </div>
+        <div class="form-group">
+          <label for="speakerLname">Speaker Last Name</label>
+          <input type="text" id="speakerLname" />
+        </div>
+        <button type="submit" class="btn-primary">Create Seminar</button>
+      </form>
+    </div>
+  `;
+
+  document.getElementById("seminarForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = {
+      e_name: document.getElementById("seminarTitle").value.trim(),
+      e_starttime: document.getElementById("seminarStart").value,
+      e_endtime: document.getElementById("seminarEnd").value,
+      t_id: parseInt(document.getElementById("topicId").value),
+      speaker_fname: document.getElementById("speakerFname").value.trim(),
+      speaker_lname: document.getElementById("speakerLname").value.trim()
+    };
+
+    fetch('../api/insert_event_seminar.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Seminar added successfully!');
+        loadManageSeminarContent(); // refresh
+      } else {
+        alert('Error: ' + data.message);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Failed to add seminar.');
+    });
+  });
+}
+
 
       // Load Manage Rooms Content
       function loadManageRoomsContent() {
