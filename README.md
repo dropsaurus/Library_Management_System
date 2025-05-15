@@ -166,15 +166,3 @@ For a detailed schema description, refer to the `JPN_PAL_DDL.sql` file.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contributors
-
-- Project Team
-- Database Design Team
-- UI/UX Design Team
-
-## Acknowledgments
-
-- Library staff for requirements and testing
-- Faculty advisors for guidance
-- Open source libraries used in this project
