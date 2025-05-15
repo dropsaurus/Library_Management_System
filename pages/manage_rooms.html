@@ -1,306 +1,202 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Rooms - Public Affirmation Library</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/theme-toggle.css">
-</head>
-<body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <h1>Public Affirmation Library</h1>
-      </div>
-      <div class="nav-buttons">
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12z"/>
-          </svg>
-          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/>
-          </svg>
-        </button>
-        <div class="dropdown">
-          <button class="btn dropdown-toggle" id="user-button">👤 Employee</button>
-          <div class="dropdown-content">
-            <a href="#" onclick="loadPage('employee_profile.html')">👤 Profile Settings</a>
-            <hr>
-            <a href="#" class="sign-out" onclick="logout()">🚪 Sign Out</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </header>
-
-  <main>
-    <div class="page-container">
-      <div class="page-header">
-        <button onclick="loadPage('employee_dashboard.html')" class="btn btn-back">← Back</button>
-        <h2>Manage Rooms</h2>
-      </div>
-
-      <!-- Add Room Form -->
-      <div class="form-section">
-        <h3>Add New Room</h3>
-        <form id="addRoomForm" class="grid-form">
-          <div class="form-group">
-            <label for="roomNumber">Room Number</label>
-            <input type="text" id="roomNumber" name="roomNumber" required>
-          </div>
-          <div class="form-group">
-            <label for="capacity">Capacity</label>
-            <input type="number" id="capacity" name="capacity" min="1" required>
-          </div>
-          <div class="form-group">
-            <label for="roomType">Room Type</label>
-            <select id="roomType" name="roomType" required>
-              <option value="study">Study Room</option>
-              <option value="meeting">Meeting Room</option>
-              <option value="conference">Conference Room</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="facilities">Facilities</label>
-            <div class="checkbox-group">
-              <label><input type="checkbox" name="facilities" value="projector"> Projector</label>
-              <label><input type="checkbox" name="facilities" value="whiteboard"> Whiteboard</label>
-              <label><input type="checkbox" name="facilities" value="computer"> Computer</label>
-              <label><input type="checkbox" name="facilities" value="printer"> Printer</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="status">Status</label>
-            <select id="status" name="status" required>
-              <option value="available">Available</option>
-              <option value="maintenance">Under Maintenance</option>
-              <option value="reserved">Reserved</option>
-            </select>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Add Room</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Rooms List -->
-      <div class="list-section">
-        <h3>Room List</h3>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Room Number</th>
-                <th>Type</th>
-                <th>Capacity</th>
-                <th>Facilities</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="roomsList">
-              <!-- Rooms will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </main>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Rooms</title>
+  <link rel="stylesheet" href="../css/style.css" />
   <style>
-    .page-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 2rem;
     }
 
-    .page-header {
-      margin-bottom: 30px;
-    }
-
-    .btn-back {
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 1rem;
-      padding: 8px 16px;
-      margin-bottom: 10px;
-    }
-
-    .grid-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      background: var(--surface);
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 30px;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: var(--text-primary);
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: var(--background);
-      color: var(--text-primary);
-    }
-
-    .checkbox-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 10px;
-    }
-
-    .checkbox-group label {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .form-actions {
-      grid-column: 1 / -1;
-      text-align: right;
+    h2 {
+      margin-bottom: 1rem;
     }
 
     .table-container {
-      overflow-x: auto;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    .data-table {
+    table {
       width: 100%;
       border-collapse: collapse;
-      background: var(--surface);
-      border-radius: 8px;
-      overflow: hidden;
+      margin-top: 1rem;
     }
 
-    .data-table th,
-    .data-table td {
-      padding: 12px;
+    th, td {
+      padding: 0.75rem;
       text-align: left;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #e9ecef;
     }
 
-    .data-table th {
-      background: var(--surface-variant);
-      font-weight: 500;
-    }
-
-    .data-table tr:hover {
-      background: var(--surface-variant);
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 8px;
+    th {
+      background: #f1f3f5;
     }
 
     .btn {
-      padding: 8px 16px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.9rem;
-      transition: background-color 0.2s;
     }
 
     .btn-primary {
-      background: var(--accent-primary);
+      background-color: #0d6efd;
       color: white;
     }
 
-    .btn-edit {
-      background: var(--accent-secondary);
+    .btn-danger {
+      background-color: #dc3545;
       color: white;
     }
 
-    .btn-delete {
-      background: var(--error);
-      color: white;
+    .form-inline {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-inline input, .form-inline select {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .status-select {
+      padding: 0.4rem;
     }
   </style>
+</head>
+<body>
+  <h2>Manage Rooms</h2>
 
-  <script src="../js/theme-toggle.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      loadRooms();
-      setupFormHandlers();
-    });
+  <!-- Add Room Form -->
+  <div class="form-inline">
+    <input type="text" id="roomIdInput" placeholder="Room ID" required />
+    <input type="number" id="roomCapacityInput" placeholder="Capacity" required />
+    <select id="roomStatusInput">
+      <option value="Available">Available</option>
+      <option value="Unavailable">Unavailable</option>
+    </select>
+    <button class="btn btn-primary" onclick="addRoom()">Add Room</button>
+  </div>
 
-    function loadRooms() {
-      // 这里添加加载房间列表的逻辑
-      const roomsList = document.getElementById('roomsList');
-      // 示例数据
-      const rooms = [
-        {
-          roomNumber: '101',
-          type: 'Study Room',
-          capacity: 4,
-          facilities: ['Whiteboard', 'Computer'],
-          status: 'Available'
-        },
-        // 添加更多房间数据...
-      ];
-
-      roomsList.innerHTML = rooms.map(room => `
+  <!-- Room Table -->
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-          <td>${room.roomNumber}</td>
-          <td>${room.type}</td>
-          <td>${room.capacity}</td>
-          <td>${room.facilities.join(', ')}</td>
-          <td>${room.status}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn btn-edit" onclick="editRoom('${room.roomNumber}')">Edit</button>
-              <button class="btn btn-delete" onclick="deleteRoom('${room.roomNumber}')">Delete</button>
-            </div>
-          </td>
+          <th>Room ID</th>
+          <th>Capacity</th>
+          <th>Status</th>
+          <th>Actions</th>
         </tr>
-      `).join('');
+      </thead>
+      <tbody id="roomTableBody"></tbody>
+    </table>
+    <p id="noDataMsg" style="text-align: center; color: #888; display: none;">No rooms found.</p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', loadRooms);
+
+    async function loadRooms() {
+      const tbody = document.getElementById('roomTableBody');
+      const msg = document.getElementById('noDataMsg');
+      tbody.innerHTML = '';
+      msg.style.display = 'none';
+
+      const res = await fetch('../api/get_rooms.php');
+      const data = await res.json();
+
+      if (data.status === 'success' && data.data.length > 0) {
+        data.data.forEach(room => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${room.ROOM_ID}</td>
+            <td>${room.ROOM_CAPACITY}</td>
+            <td>
+              <select class="status-select" onchange="updateStatus('${room.ROOM_ID}', this.value)">
+                <option value="Available" ${room.STATUS === 'Available' ? 'selected' : ''}>Available</option>
+                <option value="Unavailable" ${room.STATUS === 'Unavailable' ? 'selected' : ''}>Unavailable</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-danger" onclick="deleteRoom('${room.ROOM_ID}')">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        msg.style.display = 'block';
+      }
     }
 
-    function setupFormHandlers() {
-      const addRoomForm = document.getElementById('addRoomForm');
-      addRoomForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        // 这里添加提交表单的逻辑
-        console.log('Form submitted');
+    async function addRoom() {
+      const roomId = document.getElementById('roomIdInput').value.trim();
+      const capacity = document.getElementById('roomCapacityInput').value;
+      const status = document.getElementById('roomStatusInput').value;
+
+      if (!roomId || !capacity) {
+        alert('Please fill all fields.');
+        return;
+      }
+
+      const res = await fetch('../api/add_room.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ room_id: roomId, room_capacity: capacity, status })
       });
+
+      const result = await res.json();
+      if (result.status === 'success') {
+        alert('Room added successfully.');
+        loadRooms();
+      } else {
+        alert('Error: ' + result.message);
+      }
     }
 
-    function editRoom(roomNumber) {
-      // 这里添加编辑房间的逻辑
-      console.log('Edit room:', roomNumber);
+    async function deleteRoom(roomId) {
+      if (!confirm(`Are you sure you want to delete room ${roomId}?`)) return;
+
+      const res = await fetch('../api/delete_room.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ room_id: roomId })
+      });
+
+      const result = await res.json();
+      if (result.status === 'success') {
+        alert('Room deleted.');
+        loadRooms();
+      } else {
+        alert('Error: ' + result.message);
+      }
     }
 
-    function deleteRoom(roomNumber) {
-      // 这里添加删除房间的逻辑
-      console.log('Delete room:', roomNumber);
-    }
+    async function updateStatus(roomId, status) {
+      const res = await fetch('../api/update_room_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ room_id: roomId, status })
+      });
 
-    function loadPage(url) {
-      window.location.href = url;
-    }
-
-    function logout() {
-      // 这里添加登出逻辑
-      window.location.href = 'login.html';
+      const result = await res.json();
+      if (result.status !== 'success') {
+        alert('Error updating status: ' + result.message);
+        loadRooms(); // rollback to original status
+      }
     }
   </script>
 </body>
-</html> 
+</html>
