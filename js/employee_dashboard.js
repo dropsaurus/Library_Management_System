@@ -104,8 +104,14 @@
             break;
 
             case "manage_seminar_reservations":
-            loadManageSeminarReservationContent()
+            loadManageSeminarReservationContent();
             break;
+
+            case "manage_room_bookings":
+            loadManageRoomBookingsContent();
+            break;
+
+
         }
       }
 
@@ -1035,7 +1041,6 @@ function loadManageExhibitionReservationContent() {
 function loadManageSeminarReservationContent() {
   const pageContent = document.getElementById("pageContent");
   pageContent.innerHTML = `
-    <h2>Seminar Reservations</h2>
     <div class="table-container">
       <table class="data-table">
         <thead>
@@ -1316,7 +1321,6 @@ function loadAddRoomForm() {
     </div>
   `;
 
-  // ✅ Add event listener AFTER the HTML has been set
   const form = document.getElementById("addAuthorForm");
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -1353,4 +1357,74 @@ function loadAddRoomForm() {
       alert('Request failed.');
     });
   });
+
+
+}
+
+function loadManageRoomBookingsContent() {
+
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = ""; 
+
+  pageContent.innerHTML = `
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reservation ID</th>
+            <th>Customer</th>
+            <th>Room ID</th>
+            <th>Capacity</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>People</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="roomBookingTableBody">
+          <tr><td colspan="9">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch("../api/get_room_bookings.php")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("roomBookingTableBody");
+      if (!tbody) return;
+
+      if (data.status === "success") {
+        tbody.innerHTML = "";
+        data.data.forEach(booking => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${booking.RES_ID}</td>
+            <td>${booking.customer_name}</td>
+            <td>${booking.ROOM_ID}</td>
+            <td>${booking.ROOM_CAPACITY}</td>
+            <td>${booking.RES_STARTTIME}</td>
+            <td>${booking.RES_ENDTIME}</td>
+            <td>${booking.RES_COUNT}</td>
+            <td>${booking.RES_DESC}</td>
+            <td>
+              <button class="btn btn-sm btn-danger" onclick="deleteRoomBooking(${booking.RES_ID})">
+                Delete
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="9">Failed to load room bookings.</td></tr>`;
+      }
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+      const tbody = document.getElementById("roomBookingTableBody");
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="9">Error loading data.</td></tr>`;
+      }
+    });
 }
