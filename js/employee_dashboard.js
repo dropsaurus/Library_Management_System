@@ -405,10 +405,6 @@ function loadManageEmployeesContent() {
 function loadManageBooksContent() {
   const pageContent = document.getElementById("pageContent");
   pageContent.innerHTML = `
-    <div class="content-header">
-      <button class="btn-primary" id="newBookBtn">Add New Book</button>
-    </div>
-    
     <div class="table-container">
       <table class="data-table">
         <thead>
@@ -426,10 +422,6 @@ function loadManageBooksContent() {
       </table>
     </div>
   `;
-
-  document
-    .getElementById("newBookBtn")
-    .addEventListener("click", loadAddBookForm);
 
   fetch("../api/get_books.php")
     .then((res) => res.json())
