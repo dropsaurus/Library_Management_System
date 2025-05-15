@@ -100,6 +100,15 @@
           opacity: 1;
         }
       }
+      
+      /* Override spacing to match index.html */
+      .nav-buttons {
+        gap: 1rem;
+      }
+      
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -107,6 +116,11 @@
       <nav class="navbar">
         <div class="logo"><h1>Public Affirmation Library</h1></div>
         <div class="nav-buttons">
+          <a href="../index.html" class="btn">Home</a>
+          <a href="contact.html" class="btn">Contact</a>
+          <a href="reservation.html" class="btn">Reservation</a>
+          <a href="register.html" class="btn">Register</a>
+          <a href="login.html" class="btn">Login</a>
           <button
             class="theme-toggle"
             onclick="toggleTheme()"
@@ -127,13 +141,10 @@
               viewBox="0 0 24 24"
             >
               <path
-                fill-rule="evenodd"
                 d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
-                clip-rule="evenodd"
               />
             </svg>
           </button>
-          <a href="../index.html" class="btn">Home</a>
         </div>
       </nav>
     </header>
@@ -166,13 +177,22 @@
               <option value="">Loading seminars...</option>
             </select>
           </div>
-
+          
           <div class="form-group">
-            <label for="fname">First Name *</label>
-            <input type="text" id="fname" required />
+            <label for="sponsorType">Sponsor Type *</label>
+            <select id="sponsorType" required>
+              <option value="">-- Select Sponsor Type --</option>
+              <option value="Individual">Individual</option>
+              <option value="Organization">Organization</option>
+            </select>
           </div>
 
           <div class="form-group">
+            <label for="fname" id="fnameLabel">First Name *</label>
+            <input type="text" id="fname" required />
+          </div>
+
+          <div class="form-group" id="lnameGroup">
             <label for="lname">Last Name *</label>
             <input type="text" id="lname" required />
           </div>
@@ -198,7 +218,27 @@
       document.addEventListener("DOMContentLoaded", () => {
         initializeTheme();
         loadSeminars();
+        setupSponsorTypeChange();
       });
+      
+      function setupSponsorTypeChange() {
+        const sponsorType = document.getElementById("sponsorType");
+        const lnameGroup = document.getElementById("lnameGroup");
+        const lnameInput = document.getElementById("lname");
+        const fnameLabel = document.getElementById("fnameLabel");
+        
+        sponsorType.addEventListener("change", function() {
+          if (this.value === "Organization") {
+            lnameGroup.classList.add("hidden");
+            lnameInput.removeAttribute("required");
+            fnameLabel.textContent = "Organization Name *";
+          } else {
+            lnameGroup.classList.remove("hidden");
+            lnameInput.setAttribute("required", "");
+            fnameLabel.textContent = "First Name *";
+          }
+        });
+      }
 
       function loadSeminars() {
         fetch("../api/get_seminars.php")
@@ -229,25 +269,60 @@
       function handleSponsor(e) {
         e.preventDefault();
         const seminarId = document.getElementById("seminarSelect").value;
+        const sponsorType = document.getElementById("sponsorType").value;
         const fname = document.getElementById("fname").value;
-        const lname = document.getElementById("lname").value;
+        const lname = document.getElementById("lname").value || ""; // Empty string if no last name (for organizations)
         const amount = document.getElementById("amount").value;
 
         if (!seminarId) {
           alert("Please select a seminar.");
           return;
         }
+        
+        if (!sponsorType) {
+          alert("Please select sponsor type.");
+          return;
+        }
 
         const resultMsg = document.getElementById("resultMessage");
-        resultMsg.textContent = `Thank you, ${fname} ${lname}, for sponsoring seminar ID ${seminarId} with $${amount}!`;
-        resultMsg.classList.add("show");
-
-        document.getElementById("sponsorForm").reset();
-
-        // Hide the message after 5 seconds
-        setTimeout(() => {
-          resultMsg.classList.remove("show");
-        }, 5000);
+        
+        // Create a sponsor record via API
+        fetch('../api/insert_sponsor.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sp_fname: fname,
+            sp_lname: lname,
+            sp_type: sponsorType
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            // Different message based on sponsor type
+            if (sponsorType === "Individual") {
+              resultMsg.textContent = `Thank you, ${fname} ${lname}, for sponsoring seminar ID ${seminarId} with $${amount}!`;
+            } else {
+              resultMsg.textContent = `Thank you, ${fname}, for sponsoring seminar ID ${seminarId} with $${amount}!`;
+            }
+            
+            resultMsg.classList.add("show");
+            document.getElementById("sponsorForm").reset();
+            
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+              resultMsg.classList.remove("show");
+            }, 5000);
+          } else {
+            alert(`Error: ${data.message}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while submitting your sponsorship. Please try again later.');
+        });
       }
     </script>
   </body>

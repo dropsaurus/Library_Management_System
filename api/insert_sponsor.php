@@ -14,12 +14,24 @@ require_once '../config/db_connect.php';
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!isset($data['sp_fname']) || !isset($data['sp_lname']) || !isset($data['sp_type'])) {
+    if (!isset($data['sp_fname']) || !isset($data['sp_type'])) {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Missing required fields: sp_fname, sp_lname, or sp_type'
+            'message' => 'Missing required fields: sp_fname or sp_type'
         ]);
         exit;
+    }
+
+    // For organization type, sp_lname can be empty
+    $sp_lname = '';
+    if ($data['sp_type'] === 'Individual' && (!isset($data['sp_lname']) || empty($data['sp_lname']))) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Last name is required for Individual sponsor type'
+        ]);
+        exit;
+    } else if (isset($data['sp_lname'])) {
+        $sp_lname = $data['sp_lname'];
     }
 
     $stmt = $pdo->prepare("
@@ -29,7 +41,7 @@ try {
 
     $stmt->execute([
         ':sp_fname' => $data['sp_fname'],
-        ':sp_lname' => $data['sp_lname'],
+        ':sp_lname' => $sp_lname,
         ':sp_type' => $data['sp_type']
     ]);
 
