@@ -3,14 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Book Reservations - Public Affirmation Library</title>
+    <title>Room Reservations - Public Affirmation Library</title>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme-toggle.css" />
     <link rel="stylesheet" href="../css/reservation.css" />
+    <link rel="stylesheet" href="../css/rooms.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Override any custom styles and use exact same nav spacing as index.html */
+      header .nav-buttons {
+        /* Remove any custom gap or spacing to use default from style.css */
+        display: flex;
+        align-items: center;
+        gap: 1rem; /* Match the gap from index.html */
+      }
+      
+      /* Ensure buttons have exact same dimensions and spacing */
+      header .nav-buttons .btn {
+        padding: 0.75rem 1.5rem;
+        margin: 0;
+      }
+      
+      /* Ensure theme toggle button is the same */
+      header .nav-buttons .theme-toggle {
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Mobile responsiveness should match index.html */
+      @media (max-width: 768px) {
+        header .nav-buttons {
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -19,6 +49,11 @@
           <h1>Public Affirmation Library</h1>
         </div>
         <div class="nav-buttons">
+          <a href="../index.html" class="btn">Home</a>
+          <a href="contact.html" class="btn">Contact</a>
+          <a href="sponsor.html" class="btn">Sponsor</a>
+          <a href="register.html" class="btn">Register</a>
+          <a href="login.html" class="btn">Login</a>
           <button
             class="theme-toggle"
             onclick="toggleTheme()"
@@ -43,8 +78,6 @@
               />
             </svg>
           </button>
-          <a href="../index.html" class="btn">Home</a>
-          <a href="login.html" class="btn">Logout</a>
         </div>
       </nav>
     </header>
@@ -67,10 +100,10 @@
               stroke-linejoin="round"
             />
           </svg>
-          Book Reservations
+          Room Reservations
         </h2>
         <p>
-          Browse and reserve books from our extensive collection, or manage your
+          Browse and reserve study rooms from our library, or manage your
           existing reservations.
         </p>
       </div>
@@ -79,7 +112,8 @@
         <div class="reservation-tabs">
           <button
             class="tab-button active"
-            onclick="switchTab('available-books')"
+            data-tab="available-rooms"
+            onclick="switchTab('available-rooms')"
           >
             <svg
               width="18"
@@ -89,16 +123,20 @@
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                 stroke="currentColor"
                 stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
             </svg>
-            Available Books
+            Available Rooms
           </button>
-          <button class="tab-button" onclick="switchTab('my-reservations')">
+          <button 
+            class="tab-button" 
+            data-tab="my-reservations"
+            onclick="switchTab('my-reservations'); loadMyReservations();"
+          >
             <svg
               width="18"
               height="18"
@@ -118,37 +156,10 @@
           </button>
         </div>
 
-        <div id="available-books" class="tab-content">
+        <div id="available-rooms" class="tab-content">
           <div class="search-filters">
             <div class="filter-group">
-              <label for="category">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                Category
-              </label>
-              <select id="category">
-                <option value="">All Categories</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-Fiction</option>
-                <option value="science">Science</option>
-                <option value="history">History</option>
-              </select>
-            </div>
-            <div class="filter-group">
-              <label for="author">
+              <label for="capacity">
                 <svg
                   width="16"
                   height="16"
@@ -164,12 +175,18 @@
                     stroke-linejoin="round"
                   />
                 </svg>
-                Author
+                Capacity
               </label>
-              <input type="text" id="author" placeholder="Search by author" />
+              <select id="capacity">
+                <option value="">Any Capacity</option>
+                <option value="5">&lt;5 People</option>
+                <option value="10">&lt;10 People</option>
+                <option value="15">&lt;15 People</option>
+                <option value="20">&lt;20 People</option>
+              </select>
             </div>
             <div class="filter-group">
-              <label for="availability">
+              <label for="date">
                 <svg
                   width="16"
                   height="16"
@@ -178,21 +195,37 @@
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
                     stroke="currentColor"
                     stroke-width="1.5"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                 </svg>
-                Availability
+                Date
               </label>
-              <select id="availability">
-                <option value="">All</option>
-                <option value="available">Available</option>
-                <option value="reserved">Reserved</option>
-                <option value="borrowed">Borrowed</option>
-              </select>
+              <input type="date" id="date" min="" />
+            </div>
+            <div class="filter-group">
+              <label for="time">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Time
+              </label>
+              <input type="time" id="time" />
             </div>
             <div class="filter-group">
               <label for="search">
@@ -216,576 +249,46 @@
               <input
                 type="text"
                 id="search"
-                placeholder="Search by title, ISBN..."
+                placeholder="Search by room number..."
               />
             </div>
           </div>
 
-          <div class="books-grid">
-            <!-- Sample Book Cards -->
-            <div class="book-card">
-              <div class="book-details">
-                <h3 class="book-title">The Great Gatsby</h3>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
+          <div id="rooms-grid" class="rooms-grid">
+            <!-- Room cards will be loaded here by JavaScript -->
+            <div class="room-card">
+              <div class="room-details">
+                <h3 class="room-title">Room 101</h3>
+                <p class="room-info">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" 
+                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
-                  Author: F. Scott Fitzgerald
+                  Capacity: 5 people
                 </p>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
+                <p class="room-info">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
-                  ISBN: 9780743273565
+                  Status: <span class="status-available">Available</span>
                 </p>
-                <span class="book-status status-available">Available</span>
-                <button
-                  class="reservation-button"
-                  onclick="openReservationModal(this)"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
+                <button class="reservation-button" onclick="reserveRoom(101)">
+                  Reserve Room
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" 
+                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
-                  Reserve Book
-                </button>
-              </div>
-            </div>
-
-            <div class="book-card">
-              <div class="book-details">
-                <h3 class="book-title">1984</h3>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Author: George Orwell
-                </p>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  ISBN: 9780451524935
-                </p>
-                <span class="book-status status-reserved">Reserved</span>
-                <button class="reservation-button" disabled>Reserved</button>
-              </div>
-            </div>
-
-            <div class="book-card">
-              <div class="book-details">
-                <h3 class="book-title">To Kill a Mockingbird</h3>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Author: Harper Lee
-                </p>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  ISBN: 9780446310789
-                </p>
-                <span class="book-status status-available">Available</span>
-                <button
-                  class="reservation-button"
-                  onclick="openReservationModal(this)"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Reserve Book
-                </button>
-              </div>
-            </div>
-
-            <div class="book-card">
-              <div class="book-details">
-                <h3 class="book-title">The Hobbit</h3>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Author: J.R.R. Tolkien
-                </p>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  ISBN: 9780547928227
-                </p>
-                <span class="book-status status-borrowed">Borrowed</span>
-                <button class="reservation-button" disabled>Borrowed</button>
-              </div>
-            </div>
-
-            <div class="book-card">
-              <div class="book-details">
-                <h3 class="book-title">The Catcher in the Rye</h3>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Author: J.D. Salinger
-                </p>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  ISBN: 9780316769488
-                </p>
-                <span class="book-status status-available">Available</span>
-                <button
-                  class="reservation-button"
-                  onclick="openReservationModal(this)"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Reserve Book
-                </button>
-              </div>
-            </div>
-
-            <div class="book-card">
-              <div class="book-details">
-                <h3 class="book-title">Pride and Prejudice</h3>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Author: Jane Austen
-                </p>
-                <p class="book-info">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  ISBN: 9780141439518
-                </p>
-                <span class="book-status status-available">Available</span>
-                <button
-                  class="reservation-button"
-                  onclick="openReservationModal(this)"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  Reserve Book
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div id="my-reservations" class="tab-content" style="display: none">
-          <table class="reservation-table">
-            <thead>
-              <tr>
-                <th>Book Title</th>
-                <th>Reservation Date</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>To Kill a Mockingbird</td>
-                <td>2024-03-15</td>
-                <td>2024-03-29</td>
-                <td>
-                  <span class="book-status status-reserved">Reserved</span>
-                </td>
-                <td>
-                  <button
-                    class="cancel-reservation"
-                    onclick="cancelReservation(this)"
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6 18L18 6M6 6l12 12"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    Cancel
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Reservation Modal -->
-      <div id="reservationModal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Confirm Reservation
-            </h2>
-          </div>
-          <div class="reservation-details">
-            <p>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <strong>Book:</strong> <span id="modal-book-title"></span>
-            </p>
-            <p>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <strong>Author:</strong> <span id="modal-book-author"></span>
-            </p>
-            <p>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM16.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM13.5 16.5h.75v.75h-.75v-.75z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <strong>ISBN:</strong> <span id="modal-book-isbn"></span>
-            </p>
-            <p>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <strong>Reservation Period:</strong> 14 days
-            </p>
-          </div>
-          <div class="modal-buttons">
-            <button class="btn" onclick="closeModal()">Cancel</button>
-            <button
-              class="btn reservation-button"
-              onclick="confirmReservation()"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              Confirm Reservation
-            </button>
+        <div id="my-reservations" class="tab-content" style="display: none;">
+          <div id="my-reservations-content">
+            <!-- Reservations will be loaded here by JavaScript -->
+            <p>Loading your reservations...</p>
           </div>
         </div>
       </div>
@@ -795,134 +298,31 @@
       <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
     </footer>
 
-    <script src="../js/theme-toggle.js"></script>
     <script>
-      // Tab switching functionality
+      // Set minimum date to today for the date input
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('date').min = today;
+      
       function switchTab(tabId) {
-        const tabs = document.getElementsByClassName("tab-content");
-        for (let tab of tabs) {
-          tab.style.display = "none";
-        }
-        document.getElementById(tabId).style.display = "block";
-
-        const buttons = document.getElementsByClassName("tab-button");
-        for (let button of buttons) {
-          button.classList.remove("active");
-        }
-        event.target.classList.add("active");
-      }
-
-      // Filter functionality
-      const filterInputs = document.querySelectorAll(
-        ".search-filters input, .search-filters select"
-      );
-      filterInputs.forEach((input) => {
-        input.addEventListener("input", filterBooks);
-      });
-
-      function filterBooks() {
-        const category = document
-          .getElementById("category")
-          .value.toLowerCase();
-        const author = document.getElementById("author").value.toLowerCase();
-        const availability = document
-          .getElementById("availability")
-          .value.toLowerCase();
-        const search = document.getElementById("search").value.toLowerCase();
-
-        const books = document.getElementsByClassName("book-card");
-
-        for (let book of books) {
-          const bookTitle = book
-            .querySelector(".book-title")
-            .textContent.toLowerCase();
-          const bookAuthor = book
-            .querySelector(".book-info")
-            .textContent.toLowerCase();
-          const bookStatus = book
-            .querySelector(".book-status")
-            .textContent.toLowerCase();
-
-          const matchesCategory = !category || bookTitle.includes(category);
-          const matchesAuthor = !author || bookAuthor.includes(author);
-          const matchesAvailability =
-            !availability || bookStatus.includes(availability);
-          const matchesSearch =
-            !search ||
-            bookTitle.includes(search) ||
-            bookAuthor.includes(search);
-
-          book.style.display =
-            matchesCategory &&
-            matchesAuthor &&
-            matchesAvailability &&
-            matchesSearch
-              ? ""
-              : "none";
-        }
-      }
-
-      // Modal functionality
-      function openReservationModal(button) {
-        const bookCard = button.closest(".book-card");
-        const title = bookCard.querySelector(".book-title").textContent;
-        const authorInfo =
-          bookCard.querySelectorAll(".book-info")[0].textContent;
-        const isbn = bookCard.querySelectorAll(".book-info")[1].textContent;
-
-        document.getElementById("modal-book-title").textContent = title;
-        document.getElementById("modal-book-author").textContent =
-          authorInfo.replace("Author: ", "");
-        document.getElementById("modal-book-isbn").textContent = isbn.replace(
-          "ISBN: ",
-          ""
-        );
-
-        document.getElementById("reservationModal").style.display = "block";
-      }
-
-      function closeModal() {
-        document.getElementById("reservationModal").style.display = "none";
-      }
-
-      function confirmReservation() {
-        const title = document.getElementById("modal-book-title").textContent;
-        // Here you would typically make an API call to your backend
-        alert(`Book "${title}" has been reserved successfully!`);
-        closeModal();
-
-        // Refresh the book's status
-        const books = document.getElementsByClassName("book-card");
-        for (let book of books) {
-          if (book.querySelector(".book-title").textContent === title) {
-            book.querySelector(".book-status").className =
-              "book-status status-reserved";
-            book.querySelector(".book-status").textContent = "Reserved";
-            book.querySelector(".reservation-button").disabled = true;
-            book.querySelector(".reservation-button").textContent = "Reserved";
-            book.querySelector(".reservation-button").innerHTML = "Reserved";
-            break;
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.style.display = 'none';
+        });
+        
+        // Show selected tab content
+        document.getElementById(tabId).style.display = 'block';
+        
+        // Update active tab button
+        document.querySelectorAll('.tab-button').forEach(button => {
+          if (button.getAttribute('data-tab') === tabId) {
+            button.classList.add('active');
+          } else {
+            button.classList.remove('active');
           }
-        }
+        });
       }
-
-      function cancelReservation(button) {
-        if (confirm("Are you sure you want to cancel this reservation?")) {
-          // Here you would typically make an API call to your backend
-          button.closest("tr").remove();
-        }
-      }
-
-      // Close modal when clicking outside
-      window.onclick = function (event) {
-        const modal = document.getElementById("reservationModal");
-        if (event.target === modal) {
-          closeModal();
-        }
-      };
-
-      // Initialize theme on page load
-      document.addEventListener("DOMContentLoaded", initializeTheme);
     </script>
+    <script src="../js/theme-toggle.js"></script>
+    <script src="../js/reservation.js"></script>
   </body>
 </html>

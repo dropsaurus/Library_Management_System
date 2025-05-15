@@ -1,0 +1,268 @@
+/* Room Cards Styling */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.room-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  border-color: var(--accent-primary);
+}
+
+.room-details {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.room-title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.room-info {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.room-info svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-primary);
+}
+
+.room-status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 25px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.status-available {
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+.status-occupied {
+  color: var(--error-color);
+  font-weight: 500;
+}
+
+.status-maintenance {
+  color: var(--warning-color);
+  font-weight: 500;
+}
+
+.reservation-button {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--accent-primary);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.reservation-button svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.reservation-button:hover {
+  background-color: var(--accent-secondary);
+}
+
+.reservation-button:hover svg {
+  transform: translateX(4px);
+}
+
+.reservation-button:disabled {
+  background-color: var(--text-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Reservation form */
+.reservation-form {
+  max-width: 700px;
+  margin: 2rem auto;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--accent-primary);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.submit-button:hover {
+  background-color: var(--accent-secondary);
+}
+
+/* Response messages */
+.success-message, 
+.error-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: none;
+}
+
+.success-message {
+  background-color: rgba(var(--success-color-rgb), 0.1);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.error-message {
+  background-color: rgba(var(--error-color-rgb), 0.1);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .rooms-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .reservation-form {
+    padding: 1.5rem;
+  }
+}
+
+/* Login prompt */
+.login-prompt {
+  text-align: center;
+  padding: 2rem;
+  margin: 1rem auto;
+  max-width: 500px;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.login-prompt p {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.login-prompt .btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: var(--accent-primary);
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.login-prompt .btn:hover {
+  background-color: var(--accent-secondary);
+  transform: translateY(-2px);
+}
+
+/* Loading indicator */
+.loading-indicator {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.loading-indicator p {
+  margin: 0;
+  font-size: 1.1rem;
+} 
