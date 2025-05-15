@@ -3,13 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Public Affirmation Library</title>
+    <title>Sign in - Public Affirmation Library</title>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme-toggle.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Match spacing from index.html */
+      .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      @media (max-width: 768px) {
+        .nav-buttons {
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -18,6 +33,11 @@
           <h1>Public Affirmation Library</h1>
         </div>
         <div class="nav-buttons">
+          <a href="../index.html" class="btn">Home</a>
+          <a href="contact.html" class="btn">Contact</a>
+          <a href="reservation.html" class="btn">Reservation</a>
+          <a href="sponsor.html" class="btn">Sponsor</a>
+          <a href="register.html" class="btn">Register</a>
           <button
             class="theme-toggle"
             onclick="toggleTheme()"
@@ -42,22 +62,19 @@
               />
             </svg>
           </button>
-          <a href="../index.html" class="btn">Home</a>
         </div>
       </nav>
     </header>
 
     <main>
-      <div class="hero-section">
-        <h2>Welcome Back</h2>
-        <p>Sign in to access your library account</p>
-      </div>
-
       <div
         class="form-container"
         style="max-width: 400px; margin: 2rem auto; padding: 0 1rem"
       >
         <form id="loginForm" class="card" style="padding: 2rem">
+          <h2 style="text-align: center; margin-bottom: 0.5rem;">Welcome</h2>
+          <p style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary);">Sign in to access library account</p>
+          
           <div class="form-group">
             <label class="form-label" for="email">Email Address</label>
             <input type="email" id="email" class="form-control" required />
