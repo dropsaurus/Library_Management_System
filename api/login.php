@@ -46,21 +46,36 @@ try {
         $_SESSION['USER_ID'] = $user['U_ID'];
         $_SESSION['ROLE'] = $user['ROLE_NAME'];
 
-        // Set redirect based on role
-        $redirect = 'pages/customer_dashboard.html';
-        if ($user['ROLE_NAME'] === 'EMPLOYEE') {
-            $redirect = 'pages/employee_dashboard.html';
+        // Check all roles of the user to determine the appropriate dashboard
+        // Get all roles for this user
+        $rolesStmt = $pdo->prepare("
+            SELECT r.ROLE_NAME 
+            FROM JPN_USER_ROLE ur
+            JOIN JPN_ROLE r ON ur.ROLE_ID = r.ROLE_ID
+            WHERE ur.U_ID = :uid
+        ");
+        $rolesStmt->execute([':uid' => $user['U_ID']]);
+        $roles = $rolesStmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        // Set redirect based on role priority: Employee > Author > Customer
+        // Using relative paths without leading slash
+        $redirect = '../pages/employee_dashboard.html'; // Default
+        
+        if (in_array('EMPLOYEE', $roles)) {
+            $redirect = '../pages/employee_dashboard.html';
+        } elseif (in_array('AUTHOR', $roles)) {
+            $redirect = '../pages/author_dashboard.html';
+        } elseif (in_array('CUSTOMER', $roles)) {
+            $redirect = '../pages/customer_dashboard.html';
         }
 
-        // Check if user is also an author for additional privileges
-        $isAuthor = false;
-        $isSponsor = false;
-        
-        $authorCheck = $pdo->prepare("SELECT 1 FROM JPN_AUTHOR WHERE A_ID = :uid");
-        $authorCheck->execute([':uid' => $user['U_ID']]);
-        if ($authorCheck->fetch()) {
-            $isAuthor = true;
-        }
+        // Check if user is also an author for additional privileges (for UI customization)
+        $isAuthor = in_array('AUTHOR', $roles);
+        $isSponsor = false; // Could add similar check for sponsor role if needed
+
+        // Log the values for debugging
+        error_log("User roles: " . implode(", ", $roles));
+        error_log("Redirect path: $redirect");
 
         // Return user information
         echo json_encode([
@@ -69,6 +84,7 @@ try {
             'user_fname' => $user['U_FNAME'],
             'user_lname' => $user['U_LNAME'],
             'role' => $user['ROLE_NAME'],
+            'all_roles' => $roles,
             'is_author' => $isAuthor,
             'is_sponsor' => $isSponsor,
             'redirect' => $redirect
@@ -80,6 +96,7 @@ try {
         ]);
     }
 } catch (Exception $e) {
+    error_log("Login error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
