@@ -24,6 +24,20 @@
       #authorFields {
         display: none;
       }
+      
+      /* Match spacing from index.html */
+      .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      @media (max-width: 768px) {
+        .nav-buttons {
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+      }
     </style>
   </head>
   <body>
@@ -33,6 +47,11 @@
           <h1>Public Affirmation Library</h1>
         </div>
         <div class="nav-buttons">
+          <a href="../index.html" class="btn">Home</a>
+          <a href="contact.html" class="btn">Contact</a>
+          <a href="reservation.html" class="btn">Reservation</a>
+          <a href="sponsor.html" class="btn">Sponsor</a>
+          <a href="login.html" class="btn">Login</a>
           <button
             class="theme-toggle"
             onclick="toggleTheme()"
@@ -58,12 +77,6 @@
                 clip-rule="evenodd"
               />
             </svg>
-          </button>
-          <button onclick="location.href='../index.html'" class="btn">
-            Home
-          </button>
-          <button onclick="location.href='login.html'" class="btn">
-            Login
           </button>
         </div>
       </nav>
