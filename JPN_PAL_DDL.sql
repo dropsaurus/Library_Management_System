@@ -710,10 +710,28 @@ END;
 
 DELIMITER ;
 
--- Set delimiter for trigger TU_JPN_RENTAL_GENERATE_INVOICE definition.
-
+-- Set delimiter for trigger definitions
 DELIMITER //
 
+-- Create a BEFORE UPDATE trigger to update status based on actual return date
+CREATE TRIGGER TU_JPN_RENTAL_SET_RETURNDATE
+BEFORE UPDATE ON JPN_RENTAL
+FOR EACH ROW
+BEGIN
+    -- If actual return date is not null, update the status based on comparison
+    IF NEW.R_AC_RETURNDATE IS NOT NULL THEN
+        -- If returned on time or early
+        IF NEW.R_AC_RETURNDATE <= NEW.R_EX_RETURNDATE THEN
+            SET NEW.R_STATUS = 'RETURNED';
+        -- If returned late
+        ELSE
+            SET NEW.R_STATUS = 'LATE';
+        END IF;
+    END IF;
+END;
+//
+
+-- Create the AFTER UPDATE trigger for invoice generation
 CREATE TRIGGER TU_JPN_RENTAL_GENERATE_INVOICE
 AFTER UPDATE ON JPN_RENTAL
 FOR EACH ROW
