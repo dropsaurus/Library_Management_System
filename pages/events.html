@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Events - Public Affirmation Library</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme-toggle.css" />
     <link rel="stylesheet" href="../css/events.css" />
@@ -16,9 +19,38 @@
           <h1>Public Affirmation Library</h1>
         </div>
         <div class="nav-buttons">
-          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
-          <button onclick="location.href='../index.html'" class="btn">Home</button>
-          <button onclick="location.href='login.html'" class="btn">Login</button>
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 011.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          <button onclick="location.href='../index.html'" class="btn">
+            Home
+          </button>
+          <button onclick="location.href='login.html'" class="btn">
+            Login
+          </button>
         </div>
       </nav>
     </header>
@@ -32,7 +64,9 @@
       <div class="filter-buttons">
         <button class="btn" onclick="renderEvents('all')">All Events</button>
         <button class="btn" onclick="renderEvents('Seminar')">Seminars</button>
-        <button class="btn" onclick="renderEvents('Exhibition')">Exhibitions</button>
+        <button class="btn" onclick="renderEvents('Exhibition')">
+          Exhibitions
+        </button>
       </div>
 
       <div id="eventCards" class="events-grid"></div>
@@ -81,7 +115,7 @@
       function renderEvents(filter) {
         const container = document.getElementById("eventCards");
         container.innerHTML = "";
-        
+
         if (seminars.length === 0 && exhibitions.length === 0) {
           container.innerHTML = `<div class="no-events-message"><p>No events found. Please check back later.</p></div>`;
           return;
@@ -108,8 +142,9 @@
           })),
         ];
 
-        const eventsToShow = filter === "all" ? all : all.filter((e) => e.type === filter);
-        
+        const eventsToShow =
+          filter === "all" ? all : all.filter((e) => e.type === filter);
+
         if (eventsToShow.length === 0) {
           container.innerHTML = `<div class="no-events-message"><p>No ${filter} events found.</p></div>`;
           return;
@@ -126,16 +161,20 @@
               <h3>${event.name}</h3>
               <div class="event-details">
                 <div class="detail">
-                  <span>${event.topic || 'General'}</span>
+                  <span>${event.topic || "General"}</span>
                 </div>
                 <div class="detail">
-                  <span>${event.start || 'TBD'} - ${event.end || 'TBD'}</span>
+                  <span>${event.start || "TBD"} - ${event.end || "TBD"}</span>
                 </div>
                 <div class="detail">
-                  <span>${event.extra || 'Details forthcoming'}</span>
+                  <span>${event.extra || "Details forthcoming"}</span>
                 </div>
               </div>
-              <button onclick="location.href='event_register.html?event_id=${event.id}&type=${event.type}&title=${encodeURIComponent(event.name)}'" class="btn">
+              <button onclick="location.href='event_register.html?event_id=${
+                event.id
+              }&type=${event.type}&title=${encodeURIComponent(
+            event.name
+          )}'" class="btn">
                 Register Now
               </button>
             </div>

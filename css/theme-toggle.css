@@ -60,13 +60,15 @@
 .theme-toggle:hover {
   transform: scale(1.1);
   background-color: var(--accent-primary);
-  color: var(--bg-primary);
+  color: #ffffff;
 }
 
 .theme-toggle svg {
   width: 20px;
   height: 20px;
-  fill: currentColor;
+  stroke-width: 2px;
+  fill: none;
+  stroke: currentColor;
 }
 
 /* Show/hide icons based on theme */
@@ -74,8 +76,16 @@
   display: none;
 }
 
+[data-theme="light"] .moon-icon {
+  display: block;
+}
+
 [data-theme="dark"] .moon-icon {
   display: none;
+}
+
+[data-theme="dark"] .sun-icon {
+  display: block;
 }
 
 /* Global transition for theme changes */

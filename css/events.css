@@ -211,6 +211,12 @@ body[data-theme="dark"] .detail {
   color: var(--text-secondary);
 }
 
+body[data-theme="dark"] .event-type {
+  background: var(--accent-primary);
+  color: #ffffff;
+  z-index: 5;
+}
+
 @media (max-width: 768px) {
   .hero-section h2 {
     font-size: 2rem;
