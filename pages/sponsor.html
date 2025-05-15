@@ -1,238 +1,131 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sponsor - Public Affirmation Library</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/theme-toggle.css" />
-    <style>
-      .sponsor-options {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sponsor a Seminar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/theme-toggle.css" />
+  <style>
+    .container {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    select, input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+    .btn-submit {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo"><h1>Public Affirmation Library</h1></div>
+      <div class="nav-buttons">
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌞 / 🌙</button>
+        <a href="../index.html" class="btn">Home</a>
+      </div>
+    </nav>
+  </header>
 
-      .sponsor-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-      }
+  <main class="container">
+    <h2>Sponsor a Seminar</h2>
 
-      .sponsor-card {
-        background-color: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 2rem;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .sponsor-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--accent-primary);
-        box-shadow: 0 8px 15px var(--shadow-color);
-      }
-
-      .sponsor-card h3 {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 1.5rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-        color: var(--text-primary);
-      }
-
-      .sponsor-card p {
-        color: var(--text-secondary);
-        margin-bottom: 1.5rem;
-        flex-grow: 1;
-      }
-
-      .sponsor-card .cta {
-        margin-top: auto;
-      }
-
-      .required-badge {
-        display: inline-block;
-        background-color: var(--accent-primary);
-        color: white;
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        margin-left: 0.5rem;
-        font-weight: 500;
-      }
-
-      .optional-badge {
-        display: inline-block;
-        background-color: var(--bg-secondary);
-        color: var(--text-secondary);
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        margin-left: 0.5rem;
-        font-weight: 500;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <nav class="navbar">
-        <div class="logo">
-          <h1>Public Affirmation Library</h1>
-        </div>
-        <div class="nav-buttons">
-          <button
-            class="theme-toggle"
-            onclick="toggleTheme()"
-            aria-label="Toggle theme"
-          >
-            <svg
-              class="sun-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 011.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
-              />
-            </svg>
-            <svg
-              class="moon-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
-              />
-            </svg>
-          </button>
-          <a href="../index.html" class="btn">Home</a>
-          <a href="books.html" class="btn">Books</a>
-          <a href="login.html" class="btn">Login</a>
-        </div>
-      </nav>
-    </header>
-
-    <main>
-      <div class="hero-section">
-        <h2>Support Our Mission</h2>
-        <p>
-          Your generosity helps us inspire, educate, and uplift the community.
-          Choose how you'd like to contribute below.
-        </p>
+    <form id="sponsorForm" onsubmit="handleSponsor(event)">
+      <div class="form-group">
+        <label for="seminarSelect">Select Seminar *</label>
+        <select id="seminarSelect" required>
+          <option value="">Loading seminars...</option>
+        </select>
       </div>
 
-      <div class="sponsor-options">
-        <div class="sponsor-grid">
-          <div class="sponsor-card">
-            <h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-              </svg>
-              Financial Sponsorship
-              <span class="required-badge">Required Fields Only</span>
-            </h3>
-            <p>
-              Help us purchase new books and expand our programs. Your financial
-              support makes a direct impact on our community's growth and
-              learning. We only collect essential information needed for your
-              donation.
-            </p>
-            <div class="cta">
-              <a href="sponsor_payment.html" class="btn">Sponsor Now</a>
-            </div>
-          </div>
-
-          <div class="sponsor-card">
-            <h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path
-                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                ></path>
-              </svg>
-              Book Donation
-              <span class="optional-badge">Optional Fields Available</span>
-            </h3>
-            <p>
-              Share your favorite books with others. We require only basic
-              information about you and the books. Additional details are
-              optional but help us better catalog and utilize your generous
-              donations.
-            </p>
-            <div class="cta">
-              <a href="sponsor_books.html" class="btn">Donate Books</a>
-            </div>
-          </div>
-
-          <div class="sponsor-card">
-            <h3>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-              Volunteer Program
-              <span class="required-badge">Basic Info Required</span>
-            </h3>
-            <p>
-              Join our volunteer team and make a difference in your
-              neighborhood. We need just your contact details to get started.
-              Additional skills and preferences can be shared during
-              orientation.
-            </p>
-            <div class="cta">
-              <a href="volunteer.html" class="btn">Volunteer Now</a>
-            </div>
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="fname">First Name *</label>
+        <input type="text" id="fname" required />
       </div>
-    </main>
 
-    <footer>
-      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
-    </footer>
+      <div class="form-group">
+        <label for="lname">Last Name *</label>
+        <input type="text" id="lname" required />
+      </div>
 
-    <script src="../js/theme-toggle.js"></script>
-  </body>
+      <div class="form-group">
+        <label for="amount">Sponsorship Amount ($) *</label>
+        <input type="number" id="amount" required min="1" step="0.01" />
+      </div>
+
+      <button type="submit" class="btn btn-submit">Submit</button>
+    </form>
+
+    <p id="resultMessage" style="margin-top: 1rem;"></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+  </footer>
+
+  <script src="../js/theme-toggle.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initializeTheme?.();
+      loadSeminars();
+    });
+
+    function loadSeminars() {
+      fetch("../api/get_seminars.php")
+        .then(res => res.json())
+        .then(data => {
+          const select = document.getElementById("seminarSelect");
+          select.innerHTML = '<option value="">-- Select Seminar --</option>';
+
+          if (data.status === "success" && data.data.length > 0) {
+            data.data.forEach(seminar => {
+              const opt = document.createElement("option");
+              opt.value = seminar.E_ID;
+              opt.textContent = seminar.E_NAME;
+              select.appendChild(opt);
+            });
+          } else {
+            select.innerHTML = '<option value="">No seminars available</option>';
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("seminarSelect").innerHTML = '<option value="">Error loading</option>';
+        });
+    }
+
+    function handleSponsor(e) {
+      e.preventDefault();
+      const seminarId = document.getElementById("seminarSelect").value;
+      const fname = document.getElementById("fname").value;
+      const lname = document.getElementById("lname").value;
+      const amount = document.getElementById("amount").value;
+
+      if (!seminarId) {
+        alert("Please select a seminar.");
+        return;
+      }
+      document.getElementById("resultMessage").textContent = 
+        `Thank you, ${fname} ${lname}, for sponsoring seminar ID ${seminarId} with $${amount}!`;
+
+      document.getElementById("sponsorForm").reset();
+    }
+  </script>
+</body>
 </html>
