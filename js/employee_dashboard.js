@@ -119,9 +119,6 @@ function loadPage(page) {
     case "manage_authors":
       loadManageAuthorsContent();
       break;
-    case "add_author":
-      loadAddAuthorContent();
-      break;
     case "manage_exhibition_reservations":
       loadManageExhibitionReservationContent();
       break;
@@ -825,12 +822,13 @@ function loadManageExhibitionContent() {
             <td>${row.topic_name}</td>
             <td>$${parseFloat(row.EXPENSE).toFixed(2)}</td>
             <td>
-              <button onclick="editExhibition(${
-                row.E_ID
-              })" title="Edit">✏️</button>
-              <button onclick="deleteExhibition(${
-                row.E_ID
-              })" title="Delete">🗑️</button>
+              <div class="action-btns">
+                <button class="action-btn edit-btn" onclick="editExhibition(${
+                  row.E_ID
+                })" title="Edit">
+                  <i>✏️</i>
+                </button>
+              </div>
             </td>
           `;
           tbody.appendChild(tr);
@@ -1007,12 +1005,13 @@ function loadManageSeminarContent() {
             <td>${seminar.topic_name}</td>
             <td>${seminar.SPEAKER_FNAME} ${seminar.SPEAKER_LNAME ?? ""}</td>
             <td>
-              <button onclick="editSeminar(${
-                seminar.E_ID
-              })" class="btn-icon" title="Edit">&#9998;</button>
-              <button onclick="deleteSeminar(${
-                seminar.E_ID
-              })" class="btn-icon" title="Delete">&#128465;</button>
+              <div class="action-btns">
+                <button class="action-btn edit-btn" onclick="editSeminar(${
+                  seminar.E_ID
+                })" title="Edit">
+                  <i>✏️</i>
+                </button>
+              </div>
             </td>
           `;
           tbody.appendChild(row);
@@ -1583,93 +1582,4 @@ function deleteRoomBooking(reservationId) {
       console.error("Delete request failed:", err);
       alert("Failed to delete room booking. Please try again.");
     });
-}
-
-function loadAddAuthorContent() {
-  const pageContent = document.getElementById("pageContent");
-  pageContent.innerHTML = `
-    <div class="form-container">
-      <h2>Add New Author</h2>
-      <form id="addAuthorForm">
-        <div class="form-group">
-          <label for="fname">First Name</label>
-          <input type="text" id="fname" required />
-        </div>
-        <div class="form-group">
-          <label for="lname">Last Name</label>
-          <input type="text" id="lname" />
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone</label>
-          <input type="text" id="phone" required />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required />
-        </div>
-        <div class="form-group">
-          <label for="street">Street</label>
-          <input type="text" id="street" required />
-        </div>
-        <div class="form-group">
-          <label for="city">City</label>
-          <input type="text" id="city" required />
-        </div>
-        <div class="form-group">
-          <label for="state">State</label>
-          <input type="text" id="state" required />
-        </div>
-        <div class="form-group">
-          <label for="country">Country</label>
-          <input type="text" id="country" required />
-        </div>
-        <div class="form-group">
-          <label for="zipcode">Zip Code</label>
-          <input type="text" id="zipcode" required />
-        </div>
-        <button type="submit" class="btn-primary">Save Author</button>
-      </form>
-    </div>
-  `;
-
-  const form = document.getElementById("addAuthorForm");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const formData = {
-      fname: document.getElementById("fname").value.trim(),
-      lname: document.getElementById("lname").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      email: document.getElementById("email").value.trim(),
-      password: document.getElementById("password").value.trim(),
-      street: document.getElementById("street").value.trim(),
-      city: document.getElementById("city").value.trim(),
-      state: document.getElementById("state").value.trim(),
-      country: document.getElementById("country").value.trim(),
-      zipcode: document.getElementById("zipcode").value.trim(),
-    };
-
-    fetch("../api/insert_author.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          alert("Author added successfully!");
-          loadManageAuthorsContent(); // refresh author list
-        } else {
-          alert("Error: " + data.message);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Request failed.");
-      });
-  });
 }

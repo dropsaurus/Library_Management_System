@@ -532,3 +532,34 @@ body {
     margin-left: auto;
   }
 }
+
+/* Action buttons for tables */
+.action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.action-btn:hover {
+  background-color: var(--bg-secondary);
+  transform: translateY(-2px);
+}
+
+.edit-btn {
+  color: var(--accent-secondary);
+}
+
+.delete-btn {
+  color: var(--error-color);
+}
+
+/* Action button container */
+.action-btns {
+  display: flex;
+  gap: 8px;
+}

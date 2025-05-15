@@ -537,7 +537,6 @@
               <a href="#" class="sub-item" data-page="manage_authors"
                 >Manage Authors</a
               >
-              <a href="#" class="sub-item" data-page="add_author">Add Author</a>
             </div>
           </div>
 
@@ -815,9 +814,6 @@
           case "manage_authors":
             loadManageAuthorsContent();
             break;
-          case "add_author":
-            loadAddAuthorContent();
-            break;
           default:
             pageContent.innerHTML = "<p>Content not found</p>";
         }
@@ -1048,45 +1044,6 @@
                 <!-- Author data will be loaded dynamically -->
               </tbody>
             </table>
-          </div>
-        `;
-      }
-
-      function loadAddAuthorContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-          <div class="content-header">
-            <h2>Add New Author</h2>
-          </div>
-          <div class="form-container">
-            <form id="addAuthorForm">
-              <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required>
-              </div>
-              <div class="form-group">
-                <label for="category">Primary Category</label>
-                <select id="category" name="category" required>
-                  <option value="">Select Category</option>
-                  <option value="fiction">Fiction</option>
-                  <option value="non-fiction">Non-Fiction</option>
-                  <option value="academic">Academic</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="bio">Biography</label>
-                <textarea id="bio" name="bio" rows="4"></textarea>
-              </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
-              </div>
-              <div class="form-group">
-                <label for="website">Website</label>
-                <input type="url" id="website" name="website">
-              </div>
-              <button type="submit" class="btn-primary">Save Author</button>
-            </form>
           </div>
         `;
       }
