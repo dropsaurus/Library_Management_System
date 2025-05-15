@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-require_once __DIR__ . '/../config/db_connect.php';
+require_once '../config/db_connect.php';
 
 // Check if we only want count
 $countOnly = isset($_GET['countOnly']) && $_GET['countOnly'] === 'true';
@@ -24,7 +24,7 @@ try {
             'count' => $count
         ]);
     } else {
-        $stmt = $pdo->query("SELECT T_ID, T_NAME FROM JPN_TOPIC ORDER BY T_NAME");
+        $stmt = $pdo->query("SELECT T_ID, T_NAME FROM JPN_TOPIC ORDER BY T_ID");
         $topics = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         echo json_encode([

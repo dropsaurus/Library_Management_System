@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/theme-toggle.css" />
     <link rel="stylesheet" href="../css/employee_dashboard.css" />
-    
   </head>
   <body>
     <div class="layout">
@@ -73,7 +72,6 @@
               <a href="#" class="sub-item" data-page="manage_customers"
                 >Manage Customers</a
               >
-            
             </div>
           </div>
 
@@ -107,7 +105,6 @@
               <a href="#" class="sub-item" data-page="manage_employees"
                 >Manage Employees</a
               >
-              
             </div>
           </div>
 
@@ -141,7 +138,9 @@
               <a href="#" class="sub-item" data-page="manage_authors"
                 >Manage Authors</a
               >
-              <a href="#" class="sub-item" data-page="add_author"> Add Authors</a>
+              <a href="#" class="sub-item" data-page="add_author">
+                Add Authors</a
+              >
             </div>
           </div>
 
@@ -217,9 +216,18 @@
               <a href="#" class="sub-item" data-page="manage_seminar"
                 >Manage Seminar</a
               >
-              <a href="#" class="sub-item" data-page="manage_exhibition_reservations">Exhibition Reservations</a>
-              <a href="#" class="sub-item" data-page="manage_seminar_reservations">Seminar Reservations</a>
-
+              <a
+                href="#"
+                class="sub-item"
+                data-page="manage_exhibition_reservations"
+                >Exhibition Reservations</a
+              >
+              <a
+                href="#"
+                class="sub-item"
+                data-page="manage_seminar_reservations"
+                >Seminar Reservations</a
+              >
             </div>
           </div>
 
@@ -321,19 +329,36 @@
       </main>
     </div>
 
-
-
-
-
     <script src="../js/theme-toggle.js"></script>
-    <script src="../js/employee_dashboard.js"></script>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-   <script>
+    <script
+      src="https://canvasjs.com/assets/script/canvasjs.min.js"
+      type="text/javascript"
+    ></script>
+    <script src="../js/employee_dashboard.js?v=20230724001"></script>
+    <script>
       function logout() {
         window.location.href = "../index.html";
       }
+
+      // Ensure dashboard loads correctly
+      document.addEventListener("DOMContentLoaded", function () {
+        // Force dashboard to be active on initial load
+        const dashboardLink = document.querySelector(
+          '.nav-item[data-page="dashboard"]'
+        );
+        if (dashboardLink) {
+          dashboardLink.classList.add("active");
+        }
+
+        // Check for manually triggering dashboard after a short delay
+        setTimeout(function () {
+          const chartElement = document.getElementById("dashboardChart");
+          if (chartElement && !chartElement.hasChildNodes()) {
+            console.log("Dashboard chart not loaded, forcing reload");
+            loadDashboardContent();
+          }
+        }, 1000);
+      });
     </script>
-
-
   </body>
 </html>

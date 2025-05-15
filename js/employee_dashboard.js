@@ -25,6 +25,27 @@ function setupNavigation() {
       loadPage(page);
     });
   });
+
+  // Add handler for the Dashboard main nav item
+  const dashboardNavItem = document.querySelector(
+    '.nav-item[data-page="dashboard"]'
+  );
+  if (dashboardNavItem) {
+    dashboardNavItem.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Remove active class from all nav items
+      document
+        .querySelectorAll(".nav-item, .sub-item")
+        .forEach((i) => i.classList.remove("active"));
+
+      // Add active class to dashboard nav item
+      dashboardNavItem.classList.add("active");
+
+      // Load dashboard
+      loadPage("dashboard");
+    });
+  }
 }
 
 function setupSubMenus() {
@@ -119,10 +140,11 @@ function loadDefaultPage() {
 }
 
 function loadDashboardContent() {
+  console.log("Loading dashboard content");
   const pageContent = document.getElementById("pageContent");
 
   pageContent.innerHTML = `
-    <div class="dashboard-stats" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div class="dashboard-stats" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 20px;">
       <div class="stat-card"><h3>Total Customers</h3><p id="statCustomers">...</p></div>
       <div class="stat-card"><h3>Total Employees</h3><p id="statEmployees">...</p></div>
       <div class="stat-card"><h3>Total Rentals</h3><p id="statRentals">...</p></div>
@@ -131,7 +153,7 @@ function loadDashboardContent() {
       <div class="stat-card"><h3>Total Seminar Reservations</h3><p id="statSeminarRes">...</p></div>
     </div>
 
-    <div id="dashboardChart" style="height: 400px; margin-top: 40px;"></div>
+    <div id="dashboardChart" style="height: 400px; width: 100%; margin-top: 40px; border: 1px solid var(--border-color); background-color: var(--card-bg); border-radius: 8px; padding: 20px;"></div>
   `;
 
   const endpoints = [
@@ -176,7 +198,7 @@ function loadDashboardContent() {
       .then((data) => {
         const count = data.count ?? 0;
         document.getElementById(stat.id).textContent = count;
-        chartData.push({ label: stat.label, y: count });
+        chartData.push({ label: stat.label, y: parseInt(count) });
       })
       .catch((err) => {
         console.error(`Error loading ${stat.id}`, err);
@@ -186,6 +208,7 @@ function loadDashboardContent() {
       .finally(() => {
         loaded++;
         if (loaded === endpoints.length) {
+          console.log("All data loaded, rendering chart with:", chartData);
           renderChart(chartData);
         }
       });
@@ -193,22 +216,86 @@ function loadDashboardContent() {
 }
 
 function renderChart(dataPoints) {
+  console.log("Attempting to render chart with data:", dataPoints);
+
+  // Check if CanvasJS is loaded
+  if (typeof CanvasJS === "undefined") {
+    console.error("CanvasJS is not loaded");
+
+    // Try to load CanvasJS dynamically
+    const script = document.createElement("script");
+    script.src = "https://canvasjs.com/assets/script/canvasjs.min.js";
+    script.onload = function () {
+      console.log("CanvasJS loaded successfully");
+      // Try rendering again after loading
+      createChart(dataPoints);
+    };
+    script.onerror = function () {
+      console.error("Failed to load CanvasJS");
+      // Display error message to user
+      const chartDiv = document.getElementById("dashboardChart");
+      if (chartDiv) {
+        chartDiv.innerHTML =
+          '<div style="text-align: center; padding: 2rem; color: red;">Failed to load chart library. Please refresh the page and try again.</div>';
+      }
+    };
+    document.head.appendChild(script);
+    return;
+  }
+
+  createChart(dataPoints);
+}
+
+function createChart(dataPoints) {
+  console.log("Creating chart with CanvasJS");
+
+  // Ensure the chart container exists
+  const chartContainer = document.getElementById("dashboardChart");
+  if (!chartContainer) {
+    console.error("Chart container not found");
+    return;
+  }
+
+  // Clear any previous content
+  chartContainer.innerHTML = "";
+
   const chart = new CanvasJS.Chart("dashboardChart", {
     animationEnabled: true,
-    theme: "dark1",
-    title: { text: "Library Statistics Overview" },
-    axisX: { title: "Count" },
-    axisY: { title: "Category" },
+    theme:
+      document.documentElement.dataset.theme === "dark" ? "dark1" : "light1",
+    title: {
+      text: "Library Statistics Overview",
+      fontFamily: "Roboto, sans-serif",
+      fontSize: 24,
+    },
+    axisY: {
+      title: "Categories",
+      labelFontFamily: "Roboto, sans-serif",
+    },
+    axisX: {
+      title: "Count",
+      labelFontFamily: "Roboto, sans-serif",
+    },
+    dataPointWidth: 45,
     data: [
       {
         type: "bar",
         indexLabel: "{y}",
-        indexLabelFontColor: "#fff",
+        indexLabelFontColor:
+          document.documentElement.dataset.theme === "dark" ? "#fff" : "#333",
+        indexLabelFontFamily: "Roboto, sans-serif",
         dataPoints: dataPoints,
       },
     ],
   });
-  chart.render();
+
+  try {
+    chart.render();
+    console.log("Chart rendered successfully");
+  } catch (error) {
+    console.error("Error rendering chart:", error);
+    chartContainer.innerHTML = `<div style="text-align: center; padding: 2rem; color: red;">Error rendering chart: ${error.message}</div>`;
+  }
 }
 
 function loadManageCustomersContent() {
@@ -990,7 +1077,7 @@ function loadAddSeminarForm(isEdit = false, seminar = null) {
         <input type="hidden" id="seminarId" />
         <div class="form-group">
           <label for="seminarTitle">Seminar Title</label>
-          <input type="text" id="seminarTitle" required />
+          <input type="text" id="seminarTitle" required maxlength="30" />
         </div>
         <div class="form-group">
           <label for="seminarStart">Start Time</label>
@@ -1001,16 +1088,18 @@ function loadAddSeminarForm(isEdit = false, seminar = null) {
           <input type="datetime-local" id="seminarEnd" required />
         </div>
         <div class="form-group">
-          <label for="topicId">Topic ID</label>
-          <input type="number" id="topicId" required />
+          <label for="topicId">Topic</label>
+          <select id="topicId" required>
+            <option value="">Loading topics...</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="speakerFname">Speaker First Name</label>
-          <input type="text" id="speakerFname" required />
+          <input type="text" id="speakerFname" required maxlength="20" />
         </div>
         <div class="form-group">
           <label for="speakerLname">Speaker Last Name</label>
-          <input type="text" id="speakerLname" />
+          <input type="text" id="speakerLname" maxlength="20" />
         </div>
         <button type="submit" class="btn-primary">${
           isEdit ? "Update" : "Create"
@@ -1018,6 +1107,63 @@ function loadAddSeminarForm(isEdit = false, seminar = null) {
       </form>
     </div>
   `;
+
+  // Load topics for the dropdown
+  fetch("../api/get_topics.php")
+    .then((res) => res.json())
+    .then((data) => {
+      const topicSelect = document.getElementById("topicId");
+      if (data.status === "success" && data.topics && data.topics.length > 0) {
+        topicSelect.innerHTML = '<option value="">-- Select Topic --</option>';
+
+        // Sort topics by ID (numerically) from low to high
+        data.topics.sort((a, b) => parseInt(a.T_ID) - parseInt(b.T_ID));
+
+        data.topics.forEach((topic) => {
+          const option = document.createElement("option");
+          option.value = topic.T_ID;
+          option.textContent = `${topic.T_NAME} (ID: ${topic.T_ID})`;
+          topicSelect.appendChild(option);
+        });
+
+        // If in edit mode, select the current topic
+        if (isEdit && seminar && seminar.T_ID) {
+          topicSelect.value = seminar.T_ID;
+        }
+      } else {
+        topicSelect.innerHTML = '<option value="">No topics available</option>';
+      }
+
+      // Add a validation message to the form
+      const formGroup = topicSelect.closest(".form-group");
+      const validationMsg = document.createElement("div");
+      validationMsg.className = "validation-message";
+      validationMsg.style.color = "red";
+      validationMsg.style.fontSize = "0.8rem";
+      validationMsg.style.marginTop = "0.25rem";
+      validationMsg.style.display = "none";
+      validationMsg.textContent = "Please select a valid topic";
+      formGroup.appendChild(validationMsg);
+
+      // Add event listener to show/hide validation message
+      topicSelect.addEventListener("change", function () {
+        if (!this.value) {
+          validationMsg.style.display = "block";
+        } else {
+          validationMsg.style.display = "none";
+        }
+      });
+
+      // Initial validation
+      if (!topicSelect.value) {
+        validationMsg.style.display = "block";
+      }
+    })
+    .catch((error) => {
+      console.error("Error loading topics:", error);
+      document.getElementById("topicId").innerHTML =
+        '<option value="">Error loading topics</option>';
+    });
 
   if (isEdit && seminar) {
     document.getElementById("seminarId").value = seminar.E_ID;
@@ -1030,7 +1176,6 @@ function loadAddSeminarForm(isEdit = false, seminar = null) {
       0,
       16
     );
-    document.getElementById("topicId").value = seminar.T_ID;
     document.getElementById("speakerFname").value = seminar.SPEAKER_FNAME;
     document.getElementById("speakerLname").value = seminar.SPEAKER_LNAME || "";
   }
@@ -1040,14 +1185,44 @@ function loadAddSeminarForm(isEdit = false, seminar = null) {
     .addEventListener("submit", function (e) {
       e.preventDefault();
 
+      // Topic ID validation
+      const topicId = document.getElementById("topicId").value;
+      if (!topicId) {
+        alert("Please select a valid topic");
+        return;
+      }
+
+      // Add validation for dates
+      const startTime = new Date(document.getElementById("seminarStart").value);
+      const endTime = new Date(document.getElementById("seminarEnd").value);
+
+      if (endTime <= startTime) {
+        alert("End time must be after start time");
+        return;
+      }
+
+      // Validate speaker name length
+      const speakerFname = document.getElementById("speakerFname").value.trim();
+      const speakerLname = document.getElementById("speakerLname").value.trim();
+
+      if (speakerFname.length > 20) {
+        alert("Speaker first name must be 20 characters or less");
+        return;
+      }
+
+      if (speakerLname && speakerLname.length > 20) {
+        alert("Speaker last name must be 20 characters or less");
+        return;
+      }
+
       const formData = {
         e_id: parseInt(document.getElementById("seminarId").value || 0),
         e_name: document.getElementById("seminarTitle").value.trim(),
         e_starttime: document.getElementById("seminarStart").value,
         e_endtime: document.getElementById("seminarEnd").value,
-        t_id: parseInt(document.getElementById("topicId").value),
-        speaker_fname: document.getElementById("speakerFname").value.trim(),
-        speaker_lname: document.getElementById("speakerLname").value.trim(),
+        t_id: parseInt(topicId),
+        speaker_fname: speakerFname,
+        speaker_lname: speakerLname,
       };
 
       const url = isEdit
@@ -1163,92 +1338,6 @@ function loadManageSeminarReservationContent() {
 function loadManageRoomsContent() {
   const pageContent = document.getElementById("pageContent");
 
-  fetch("../pages/manage_rooms.html")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.text();
-    })
-    .then((html) => {
-      pageContent.innerHTML = html;
-
-      // Wait for DOM to load, then run room loader
-      const script = document.createElement("script");
-      script.src = "../js/manage_rooms.js";
-      script.onload = () => {
-        if (typeof loadRooms === "function") {
-          loadRooms();
-        }
-      };
-      document.body.appendChild(script);
-    })
-    .catch((error) => {
-      console.error("Error loading manage_rooms.html:", error);
-      pageContent.innerHTML =
-        '<p style="color:red;">Failed to load Manage Rooms page.</p>';
-    });
-}
-
-function loadManageAuthorsContent() {
-  const pageContent = document.getElementById("pageContent");
-  pageContent.innerHTML = `
-  
-    <div class="table-container">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Author ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Address</th>
-          </tr>
-        </thead>
-        <tbody id="authorsTableBody">
-          <tr><td colspan="4">Loading...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  fetch("../api/get_authors.php")
-    .then((res) => res.json())
-    .then((data) => {
-      const tbody = document.getElementById("authorsTableBody");
-      if (!tbody) return;
-
-      if (data.status === "success") {
-        tbody.innerHTML = "";
-        data.data.forEach((author) => {
-          const row = document.createElement("tr");
-          const fname = author.U_FNAME ?? "-";
-          const lname = author.U_LNAME ?? "";
-          const email = author.U_EMAIL ?? "-";
-          const address = author.FULL_ADDRESS ?? "-";
-
-          row.innerHTML = `
-            <td>${author.A_ID}</td>
-            <td>${fname} ${lname}</td>
-            <td>${email}</td>
-            <td>${address}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="4">Failed to load authors.</td></tr>`;
-      }
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      const tbody = document.getElementById("authorsTableBody");
-      if (tbody)
-        tbody.innerHTML = `<tr><td colspan="4">Error loading authors.</td></tr>`;
-    });
-}
-
-function loadManageRoomsContent() {
-  const pageContent = document.getElementById("pageContent");
-
   pageContent.innerHTML = `
     <div class="content-header">
       <button class="btn-primary" id="newRoomBtn">Add New Room</button>
@@ -1269,7 +1358,7 @@ function loadManageRoomsContent() {
   `;
 
   document.getElementById("newRoomBtn").addEventListener("click", () => {
-    alert("Room creation form coming soon!");
+    loadAddRoomForm();
   });
 
   fetch("../api/get_rooms.php")
@@ -1350,10 +1439,157 @@ function loadAddRoomForm() {
     });
 }
 
+function loadManageAuthorsContent() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+  
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Author ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Address</th>
+          </tr>
+        </thead>
+        <tbody id="authorsTableBody">
+          <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch("../api/get_authors.php")
+    .then((res) => res.json())
+    .then((data) => {
+      const tbody = document.getElementById("authorsTableBody");
+      if (!tbody) return;
+
+      if (data.status === "success") {
+        tbody.innerHTML = "";
+        data.data.forEach((author) => {
+          const row = document.createElement("tr");
+          const fname = author.U_FNAME ?? "-";
+          const lname = author.U_LNAME ?? "";
+          const email = author.U_EMAIL ?? "-";
+          const address = author.FULL_ADDRESS ?? "-";
+
+          row.innerHTML = `
+            <td>${author.A_ID}</td>
+            <td>${fname} ${lname}</td>
+            <td>${email}</td>
+            <td>${address}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="4">Failed to load authors.</td></tr>`;
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      const tbody = document.getElementById("authorsTableBody");
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan="4">Error loading authors.</td></tr>`;
+    });
+}
+
+function loadManageRoomBookingsContent() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = "";
+
+  pageContent.innerHTML = `
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reservation ID</th>
+            <th>Customer</th>
+            <th>Room ID</th>
+            <th>Capacity</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>People</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="roomBookingTableBody">
+          <tr><td colspan="9">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch("../api/get_room_bookings.php")
+    .then((res) => res.json())
+    .then((data) => {
+      const tbody = document.getElementById("roomBookingTableBody");
+      if (!tbody) return;
+
+      if (data.status === "success") {
+        tbody.innerHTML = "";
+        data.data.forEach((booking) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${booking.RES_ID}</td>
+            <td>${booking.customer_name}</td>
+            <td>${booking.ROOM_ID}</td>
+            <td>${booking.ROOM_CAPACITY}</td>
+            <td>${booking.RES_STARTTIME}</td>
+            <td>${booking.RES_ENDTIME}</td>
+            <td>${booking.RES_COUNT}</td>
+            <td>${booking.RES_DESC}</td>
+            <td>
+              <button class="btn btn-sm btn-danger" onclick="deleteRoomBooking(${booking.RES_ID})">
+                Delete
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="9">Failed to load room bookings.</td></tr>`;
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      const tbody = document.getElementById("roomBookingTableBody");
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="9">Error loading data.</td></tr>`;
+      }
+    });
+}
+
+function deleteRoomBooking(reservationId) {
+  if (!confirm("Are you sure you want to delete this room booking?")) return;
+
+  fetch("../api/delete_room_booking.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ res_id: reservationId }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        alert("Room booking deleted successfully!");
+        loadManageRoomBookingsContent(); // Refresh the table
+      } else {
+        alert("Error deleting room booking: " + data.message);
+      }
+    })
+    .catch((err) => {
+      console.error("Delete request failed:", err);
+      alert("Failed to delete room booking. Please try again.");
+    });
+}
+
 function loadAddAuthorContent() {
   const pageContent = document.getElementById("pageContent");
   pageContent.innerHTML = `
     <div class="form-container">
+      <h2>Add New Author</h2>
       <form id="addAuthorForm">
         <div class="form-group">
           <label for="fname">First Name</label>
@@ -1436,71 +1672,4 @@ function loadAddAuthorContent() {
         alert("Request failed.");
       });
   });
-}
-
-function loadManageRoomBookingsContent() {
-  const pageContent = document.getElementById("pageContent");
-  pageContent.innerHTML = "";
-
-  pageContent.innerHTML = `
-    <div class="table-container">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Reservation ID</th>
-            <th>Customer</th>
-            <th>Room ID</th>
-            <th>Capacity</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>People</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="roomBookingTableBody">
-          <tr><td colspan="9">Loading...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  fetch("../api/get_room_bookings.php")
-    .then((res) => res.json())
-    .then((data) => {
-      const tbody = document.getElementById("roomBookingTableBody");
-      if (!tbody) return;
-
-      if (data.status === "success") {
-        tbody.innerHTML = "";
-        data.data.forEach((booking) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${booking.RES_ID}</td>
-            <td>${booking.customer_name}</td>
-            <td>${booking.ROOM_ID}</td>
-            <td>${booking.ROOM_CAPACITY}</td>
-            <td>${booking.RES_STARTTIME}</td>
-            <td>${booking.RES_ENDTIME}</td>
-            <td>${booking.RES_COUNT}</td>
-            <td>${booking.RES_DESC}</td>
-            <td>
-              <button class="btn btn-sm btn-danger" onclick="deleteRoomBooking(${booking.RES_ID})">
-                Delete
-              </button>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="9">Failed to load room bookings.</td></tr>`;
-      }
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      const tbody = document.getElementById("roomBookingTableBody");
-      if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="9">Error loading data.</td></tr>`;
-      }
-    });
 }
