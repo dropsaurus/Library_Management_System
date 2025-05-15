@@ -4,41 +4,67 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+session_start();
+
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-require_once '../config/db_connect.php';
+require_once __DIR__ . '/../config/db_connect.php';
+
+// Get user ID from query parameter
+$userId = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
+
+if ($userId <= 0) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid or missing user ID'
+    ]);
+    exit;
+}
 
 try {
-    $query = "SELECT 
-            r.RES_ID,
-            r.RES_STARTTIME,
-            r.RES_ENDTIME,
-            r.RES_DESC,
-            r.RES_COUNT,
-            r.CUST_ID,
-            CONCAT(u.U_FNAME, ' ', COALESCE(u.U_LNAME, '')) AS customer_name,
-            r.ROOM_ID,
-            ro.ROOM_CAPACITY
-          FROM JPN_RESERVATION r
-          JOIN JPN_CUSTOMER c ON r.CUST_ID = c.CUST_ID
-          JOIN JPN_USER u ON c.CUST_ID = u.U_ID
-          JOIN JPN_ROOM ro ON r.ROOM_ID = ro.ROOM_ID
-          ORDER BY r.RES_STARTTIME DESC";
-
-
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    // Get the customer ID for this user
+    $custStmt = $pdo->prepare("
+        SELECT CUST_ID 
+        FROM JPN_CUSTOMER 
+        WHERE CUST_ID = ?
+    ");
+    
+    $custStmt->execute([$userId]);
+    $customer = $custStmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$customer) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'User not registered as a customer'
+        ]);
+        exit;
+    }
+    
+    $customerId = $customer['CUST_ID'];
+    
+    // Get all reservations for this customer
+    $resStmt = $pdo->prepare("
+        SELECT r.RES_ID, r.RES_STARTTIME, r.RES_ENDTIME, r.RES_DESC, r.RES_COUNT, r.ROOM_ID, rm.ROOM_CAPACITY
+        FROM JPN_RESERVATION r
+        JOIN JPN_ROOM rm ON r.ROOM_ID = rm.ROOM_ID
+        WHERE r.CUST_ID = ?
+        ORDER BY r.RES_STARTTIME
+    ");
+    
+    $resStmt->execute([$customerId]);
+    $reservations = $resStmt->fetchAll(PDO::FETCH_ASSOC);
+    
     echo json_encode([
         'status' => 'success',
         'data' => $reservations
     ]);
+    
 } catch (PDOException $e) {
-    http_response_code(500);
+    error_log("Database error: " . $e->getMessage());
     echo json_encode([
         'status' => 'error',
         'message' => 'Database error: ' . $e->getMessage()

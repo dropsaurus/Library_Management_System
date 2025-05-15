@@ -4,74 +4,86 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+session_start();
+
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-require_once '../config/db_connect.php';
+require_once __DIR__ . '/../config/db_connect.php';
 
 // Get filter parameters
-$capacity = isset($_GET['capacity']) ? (int)$_GET['capacity'] : 0;
-$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$capacity = isset($_GET['capacity']) ? intval($_GET['capacity']) : null;
 $date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d'); // Default to today
-$time = isset($_GET['time']) ? $_GET['time'] : date('H:i:s'); // Default to now
+$time = isset($_GET['time']) ? $_GET['time'] : null;
+$search = isset($_GET['search']) ? $_GET['search'] : null;
+
+// Set default time to current hour if not provided
+if (empty($time)) {
+    $time = date('H:00:00');
+}
+
+// Combine date and time for availability check
+$dateTime = $date . ' ' . $time;
 
 try {
-    // Base query to get rooms with their capacity and availability status
-    $query = "SELECT 
-                r.ROOM_ID,
-                r.ROOM_CAPACITY,
-                -- Check if there are any reservations that conflict with the requested time
-                CASE WHEN EXISTS (
-                    SELECT 1 
-                    FROM JPN_RESERVATION res
-                    WHERE res.ROOM_ID = r.ROOM_ID
-                    AND res.RES_STARTTIME <= ? 
-                    AND res.RES_ENDTIME >= ?
-                ) THEN 'Not Available' ELSE 'Available' END AS STATUS
-              FROM JPN_ROOM r
-              WHERE 1=1";
+    // Build query to get all rooms with their availability status
+    $query = "
+        SELECT 
+            r.ROOM_ID,
+            r.ROOM_CAPACITY,
+            CASE 
+                WHEN res.RES_ID IS NULL THEN 'Available'
+                ELSE 'Occupied'
+            END AS STATUS
+        FROM JPN_ROOM r
+        LEFT JOIN (
+            SELECT RES_ID, ROOM_ID
+            FROM JPN_RESERVATION
+            WHERE 
+                (? BETWEEN RES_STARTTIME AND RES_ENDTIME) OR
+                (DATE_ADD(?, INTERVAL 1 HOUR) BETWEEN RES_STARTTIME AND RES_ENDTIME) OR
+                (RES_STARTTIME BETWEEN ? AND DATE_ADD(?, INTERVAL 1 HOUR))
+        ) res ON r.ROOM_ID = res.ROOM_ID
+    ";
     
-    $params = [];
+    $params = [$dateTime, $dateTime, $dateTime, $dateTime];
+    $conditions = [];
     
-    // For date and time, create a datetime string
-    $datetime = $date . ' ' . ($time ?: '00:00:00');
-    $params[] = $datetime;
-    $params[] = $datetime;
-    
-    // Add capacity filter if specified
-    if ($capacity > 0) {
-        $query .= " AND r.ROOM_CAPACITY < ?";
+    // Add capacity filter if provided
+    if (!is_null($capacity) && $capacity > 0) {
+        $conditions[] = "r.ROOM_CAPACITY >= ?";
         $params[] = $capacity;
     }
     
-    // Add search filter if specified
-    if (!empty($searchTerm)) {
-        $query .= " AND r.ROOM_ID LIKE ?";
-        $params[] = "%$searchTerm%";
+    // Add search filter if provided
+    if (!is_null($search) && !empty($search)) {
+        $conditions[] = "r.ROOM_ID LIKE ?";
+        $params[] = "%$search%";
     }
     
+    // Add conditions to query if any
+    if (!empty($conditions)) {
+        $query .= " WHERE " . implode(" AND ", $conditions);
+    }
+    
+    // Order by room ID
     $query .= " ORDER BY r.ROOM_ID";
     
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
+    
     $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     echo json_encode([
         'status' => 'success',
-        'data' => $rooms,
-        'filters' => [
-            'capacity' => $capacity,
-            'search' => $searchTerm,
-            'date' => $date,
-            'time' => $time,
-            'datetime' => $datetime
-        ]
+        'data' => $rooms
     ]);
     
 } catch (PDOException $e) {
-    http_response_code(500);
+    error_log("Database error: " . $e->getMessage());
     echo json_encode([
         'status' => 'error',
         'message' => 'Database error: ' . $e->getMessage()
