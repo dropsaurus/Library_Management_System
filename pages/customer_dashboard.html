@@ -313,7 +313,7 @@
           <a href="#" class="btn" id="sponsor-btn">Sponsor</a>
           <a href="#" class="btn" id="books-btn">Books</a>
           <a href="#" class="btn" id="rooms-btn">Rooms</a>
-          <a href="events.html" class="btn">Events</a>
+          <a href="#" class="btn" id="events-btn">Events</a>
           <div class="dropdown">
             <a href="#" class="btn dropdown-toggle" id="username-btn">Loading...</a>
             <div class="dropdown-content">
@@ -663,6 +663,7 @@
         const sponsorBtn = document.getElementById('sponsor-btn');
         const roomsBtn = document.getElementById('rooms-btn');
         const booksBtn = document.getElementById('books-btn');
+        const eventsBtn = document.getElementById('events-btn');
         const homeContent = document.getElementById('home-content');
         const contactContent = document.getElementById('contact-content');
         const sponsorContent = document.getElementById('sponsor-content');
@@ -676,6 +677,12 @@
           sponsorContent.style.display = 'none';
           roomsContent.style.display = 'none';
           booksContent.style.display = 'none';
+          
+          // Hide events content if it exists
+          const eventsContent = document.getElementById('events-content');
+          if (eventsContent) {
+            eventsContent.style.display = 'none';
+          }
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -699,6 +706,12 @@
           roomsContent.style.display = 'none';
           booksContent.style.display = 'none';
           
+          // Hide events content if it exists
+          const eventsContent = document.getElementById('events-content');
+          if (eventsContent) {
+            eventsContent.style.display = 'none';
+          }
+          
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
             link.classList.remove('active');
@@ -721,6 +734,12 @@
           roomsContent.style.display = 'block';
           booksContent.style.display = 'none';
           
+          // Hide events content if it exists
+          const eventsContent = document.getElementById('events-content');
+          if (eventsContent) {
+            eventsContent.style.display = 'none';
+          }
+          
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
             link.classList.remove('active');
@@ -740,6 +759,12 @@
           roomsContent.style.display = 'none';
           booksContent.style.display = 'block';
           
+          // Hide events content if it exists
+          const eventsContent = document.getElementById('events-content');
+          if (eventsContent) {
+            eventsContent.style.display = 'none';
+          }
+          
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
             link.classList.remove('active');
@@ -750,6 +775,25 @@
           initializeBooks();
         });
         
+        // Handle Events button
+        eventsBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          homeContent.style.display = 'none';
+          contactContent.style.display = 'none';
+          sponsorContent.style.display = 'none';
+          roomsContent.style.display = 'none';
+          booksContent.style.display = 'none';
+          
+          // Update active state in navigation
+          document.querySelectorAll('.nav-buttons a').forEach(link => {
+            link.classList.remove('active');
+          });
+          eventsBtn.classList.add('active');
+          
+          // Load the events content
+          loadEvents();
+        });
+        
         // Function to show home content
         function showHomeContent() {
           homeContent.style.display = 'block';
@@ -757,6 +801,12 @@
           sponsorContent.style.display = 'none';
           roomsContent.style.display = 'none';
           booksContent.style.display = 'none';
+          
+          // Hide events content if it exists
+          const eventsContent = document.getElementById('events-content');
+          if (eventsContent) {
+            eventsContent.style.display = 'none';
+          }
           
           // Update active state in navigation
           document.querySelectorAll('.nav-buttons a').forEach(link => {
@@ -1166,5 +1216,6 @@
           });
       }
     </script>
+    <script src="../js/customer_events.js"></script>
   </body>
-</html> 
+</html>  
