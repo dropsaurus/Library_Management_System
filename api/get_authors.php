@@ -12,17 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../config/db_connect.php';
 
 try {
-    $query = "SELECT 
-                A_ID,
-                A_FNAME,
-                A_LNAME,
-                A_STREET,
-                A_CITY,
-                A_STATE,
-                A_COUNTRY,
-                A_ZIPCODE,
-                A_EMAIL
-              FROM JPN_AUTHOR";
+    $query = "
+        SELECT 
+            a.A_ID,
+            u.U_FNAME,
+            u.U_LNAME,
+            u.U_EMAIL,
+            CONCAT(a.A_STREET, ', ', a.A_CITY, ', ', a.A_STATE, ', ', a.A_COUNTRY, ' ', a.A_ZIPCODE) AS FULL_ADDRESS
+        FROM JPN_AUTHOR a
+        JOIN JPN_USER u ON a.A_ID = u.U_ID
+    ";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute();

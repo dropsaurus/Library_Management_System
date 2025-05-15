@@ -699,38 +699,60 @@
       function loadManageAuthorsContent() {
         const pageContent = document.getElementById("pageContent");
         pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Authors</h2>
-          <button class="btn-primary">Add New Author</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search authors..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Categories</option>
-            <option value="fiction">Fiction</option>
-            <option value="non-fiction">Non-Fiction</option>
-            <option value="academic">Academic</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Author ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Books Count</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Author data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-      }
+      
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Author ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Address</th>
+                </tr>
+              </thead>
+              <tbody id="authorsTableBody">
+                <tr><td colspan="4">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        fetch('../api/get_authors.php')
+          .then(res => res.json())
+          .then(data => {
+            const tbody = document.getElementById('authorsTableBody');
+            if (!tbody) return;
+
+            if (data.status === 'success') {
+              tbody.innerHTML = '';
+              data.data.forEach(author => {
+                const row = document.createElement('tr');
+                const fname = author.U_FNAME ?? '-';
+                const lname = author.U_LNAME ?? '';
+                const email = author.U_EMAIL ?? '-';
+                const address = author.FULL_ADDRESS ?? '-';
+
+                row.innerHTML = `
+                  <td>${author.A_ID}</td>
+                  <td>${fname} ${lname}</td>
+                  <td>${email}</td>
+                  <td>${address}</td>
+                `;
+                tbody.appendChild(row);
+              });
+            } else {
+              tbody.innerHTML = `<tr><td colspan="4">Failed to load authors.</td></tr>`;
+            }
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+            const tbody = document.getElementById('authorsTableBody');
+            if (tbody)
+              tbody.innerHTML = `<tr><td colspan="4">Error loading authors.</td></tr>`;
+          });
+}
+
+
 
       function loadAddAuthorContent() {
         const pageContent = document.getElementById("pageContent");
