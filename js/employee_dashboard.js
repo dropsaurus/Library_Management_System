@@ -606,123 +606,165 @@ function loadManageCopiesContent() {
           });
 }
 
-      function loadAddExhibitionForm() {
+function loadManageExhibitionContent() {
   const pageContent = document.getElementById("pageContent");
   pageContent.innerHTML = `
-    <div class="form-container">
-      <h2>Add New Exhibition</h2>
-      <form id="exhibitionForm">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input type="text" id="title" required />
-        </div>
-        <div class="form-group">
-          <label for="start">Start Date & Time</label>
-          <input type="datetime-local" id="start" required />
-        </div>
-        <div class="form-group">
-          <label for="end">End Date & Time</label>
-          <input type="datetime-local" id="end" required />
-        </div>
-        <div class="form-group">
-          <label for="topicId">Topic ID</label>
-          <input type="number" id="topicId" required />
-        </div>
-        <div class="form-group">
-          <label for="expense">Expense ($)</label>
-          <input type="number" step="0.01" id="expense" required />
-        </div>
-        <button type="submit" class="btn-primary">Submit</button>
-      </form>
+    <div class="content-header">
+      <button class="btn-primary" onclick="loadAddExhibitionForm()">New Exhibition</button>
+    </div>
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Exhibition ID</th>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Topic</th>
+            <th>Expense</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="exhibitionTableBody">
+          <tr><td colspan="7">Loading...</td></tr>
+        </tbody>
+      </table>
     </div>
   `;
 
-  document.getElementById("exhibitionForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const formData = {
-      E_NAME: document.getElementById("title").value.trim(),
-      E_STARTTIME: document.getElementById("start").value,
-      E_ENDTIME: document.getElementById("end").value,
-      T_ID: parseInt(document.getElementById("topicId").value),
-      EXPENSE: parseFloat(document.getElementById("expense").value)
-    };
-
-    fetch("../api/insert_event_exhibition.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
+  fetch('../api/get_exhibitions.php')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("exhibitionTableBody");
+      if (data.status === 'success') {
+        tbody.innerHTML = '';
+        data.data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.E_ID}</td>
+            <td>${row.E_NAME}</td>
+            <td>${row.E_STARTTIME}</td>
+            <td>${row.E_ENDTIME}</td>
+            <td>${row.topic_name}</td>
+            <td>$${parseFloat(row.EXPENSE).toFixed(2)}</td>
+            <td>
+              <button onclick="editExhibition(${row.E_ID})" title="Edit">✏️</button>
+              <button onclick="deleteExhibition(${row.E_ID})" title="Delete">🗑️</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="7">Failed to load exhibitions.</td></tr>`;
+      }
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          alert("Exhibition added successfully!");
-          loadManageExhibitionContent();
-        } else {
-          alert("Error: " + data.message);
-        }
-      })
-      .catch((err) => {
-        console.error("Request failed:", err);
-        alert("Failed to submit the exhibition.");
-      });
-  });
+    .catch(err => {
+      console.error(err);
+      document.getElementById("exhibitionTableBody").innerHTML =
+        `<tr><td colspan="7">Error loading exhibitions.</td></tr>`;
+    });
 }
 
+function deleteExhibition(eid) {
+  if (!confirm("Are you sure you want to delete this exhibition?")) return;
 
-    function loadManageExhibitionContent() {
+  fetch("../api/delete_exhibition.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ E_ID: eid })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert("Exhibition deleted!");
+        loadManageExhibitionContent(); // refresh list
+      } else {
+        alert("Delete failed: " + data.message);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error deleting exhibition.");
+    });
+}
+
+function editExhibition(eid) {
+  fetch(`../api/get_exhibition_by_id.php?E_ID=${eid}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status !== 'success') throw new Error(data.message);
+
+      const ex = data.data;
       const pageContent = document.getElementById("pageContent");
       pageContent.innerHTML = `
-        <div class="content-header">
-          <button class="btn-primary" onclick="loadAddExhibitionForm()">New Exhibition</button>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Exhibition ID</th>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Topic</th>
-                <th>Expense</th>
-              </tr>
-            </thead>
-            <tbody id="exhibitionTableBody">
-              <tr><td colspan="6">Loading...</td></tr>
-            </tbody>
-          </table>
+        <div class="form-container">
+          <h2>Edit Exhibition</h2>
+          <form id="editExhibitionForm">
+            <input type="hidden" id="editEID" value="${ex.E_ID}" />
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="editTitle" value="${ex.E_NAME}" required />
+            </div>
+            <div class="form-group">
+              <label>Start Date & Time</label>
+              <input type="datetime-local" id="editStart" value="${ex.E_STARTTIME.replace(' ', 'T')}" required />
+            </div>
+            <div class="form-group">
+              <label>End Date & Time</label>
+              <input type="datetime-local" id="editEnd" value="${ex.E_ENDTIME.replace(' ', 'T')}" required />
+            </div>
+            <div class="form-group">
+              <label>Topic ID</label>
+              <input type="number" id="editTopicId" value="${ex.T_ID}" required />
+            </div>
+            <div class="form-group">
+              <label>Expense</label>
+              <input type="number" id="editExpense" step="0.01" value="${ex.EXPENSE}" required />
+            </div>
+            <button type="submit" class="btn-primary">Save Changes</button>
+          </form>
         </div>
       `;
 
-      fetch('../api/get_exhibitions.php')
-        .then(res => res.json())
-        .then(data => {
-          const tbody = document.getElementById("exhibitionTableBody");
-          if (data.status === 'success') {
-            tbody.innerHTML = '';
-            data.data.forEach(row => {
-              const tr = document.createElement('tr');
-              tr.innerHTML = `
-                <td>${row.E_ID}</td>
-                <td>${row.E_NAME}</td>
-                <td>${row.E_STARTTIME}</td>
-                <td>${row.E_ENDTIME}</td>
-                <td>${row.topic_name}</td>
-                <td>$${parseFloat(row.EXPENSE).toFixed(2)}</td>
-              `;
-              tbody.appendChild(tr);
-            });
-          } else {
-            tbody.innerHTML = `<tr><td colspan="6">Failed to load exhibitions.</td></tr>`;
-          }
+      document.getElementById("editExhibitionForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const updated = {
+          E_ID: parseInt(document.getElementById("editEID").value),
+          E_NAME: document.getElementById("editTitle").value.trim(),
+          E_STARTTIME: document.getElementById("editStart").value,
+          E_ENDTIME: document.getElementById("editEnd").value,
+          T_ID: parseInt(document.getElementById("editTopicId").value),
+          EXPENSE: parseFloat(document.getElementById("editExpense").value)
+        };
+
+        fetch("../api/update_exhibition.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated)
         })
-        .catch(err => {
-          console.error(err);
-          document.getElementById("exhibitionTableBody").innerHTML =
-            `<tr><td colspan="6">Error loading exhibitions.</td></tr>`;
-        });
-    }
+          .then(res => res.json())
+          .then(result => {
+            if (result.status === "success") {
+              alert("Exhibition updated successfully!");
+              loadManageExhibitionContent();
+            } else {
+              alert("Update failed: " + result.message);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert("Error updating exhibition.");
+          });
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error fetching exhibition details.");
+    });
+}
+
+
 
 
 
@@ -743,14 +785,19 @@ function loadManageCopiesContent() {
             <th>End Date</th>
             <th>Topic</th>
             <th>Speaker</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="seminarTableBody">
-          <tr><td colspan="6">Loading...</td></tr>
+          <tr><td colspan="7">Loading...</td></tr>
         </tbody>
       </table>
     </div>
   `;
+
+  document.getElementById("newSeminarBtn").addEventListener("click", () => {
+    loadAddSeminarForm();
+  });
 
   fetch('../api/get_seminars.php')
     .then(res => res.json())
@@ -769,32 +816,71 @@ function loadManageCopiesContent() {
             <td>${seminar.E_ENDTIME}</td>
             <td>${seminar.topic_name}</td>
             <td>${seminar.SPEAKER_FNAME} ${seminar.SPEAKER_LNAME ?? ''}</td>
+            <td>
+              <button onclick="editSeminar(${seminar.E_ID})" class="btn-icon" title="Edit">&#9998;</button>
+              <button onclick="deleteSeminar(${seminar.E_ID})" class="btn-icon" title="Delete">&#128465;</button>
+            </td>
           `;
           tbody.appendChild(row);
         });
       } else {
-        tbody.innerHTML = `<tr><td colspan="6">Failed to load seminars.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7">Failed to load seminars.</td></tr>`;
       }
     })
     .catch(error => {
       console.error('Fetch error:', error);
-      const tbody = document.getElementById('seminarTableBody');
+      const tbody = document.getElementById("seminarTableBody");
       if (tbody)
-        tbody.innerHTML = `<tr><td colspan="6">Error loading seminars.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7">Error loading seminars.</td></tr>`;
     });
-
-  
-  document.getElementById("newSeminarBtn").addEventListener("click", () => {
-    loadAddSeminarForm();
-  });
 }
 
-      function loadAddSeminarForm() {
+function deleteSeminar(eid) {
+  if (!confirm("Are you sure you want to delete this seminar?")) return;
+
+  fetch(`../api/delete_seminar.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ e_id: eid })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Seminar deleted.');
+        loadManageSeminarContent();
+      } else {
+        alert('Delete failed: ' + data.message);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error deleting seminar.');
+    });
+}
+
+function editSeminar(eid) {
+  fetch(`../api/get_seminar_by_id.php?e_id=${eid}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        loadAddSeminarForm(true, data.data); // reuse form with edit mode
+      } else {
+        alert('Seminar not found.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error fetching seminar data.');
+    });
+}
+
+function loadAddSeminarForm(isEdit = false, seminar = null) {
   const pageContent = document.getElementById("pageContent");
   pageContent.innerHTML = `
     <div class="form-container">
-      <h2>Add New Seminar</h2>
+      <h2>${isEdit ? 'Edit' : 'Add New'} Seminar</h2>
       <form id="seminarForm">
+        <input type="hidden" id="seminarId" />
         <div class="form-group">
           <label for="seminarTitle">Seminar Title</label>
           <input type="text" id="seminarTitle" required />
@@ -819,15 +905,26 @@ function loadManageCopiesContent() {
           <label for="speakerLname">Speaker Last Name</label>
           <input type="text" id="speakerLname" />
         </div>
-        <button type="submit" class="btn-primary">Create Seminar</button>
+        <button type="submit" class="btn-primary">${isEdit ? 'Update' : 'Create'} Seminar</button>
       </form>
     </div>
   `;
+
+  if (isEdit && seminar) {
+    document.getElementById("seminarId").value = seminar.E_ID;
+    document.getElementById("seminarTitle").value = seminar.E_NAME;
+    document.getElementById("seminarStart").value = seminar.E_STARTTIME.slice(0, 16);
+    document.getElementById("seminarEnd").value = seminar.E_ENDTIME.slice(0, 16);
+    document.getElementById("topicId").value = seminar.T_ID;
+    document.getElementById("speakerFname").value = seminar.SPEAKER_FNAME;
+    document.getElementById("speakerLname").value = seminar.SPEAKER_LNAME || '';
+  }
 
   document.getElementById("seminarForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const formData = {
+      e_id: parseInt(document.getElementById("seminarId").value || 0),
       e_name: document.getElementById("seminarTitle").value.trim(),
       e_starttime: document.getElementById("seminarStart").value,
       e_endtime: document.getElementById("seminarEnd").value,
@@ -836,7 +933,9 @@ function loadManageCopiesContent() {
       speaker_lname: document.getElementById("speakerLname").value.trim()
     };
 
-    fetch('../api/insert_event_seminar.php', {
+    const url = isEdit ? '../api/update_seminar.php' : '../api/insert_event_seminar.php';
+
+    fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -844,15 +943,15 @@ function loadManageCopiesContent() {
     .then(res => res.json())
     .then(data => {
       if (data.status === 'success') {
-        alert('Seminar added successfully!');
-        loadManageSeminarContent(); // refresh
+        alert(isEdit ? 'Seminar updated!' : 'Seminar added!');
+        loadManageSeminarContent();
       } else {
         alert('Error: ' + data.message);
       }
     })
     .catch(err => {
       console.error(err);
-      alert('Failed to add seminar.');
+      alert('Request failed.');
     });
   });
 }
