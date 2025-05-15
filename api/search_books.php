@@ -25,12 +25,13 @@ try {
             b.BOOK_NAME, 
             t.T_NAME as TOPIC_NAME,
             COUNT(CASE WHEN c.COPY_STATUS = 'AVAILABLE' THEN 1 END) as AVAILABLE_COPIES,
-            GROUP_CONCAT(DISTINCT CONCAT(a.A_FNAME, ' ', a.A_LNAME) SEPARATOR ', ') as AUTHOR_NAME
+            GROUP_CONCAT(DISTINCT CONCAT(u.U_FNAME, ' ', u.U_LNAME) SEPARATOR ', ') as AUTHOR_NAME
         FROM JPN_BOOK b
         LEFT JOIN JPN_TOPIC t ON b.T_ID = t.T_ID
         LEFT JOIN JPN_COPIES c ON b.BOOK_ID = c.BOOK_ID
         LEFT JOIN JPN_BOOK_AUTHOR ba ON b.BOOK_ID = ba.BOOK_ID
         LEFT JOIN JPN_AUTHOR a ON ba.A_ID = a.A_ID
+        LEFT JOIN JPN_USER u ON a.A_ID = u.U_ID
         WHERE 1=1
     ";
     
@@ -40,7 +41,7 @@ try {
     if (!empty($searchTerm)) {
         $sql .= " AND (
             b.BOOK_NAME LIKE :searchTerm 
-            OR CONCAT(a.A_FNAME, ' ', a.A_LNAME) LIKE :searchTerm
+            OR CONCAT(u.U_FNAME, ' ', u.U_LNAME) LIKE :searchTerm
         )";
         $params['searchTerm'] = "%$searchTerm%";
     }

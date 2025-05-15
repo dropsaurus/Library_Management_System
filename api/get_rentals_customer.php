@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../config/db_connect.php';
 
-// Check if user is logged in and is a customer
-if (!isset($_SESSION['USER_ID']) || $_SESSION['ROLE'] !== 'customer') {
+// Check if user is logged in and has customer role
+if (!isset($_SESSION['USER_ID']) || $_SESSION['ROLE'] !== 'CUSTOMER') {
     http_response_code(401);
     echo json_encode([
         "status" => "error",

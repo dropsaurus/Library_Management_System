@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 require_once '../config/db_connect.php';
 
-if (!isset($_SESSION['CUST_ID'])) {
+if (!isset($_SESSION['USER_ID'])) {
   echo json_encode([
     'status' => 'error',
     'message' => 'User not logged in.'
@@ -34,12 +34,15 @@ if (empty($oldPassword) || empty($newPassword)) {
 }
 
 try {
-  // 1. 获取当前密码（假设字段是 CUST_PASSWORD，使用哈希存储）
-  $stmt = $pdo->prepare("SELECT CUST_PASSWORD FROM JPN_CUSTOMER WHERE CUST_ID = ?");
-  $stmt->execute([$_SESSION['CUST_ID']]);
+  // Get the current password hash
+  $stmt = $pdo->prepare("SELECT U_PWD_HASH FROM JPN_USER WHERE U_ID = ?");
+  $stmt->execute([$_SESSION['USER_ID']]);
   $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if (!$row || !password_verify($oldPassword, $row['CUST_PASSWORD'])) {
+  // Verify old password by comparing hashes
+  $oldPasswordHash = hex2bin(hash('sha256', $oldPassword));
+  
+  if (!$row || !hash_equals($row['U_PWD_HASH'], $oldPasswordHash)) {
     echo json_encode([
       'status' => 'error',
       'message' => 'Current password is incorrect.'
@@ -47,10 +50,10 @@ try {
     exit;
   }
 
-  // 2. 更新新密码（使用 hash 加密）
-  $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-  $updateStmt = $pdo->prepare("UPDATE JPN_CUSTOMER SET CUST_PASSWORD = ? WHERE CUST_ID = ?");
-  $updateStmt->execute([$hashedPassword, $_SESSION['CUST_ID']]);
+  // Create hash for new password and update
+  $newPasswordHash = hash('sha256', $newPassword);
+  $updateStmt = $pdo->prepare("UPDATE JPN_USER SET U_PWD_HASH = UNHEX(?) WHERE U_ID = ?");
+  $updateStmt->execute([$newPasswordHash, $_SESSION['USER_ID']]);
 
   echo json_encode([
     'status' => 'success',

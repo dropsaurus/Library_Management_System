@@ -21,8 +21,8 @@ if (!isset($_SESSION['USER_ID'])) {
 }
 
 try {
-    $query = "SELECT USER_FNAME as CUST_FNAME, USER_LNAME as CUST_LNAME, USER_EMAIL as CUST_EMAIL, USER_PHONE as CUST_PHONE 
-              FROM JPN_USER WHERE USER_ID = ?";
+    $query = "SELECT U_FNAME as CUST_FNAME, U_LNAME as CUST_LNAME, U_EMAIL as CUST_EMAIL, U_PHONE as CUST_PHONE 
+              FROM JPN_USER WHERE U_ID = ?";
     $stmt = $pdo->prepare($query);
     $stmt->execute([$_SESSION['USER_ID']]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

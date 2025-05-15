@@ -38,10 +38,10 @@ $email = $data['CUST_EMAIL'];
 $phone = $data['CUST_PHONE'];
 
 try {
-    // Update USER table
+    // Update USER table with new field names
     $query = "UPDATE JPN_USER 
-              SET USER_FNAME = ?, USER_LNAME = ?, USER_EMAIL = ?, USER_PHONE = ?
-              WHERE USER_ID = ?";
+              SET U_FNAME = ?, U_LNAME = ?, U_EMAIL = ?, U_PHONE = ?
+              WHERE U_ID = ?";
     $stmt = $pdo->prepare($query);
     $stmt->execute([$fname, $lname, $email, $phone, $_SESSION['USER_ID']]);
 
