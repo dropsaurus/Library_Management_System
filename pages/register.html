@@ -13,11 +13,15 @@
     <link rel="stylesheet" href="../css/register.css" />
     <style>
       /* Add specific styles for registration form */
-      #commonFields, #customerFields, #authorFields, #passwordSection {
+      #commonFields,
+      #customerFields,
+      #authorFields,
+      #passwordSection {
         transition: all 0.3s ease;
       }
-      
-      #customerFields, #authorFields {
+
+      #customerFields,
+      #authorFields {
         display: none;
       }
     </style>
@@ -123,7 +127,12 @@
               </svg>
               First Name
             </label>
-            <input type="text" id="firstName" required placeholder="e.g. Alice" />
+            <input
+              type="text"
+              id="firstName"
+              required
+              placeholder="e.g. Alice"
+            />
 
             <label for="lastName">
               <svg
@@ -188,9 +197,20 @@
               Phone Number
             </label>
             <input type="tel" id="phone" required placeholder="123-456-7890" />
+            <small
+              id="phoneError"
+              style="
+                color: #e74c3c;
+                display: none;
+                margin-top: 5px;
+                font-size: 0.8rem;
+                font-weight: bold;
+              "
+              >Phone number must be exactly 10 digits (numbers only).</small
+            >
           </div>
 
-          <div id="customerFields" style="display: none;">
+          <div id="customerFields" style="display: none">
             <label for="idType">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -230,14 +250,10 @@
               </svg>
               ID Number
             </label>
-            <input
-              type="text"
-              id="idNumber"
-              placeholder="Enter ID number"
-            />
+            <input type="text" id="idNumber" placeholder="Enter ID number" />
           </div>
 
-          <div id="authorFields" style="display: none;">
+          <div id="authorFields" style="display: none">
             <label for="street">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -254,11 +270,7 @@
               </svg>
               Street
             </label>
-            <input
-              type="text"
-              id="street"
-              placeholder="123 Main St"
-            />
+            <input type="text" id="street" placeholder="123 Main St" />
 
             <label for="city">
               <svg
@@ -276,11 +288,7 @@
               </svg>
               City
             </label>
-            <input
-              type="text"
-              id="city"
-              placeholder="Cityville"
-            />
+            <input type="text" id="city" placeholder="Cityville" />
 
             <label for="state">
               <svg
@@ -298,12 +306,7 @@
               </svg>
               State
             </label>
-            <input
-              type="text"
-              id="state"
-              maxlength="2"
-              placeholder="CA"
-            />
+            <input type="text" id="state" maxlength="2" placeholder="CA" />
 
             <label for="country">
               <svg
@@ -321,11 +324,7 @@
               </svg>
               Country
             </label>
-            <input
-              type="text"
-              id="country"
-              placeholder="USA"
-            />
+            <input type="text" id="country" placeholder="USA" />
 
             <label for="zipcode">
               <svg
@@ -348,12 +347,7 @@
               </svg>
               Zipcode
             </label>
-            <input
-              type="text"
-              id="zipcode"
-              maxlength="5"
-              placeholder="12345"
-            />
+            <input type="text" id="zipcode" maxlength="5" placeholder="12345" />
           </div>
 
           <div id="passwordSection">
@@ -411,47 +405,47 @@
     <script>
       // Inline script to ensure form fields show/hide correctly
       function handleRoleChange() {
-        const roleSelect = document.getElementById('role');
-        const commonFields = document.getElementById('commonFields');
-        const customerFields = document.getElementById('customerFields');
-        const authorFields = document.getElementById('authorFields');
-        const passwordSection = document.getElementById('passwordSection');
-        
+        const roleSelect = document.getElementById("role");
+        const commonFields = document.getElementById("commonFields");
+        const customerFields = document.getElementById("customerFields");
+        const authorFields = document.getElementById("authorFields");
+        const passwordSection = document.getElementById("passwordSection");
+
         const selectedRole = roleSelect.value;
         console.log("Role changed to:", selectedRole);
-        
-        if (selectedRole === '') {
-          commonFields.style.display = 'none';
-          customerFields.style.display = 'none';
-          authorFields.style.display = 'none';
-          passwordSection.style.display = 'none';
+
+        if (selectedRole === "") {
+          commonFields.style.display = "none";
+          customerFields.style.display = "none";
+          authorFields.style.display = "none";
+          passwordSection.style.display = "none";
         } else {
-          commonFields.style.display = 'block';
-          passwordSection.style.display = 'block';
-          
-          if (selectedRole === 'customer') {
-            customerFields.style.display = 'block';
-            authorFields.style.display = 'none';
-            
-            document.getElementById('idType').setAttribute('required', '');
-            document.getElementById('idNumber').setAttribute('required', '');
-          } else if (selectedRole === 'author') {
-            customerFields.style.display = 'none';
-            authorFields.style.display = 'block';
-            
-            document.getElementById('street').setAttribute('required', '');
-            document.getElementById('city').setAttribute('required', '');
-            document.getElementById('state').setAttribute('required', '');
-            document.getElementById('country').setAttribute('required', '');
-            document.getElementById('zipcode').setAttribute('required', '');
+          commonFields.style.display = "block";
+          passwordSection.style.display = "block";
+
+          if (selectedRole === "customer") {
+            customerFields.style.display = "block";
+            authorFields.style.display = "none";
+
+            document.getElementById("idType").setAttribute("required", "");
+            document.getElementById("idNumber").setAttribute("required", "");
+          } else if (selectedRole === "author") {
+            customerFields.style.display = "none";
+            authorFields.style.display = "block";
+
+            document.getElementById("street").setAttribute("required", "");
+            document.getElementById("city").setAttribute("required", "");
+            document.getElementById("state").setAttribute("required", "");
+            document.getElementById("country").setAttribute("required", "");
+            document.getElementById("zipcode").setAttribute("required", "");
           }
         }
       }
-      
+
       // Execute once on page load
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
         console.log("DOM loaded - initializing form");
-        
+
         // Initialize form state
         handleRoleChange();
       });
