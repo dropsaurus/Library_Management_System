@@ -5,6 +5,9 @@
         loadDefaultPage();
         initializeTheme();
       });
+      function logout() {
+        window.location.href = "index.html";
+    }
 
       function setupNavigation() {
         const subItems = document.querySelectorAll(".sub-item");
@@ -1465,3 +1468,4 @@ function loadManageRoomBookingsContent() {
       }
     });
 }
+
