@@ -198,7 +198,7 @@
             start: e.E_STARTTIME,
             end: e.E_ENDTIME,
             extra: `Speaker: ${e.SPEAKER_FNAME} ${e.SPEAKER_LNAME}`,
-            img: `../images/event${(i % 5) + 1}.jpg`,
+            placeholderText: e.E_NAME || "Seminar Event",
           })),
           ...exhibitions.map((e, i) => ({
             type: "Exhibition",
@@ -208,7 +208,7 @@
             start: e.E_STARTTIME,
             end: e.E_ENDTIME,
             extra: `Funding: $${parseFloat(e.EXPENSE || 0).toFixed(2)}`,
-            img: `../images/event${((i + 5) % 5) + 1}.jpg`,
+            placeholderText: e.E_NAME || "Exhibition Event",
           })),
         ];
 
@@ -229,7 +229,6 @@
           card.className = "event-card";
           card.innerHTML = `
           <div class="event-image">
-            <img src="${event.img}" alt="${event.name}">
             <span class="event-type">${event.type}</span>
           </div>
           <div class="event-content">
@@ -257,7 +256,7 @@
             </div>
             <button onclick="location.href='event_register.html?event_id=${
               event.id
-            }&type=${event.type}&img=${encodeURIComponent(event.img)}'" class="btn">
+            }&type=${event.type}&title=${encodeURIComponent(event.name)}'" class="btn">
               Register Now
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

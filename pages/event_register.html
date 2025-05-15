@@ -75,7 +75,7 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const eventId = params.get("event_id");
-    const eventImg = decodeURIComponent(params.get("img") || "../images/default.jpg");
+    const eventTitle = decodeURIComponent(params.get("title") || "Event");
 
     async function loadEventDetails() {
       try {
@@ -89,7 +89,6 @@
         }
 
         let html = `<div class="card shadow">
-                      <img src="${eventImg}" class="card-img-top" alt="Event Image">
                       <div class="card-body">
                         <h4 class="card-title">${event.E_NAME}</h4>
                         <p><strong>Type:</strong> ${event.E_TYPE}</p>

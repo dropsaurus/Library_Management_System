@@ -27,17 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         eventList.innerHTML = '';
         events.forEach((event, index) => {
-            const imgSrc = `../images/event${(index % 5) + 1}.jpg`;
             const card = document.createElement('div');
             card.className = 'event-card';
             card.innerHTML = `
-                <img src="${imgSrc}" alt="Event Image" style="width: 100%; height: 180px; object-fit: cover;">
                 <h3>${event.E_NAME}</h3>
                 <p><strong>Type:</strong> ${event.E_TYPE}</p>
                 <p><strong>Topic:</strong> ${event.TOPIC_NAME}</p>
                 <p><strong>Start:</strong> ${event.E_STARTTIME}</p>
                 <p><strong>End:</strong> ${event.E_ENDTIME}</p>
-                <a href="event_register.html?event_id=${event.E_ID}&img=${encodeURIComponent(imgSrc)}" class="btn btn-primary mt-2">Register</a>
+                <a href="event_register.html?event_id=${event.E_ID}&title=${encodeURIComponent(event.E_NAME)}" class="btn btn-primary mt-2">Register</a>
             `;
             eventList.appendChild(card);
         });
