@@ -38,6 +38,25 @@
           justify-content: flex-end;
         }
       }
+      
+      /* Add consistent vertical spacing between form elements */
+      form label {
+        margin-top: 1.5rem;
+        display: block;
+      }
+      
+      form select,
+      form input {
+        margin-bottom: 0.5rem;
+      }
+      
+      /* Error message styling */
+      .error-message {
+        color: #e74c3c;
+        font-size: 0.8rem;
+        margin-top: 0.3rem;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -144,7 +163,7 @@
               type="text"
               id="firstName"
               required
-              placeholder="e.g. Alice"
+              placeholder="Alice"
             />
 
             <label for="lastName">
@@ -167,7 +186,7 @@
               type="text"
               id="lastName"
               required
-              placeholder="e.g. Johnson"
+              placeholder="Johnson"
             />
 
             <label for="email">
@@ -209,16 +228,17 @@
               </svg>
               Phone Number
             </label>
-            <input type="tel" id="phone" required placeholder="123-456-7890" />
+            <input
+              type="tel"
+              id="phone"
+              required
+              placeholder="1234567890"
+              pattern="[0-9]{10}"
+              maxlength="10"
+            />
             <small
               id="phoneError"
-              style="
-                color: #e74c3c;
-                display: none;
-                margin-top: 5px;
-                font-size: 0.8rem;
-                font-weight: bold;
-              "
+              class="error-message"
               >Phone number must be exactly 10 digits (numbers only).</small
             >
           </div>
@@ -436,21 +456,28 @@
           commonFields.style.display = "block";
           passwordSection.style.display = "block";
 
+          // Get all input and select elements in both field sets
+          const customerInputs = customerFields.querySelectorAll("input, select");
+          const authorInputs = authorFields.querySelectorAll("input, select");
+
           if (selectedRole === "customer") {
             customerFields.style.display = "block";
             authorFields.style.display = "none";
-
-            document.getElementById("idType").setAttribute("required", "");
-            document.getElementById("idNumber").setAttribute("required", "");
+            
+            // Make customer fields required
+            customerInputs.forEach(input => input.setAttribute("required", ""));
+            
+            // Make author fields not required
+            authorInputs.forEach(input => input.removeAttribute("required"));
           } else if (selectedRole === "author") {
             customerFields.style.display = "none";
             authorFields.style.display = "block";
-
-            document.getElementById("street").setAttribute("required", "");
-            document.getElementById("city").setAttribute("required", "");
-            document.getElementById("state").setAttribute("required", "");
-            document.getElementById("country").setAttribute("required", "");
-            document.getElementById("zipcode").setAttribute("required", "");
+            
+            // Make author fields required
+            authorInputs.forEach(input => input.setAttribute("required", ""));
+            
+            // Make customer fields not required
+            customerInputs.forEach(input => input.removeAttribute("required"));
           }
         }
       }
@@ -461,6 +488,104 @@
 
         // Initialize form state
         handleRoleChange();
+        initializeTheme();
+        
+        // Add validation for the phone field
+        const phoneInput = document.getElementById("phone");
+        const phoneError = document.getElementById("phoneError");
+        
+        phoneInput.addEventListener("input", function() {
+          // Remove any non-numeric characters
+          this.value = this.value.replace(/\D/g, "");
+          
+          // Show error if not exactly 10 digits
+          if (this.value.length > 0 && this.value.length !== 10) {
+            phoneError.style.display = "block";
+          } else {
+            phoneError.style.display = "none";
+          }
+        });
+        
+        // Form validation
+        document.getElementById("registrationForm").addEventListener("submit", function(e) {
+          e.preventDefault();
+          
+          // Basic validation
+          let isValid = true;
+          let errorMsg = "";
+          
+          // Validate role selection
+          const role = document.getElementById("role").value;
+          if (!role) {
+            isValid = false;
+            errorMsg = "Please select a role.";
+          }
+          
+          // Validate phone format
+          const phone = document.getElementById("phone").value;
+          if (phone.length !== 10 || !/^\d{10}$/.test(phone)) {
+            isValid = false;
+            phoneError.style.display = "block";
+            errorMsg = "Please enter a valid 10-digit phone number.";
+          }
+          
+          // Validate customer-specific fields
+          if (role === "customer") {
+            const idType = document.getElementById("idType").value;
+            const idNumber = document.getElementById("idNumber").value;
+            
+            if (!idType) {
+              isValid = false;
+              errorMsg = "Please select an ID type.";
+            }
+            
+            if (!idNumber) {
+              isValid = false;
+              errorMsg = "Please enter your ID number.";
+            }
+          }
+          
+          // Validate author-specific fields
+          if (role === "author") {
+            const fields = ["street", "city", "state", "country", "zipcode"];
+            for (const field of fields) {
+              if (!document.getElementById(field).value) {
+                isValid = false;
+                errorMsg = `Please fill in all address fields.`;
+                break;
+              }
+            }
+            
+            // Check if state is exactly 2 characters
+            const state = document.getElementById("state").value;
+            if (state.length !== 2) {
+              isValid = false;
+              errorMsg = "State must be a 2-letter code.";
+            }
+            
+            // Check if zipcode is exactly 5 digits
+            const zipcode = document.getElementById("zipcode").value;
+            if (!/^\d{5}$/.test(zipcode)) {
+              isValid = false;
+              errorMsg = "Zipcode must be 5 digits.";
+            }
+          }
+          
+          // Password validation - at least 8 characters
+          const password = document.getElementById("password").value;
+          if (password.length < 8) {
+            isValid = false;
+            errorMsg = "Password must be at least 8 characters long.";
+          }
+          
+          if (isValid) {
+            alert("Registration successful! Form would be submitted here.");
+            // In a real app, we would submit the form here
+            // this.submit();
+          } else {
+            alert(errorMsg);
+          }
+        });
       });
     </script>
     <script src="../js/register.js"></script>
