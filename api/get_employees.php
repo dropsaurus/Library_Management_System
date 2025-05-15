@@ -12,25 +12,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../config/db_connect.php';
 
 try {
-    $query = "SELECT 
-                cu.CUST_ID,
-                u.U_FNAME AS CUST_FNAME,
-                u.U_LNAME AS CUST_LNAME,
-                u.U_PHONE AS CUST_PHONE,
-                u.U_EMAIL AS CUST_EMAIL,
-                cu.CUST_UID_TYPE,
-                cu.CUST_UID_NO
-              FROM JPN_CUSTOMER cu
-              JOIN JPN_USER u ON cu.CUST_ID = u.U_ID
-              ORDER BY u.U_FNAME, u.U_LNAME";
+    $query = "
+        SELECT 
+            e.E_ID,
+            u.U_FNAME,
+            u.U_LNAME,
+            u.U_PHONE,
+            u.U_EMAIL,
+            e.E_HIREDATE
+        FROM JPN_EMPLOYEE e
+        JOIN JPN_USER u ON e.E_ID = u.U_ID
+        ORDER BY u.U_FNAME, u.U_LNAME
+    ";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute();
-    $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'status' => 'success',
-        'data' => $customers
+        'data' => $employees
     ]);
 } catch (PDOException $e) {
     http_response_code(500);

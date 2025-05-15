@@ -62,9 +62,6 @@
           case "manage_customers":
             loadManageCustomersContent();
             break;
-          case "customer_reports":
-            loadCustomerReportsContent();
-            break;
           case "manage_employees":
             loadManageEmployeesContent();
             break;
@@ -80,7 +77,6 @@
             case "manage_copies":
             loadManageCopiesContent();
             break;
-
           case "manage_rentals":
             loadManageRentalsContent();
             break;
@@ -109,6 +105,10 @@
         // Load dashboard page by default
         loadPage("dashboard");
       }
+
+
+
+
 
       function loadDashboardContent() {
         const pageContent = document.getElementById("pageContent");
@@ -140,98 +140,119 @@
         `;
       }
 
+
+
+
+
       function loadManageCustomersContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Customer Management</h2>
-          <button class="btn-primary" onclick="addNewCustomer()">Add New Customers</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search customers..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Registration Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Customer data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-      }
+  const pageContent = document.getElementById("pageContent");
 
-      function loadCustomerReportsContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Customer Reports</h2>
-        </div>
-        <div class="report-filters">
-          <div class="date-range">
-            <input type="date" class="date-input">
-            <span>to</span>
-            <input type="date" class="date-input">
-          </div>
-          <button class="btn-primary">Generate Report</button>
-        </div>
-        <div class="report-container">
-          <div class="chart-container">
-            <h3>Customer Growth Trend</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-          <div class="chart-container">
-            <h3>Customer Activity Analysis</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-        </div>
-      `;
-      }
+  pageContent.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>UID Type</th>
+            <th>UID No</th>
+          </tr>
+        </thead>
+        <tbody id="customerTableBody">
+          <tr><td colspan="6">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
 
-      function loadEmployeeReportContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Employee Report</h2>
-        </div>
-        <div class="report-filters">
-          <div class="date-range">
-            <input type="date" class="date-input">
-            <span>to</span>
-            <input type="date" class="date-input">
-          </div>
-          <button class="btn-primary">Generate Report</button>
-        </div>
-        <div class="report-container">
-          <div class="chart-container">
-            <h3>Employee Performance Trend</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-          <div class="chart-container">
-            <h3>Employee Activity Analysis</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-        </div>
-      `;
-      }
+  fetch('../api/get_customers.php')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("customerTableBody");
+      if (!tbody) return;
 
-      function logout() {
-        window.location.href = "login.html";
+      if (data.status === 'success') {
+        tbody.innerHTML = '';
+        data.data.forEach(cust => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${cust.CUST_ID}</td>
+            <td>${cust.CUST_FNAME} ${cust.CUST_LNAME ?? ''}</td>
+            <td>${cust.CUST_PHONE}</td>
+            <td>${cust.CUST_EMAIL}</td>
+            <td>${cust.CUST_UID_TYPE}</td>
+            <td>${cust.CUST_UID_NO}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="6">Failed to load customers.</td></tr>`;
       }
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+      const tbody = document.getElementById("customerTableBody");
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan="6">Error loading customers.</td></tr>`;
+    });
+}
+
+function loadManageEmployeesContent() {
+  const pageContent = document.getElementById("pageContent");
+
+  pageContent.innerHTML = `
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Hire Date</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+          <tr><td colspan="5">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch("../api/get_employees.php")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("employeeTableBody");
+      if (!tbody) return;
+
+      if (data.status === 'success') {
+        tbody.innerHTML = '';
+        data.data.forEach(emp => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${emp.E_ID}</td>
+            <td>${emp.U_FNAME} ${emp.U_LNAME ?? ''}</td>
+            <td>${emp.U_PHONE}</td>
+            <td>${emp.U_EMAIL}</td>
+            <td>${emp.E_HIREDATE}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="5">Failed to load employees.</td></tr>`;
+      }
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+      const tbody = document.getElementById("employeeTableBody");
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan="5">Error loading employees.</td></tr>`;
+    });
+}
+
+
+
 
       function loadManageBooksContent() {
   const pageContent = document.getElementById("pageContent");
@@ -372,7 +393,6 @@ function loadManageCopiesContent() {
 
   pageContent.innerHTML = `
     <div class="content-header">
-      <h2>Manage Book Copies</h2>
       <button class="btn-primary" id="newCopyBtn">Add New Copy</button>
     </div>
 
@@ -925,6 +945,107 @@ function loadManageCopiesContent() {
           });
 }
 
+function loadManageRoomsContent() {
+  const pageContent = document.getElementById("pageContent");
+
+  pageContent.innerHTML = `
+    <div class="content-header">
+      <button class="btn-primary" id="newRoomBtn">Add New Room</button>
+    </div>
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Room ID</th>
+            <th>Capacity</th>
+          </tr>
+        </thead>
+        <tbody id="roomTableBody">
+          <tr><td colspan="2">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById("newRoomBtn").addEventListener("click", () => {
+    alert("Room creation form coming soon!");
+  });
+
+  fetch("../api/get_rooms.php")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("roomTableBody");
+      if (!tbody) return;
+
+      if (data.status === "success") {
+        tbody.innerHTML = "";
+        data.data.forEach(room => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${room.ROOM_ID}</td>
+            <td>${room.ROOM_CAPACITY}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="2">Failed to load rooms.</td></tr>`;
+      }
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+      const tbody = document.getElementById("roomTableBody");
+      if (tbody)
+        tbody.innerHTML = `<tr><td colspan="2">Error loading rooms.</td></tr>`;
+    });
+}
+
+function loadAddRoomForm() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="form-container">
+      <h2>Add New Room</h2>
+      <form id="addRoomForm">
+        <div class="form-group">
+          <label for="roomId">Room ID (100–999)</label>
+          <input type="number" id="roomId" min="100" max="999" required />
+        </div>
+        <div class="form-group">
+          <label for="roomCapacity">Room Capacity</label>
+          <input type="number" id="roomCapacity" min="1" required />
+        </div>
+        <button type="submit" class="btn-primary">Add Room</button>
+      </form>
+    </div>
+  `;
+
+  document.getElementById("addRoomForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = {
+      room_id: parseInt(document.getElementById("roomId").value),
+      room_capacity: parseInt(document.getElementById("roomCapacity").value)
+    };
+
+    fetch("../api/insert_room.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert("Room added successfully!");
+          loadManageRoomsContent(); // refresh the room list
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch(error => {
+        console.error("Request failed:", error);
+        alert("Failed to add room.");
+      });
+  });
+}
 
 
       function loadAddAuthorContent() {
