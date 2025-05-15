@@ -98,6 +98,14 @@
           case "add_author":
             loadAddAuthorContent();
             break;
+            
+            case "manage_exhibition_reservations":
+            loadManageExhibitionReservationContent();
+            break;
+
+            case "manage_seminar_reservations":
+            loadManageSeminarReservationContent()
+            break;
         }
       }
 
@@ -499,41 +507,67 @@ function loadManageCopiesContent() {
 }
 
       function loadManageRentalsContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Rentals</h2>
-          <button class="btn-primary">New Rental</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search rentals..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="overdue">Overdue</option>
-            <option value="returned">Returned</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Rental ID</th>
-                <th>Book Title</th>
-                <th>Customer</th>
-                <th>Rental Date</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Rental data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="content-header">
+      <button class="btn-primary">New Rental</button>
+    </div>
+    
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Rental ID</th>
+            <th>Book Title</th>
+            <th>Customer</th>
+            <th>Rental Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rentalTableBody">
+          <tr><td colspan="7">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch("../api/get_rentals.php")
+    .then(res => res.json())
+    .then(result => {
+      const tbody = document.getElementById("rentalTableBody");
+      tbody.innerHTML = "";
+
+      if (result.status === "success" && Array.isArray(result.data)) {
+        if (result.data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7">No rental records found.</td></tr>`;
+        } else {
+          result.data.forEach(r => {
+            const tr = document.createElement("tr");
+            const customerName = `${r.CUST_FNAME} ${r.CUST_LNAME}`;
+            tr.innerHTML = `
+              <td>${r.R_ID}</td>
+              <td>${r.BOOK_NAME}</td>
+              <td>${customerName}</td>
+              <td>${r.R_BORROWDATE}</td>
+              <td>${r.R_EX_RETURNDATE}</td>
+              <td>${r.R_STATUS}</td>
+              <td>—</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      } else {
+        tbody.innerHTML = `<tr><td colspan="7">Failed to load data.</td></tr>`;
       }
+    })
+    .catch(err => {
+      console.error(err);
+      const tbody = document.getElementById("rentalTableBody");
+      tbody.innerHTML = `<tr><td colspan="7">Error loading data.</td></tr>`;
+    });
+}
 
       function loadManageExhibitionContent() {
         const pageContent = document.getElementById("pageContent");
@@ -954,6 +988,91 @@ function loadAddSeminarForm(isEdit = false, seminar = null) {
       alert('Request failed.');
     });
   });
+}
+
+function loadManageExhibitionReservationContent() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reservation ID</th>
+            <th>Customer</th>
+            <th>Exhibition</th>
+            <th>Start Time</th>
+          </tr>
+        </thead>
+        <tbody id="exhibitionReservationBody">
+          <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch('../api/get_exhibition_reservations.php')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById('exhibitionReservationBody');
+      if (data.status === 'success') {
+        tbody.innerHTML = '';
+        data.data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.REGISTRATION_ID}</td>
+            <td>${row.CUST_FNAME} ${row.CUST_LNAME}</td>
+            <td>${row.E_NAME}</td>
+            <td>${row.E_STARTTIME}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="4">Failed to load reservations.</td></tr>`;
+      }
+    });
+}
+
+function loadManageSeminarReservationContent() {
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <h2>Seminar Reservations</h2>
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Invitation ID</th>
+            <th>Author</th>
+            <th>Seminar</th>
+            <th>Start Time</th>
+          </tr>
+        </thead>
+        <tbody id="seminarReservationBody">
+          <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  fetch('../api/get_seminar_reservations.php')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById('seminarReservationBody');
+      if (data.status === 'success') {
+        tbody.innerHTML = '';
+        data.data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.INVITATION_ID}</td>
+            <td>${row.U_FNAME} ${row.U_LNAME}</td>
+            <td>${row.E_NAME}</td>
+            <td>${row.E_STARTTIME}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        tbody.innerHTML = `<tr><td colspan="4">Failed to load seminar invitations.</td></tr>`;
+      }
+    });
 }
 
 

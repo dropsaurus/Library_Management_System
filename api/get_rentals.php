@@ -12,21 +12,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../config/db_connect.php';
 try {
     $sql = "
-        SELECT 
-            r.R_ID,
-            r.R_STATUS,
-            r.R_BORROWDATE,
-            r.R_EX_RETURNDATE,
-            r.R_AC_RETURNDATE,
-            c.CUST_FNAME,
-            c.CUST_LNAME,
-            b.BOOK_NAME
-        FROM JPN_RENTAL r
-        JOIN JPN_CUSTOMER c ON r.CUST_ID = c.CUST_ID
-        JOIN JPN_COPIES cp ON r.COPY_ID = cp.COPY_ID
-        JOIN JPN_BOOK b ON cp.BOOK_ID = b.BOOK_ID
-        ORDER BY r.R_BORROWDATE DESC
-    ";
+    SELECT 
+        r.R_ID,
+        r.R_STATUS,
+        r.R_BORROWDATE,
+        r.R_EX_RETURNDATE,
+        r.R_AC_RETURNDATE,
+        u.U_FNAME AS CUST_FNAME,
+        u.U_LNAME AS CUST_LNAME,
+        b.BOOK_NAME
+    FROM JPN_RENTAL r
+    JOIN JPN_CUSTOMER c ON r.CUST_ID = c.CUST_ID
+    JOIN JPN_USER u ON c.CUST_ID = u.U_ID
+    JOIN JPN_COPIES cp ON r.COPY_ID = cp.COPY_ID
+    JOIN JPN_BOOK b ON cp.BOOK_ID = b.BOOK_ID
+    ORDER BY r.R_BORROWDATE DESC
+";
+
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
