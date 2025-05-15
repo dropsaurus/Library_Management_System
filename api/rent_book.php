@@ -13,6 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../config/db_connect.php';
 
 try {
+    $pdo->beginTransaction(); // Start transaction
+
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['book_id']) || !isset($data['customer_id'])) {
@@ -25,7 +27,7 @@ try {
     $customer_id = $data['customer_id'];
 
     // Step 1: Get available copy
-    $stmt = $pdo->prepare("SELECT COPY_ID FROM JPN_COPIES WHERE BOOK_ID = ? AND COPY_STATUS = 'AVAILABLE' LIMIT 1");
+    $stmt = $pdo->prepare("SELECT COPY_ID FROM JPN_COPIES WHERE BOOK_ID = ? AND COPY_STATUS = 'AVAILABLE' LIMIT 1 FOR UPDATE");
     $stmt->execute([$book_id]);
     $copy = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -59,9 +61,14 @@ try {
     $stmt = $pdo->prepare("UPDATE JPN_COPIES SET COPY_STATUS = 'NOT AVAILABLE' WHERE COPY_ID = ?");
     $stmt->execute([$copy_id]);
 
+    $pdo->commit(); // Commit transaction
+
     echo json_encode(['status' => 'success', 'message' => 'Book rented successfully']);
 
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack(); // Rollback transaction on error
+    }
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
 }
