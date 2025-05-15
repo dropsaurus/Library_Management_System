@@ -4,11 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Public Affirmation Library</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/theme-toggle.css" />
-    <link rel="stylesheet" href="../css/books.css" />
-    <link rel="stylesheet" href="../css/events.css" />
-    <link rel="stylesheet" href="../css/user-dropdown.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/theme-toggle.css" />
+    <link rel="stylesheet" href="css/books.css" />
+    <link rel="stylesheet" href="css/events.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
@@ -161,50 +160,6 @@
         width: 100%;
         box-sizing: border-box;
       }
-      
-      /* Table cell padding */
-      td,
-      th {
-        padding: 10px 15px;
-      }
-      
-      /* Contact styles */
-      .contact-container {
-        max-width: 800px;
-        margin: 3rem auto;
-        padding: 0 1rem;
-        font-size: 1.1rem;
-        line-height: 1.6;
-      }
-
-      .contact-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.2rem;
-      }
-
-      .contact-item svg {
-        width: 20px;
-        height: 20px;
-        margin-right: 0.6rem;
-        flex-shrink: 0;
-        color: var(--accent-primary);
-      }
-
-      .contact-item a {
-        color: var(--accent-primary);
-        text-decoration: none;
-      }
-
-      .contact-item a:hover {
-        text-decoration: underline;
-      }
-      
-      /* Active navigation button */
-      .nav-buttons a.active {
-        background-color: var(--accent-primary);
-        color: white;
-      }
     </style>
   </head>
   <body>
@@ -214,18 +169,12 @@
           <h1>Public Affirmation Library</h1>
         </div>
         <div class="nav-buttons">
-          <a href="#" class="btn active" id="home-btn">Home</a>
-          <a href="#" class="btn" id="contact-btn">Contact</a>
-          <a href="sponsor.html" class="btn">Sponsor</a>
-          <a href="books.html" class="btn">Books</a>
-          <a href="events.html" class="btn">Events</a>
-          <a href="rooms.html" class="btn">Rooms</a>
-          <div class="dropdown">
-            <a href="#" class="btn dropdown-toggle" id="username-btn">Loading...</a>
-            <div class="dropdown-content">
-              <a href="#" class="sign-out">Sign Out</a>
-            </div>
-          </div>
+          <a href="pages/contact.html" class="btn">Contact</a>
+          <a href="pages/sponsor.html" class="btn">Sponsor</a>
+          <a href="pages/books.html" class="btn">Books</a>
+          <a href="pages/events.html" class="btn">Events</a>
+          <a href="pages/rooms.html" class="btn">Rooms</a>
+          <span class="btn">User Name</span>
           <button
             class="theme-toggle"
             onclick="toggleTheme()"
@@ -255,78 +204,45 @@
     </header>
 
     <main>
-      <div id="content-container">
-        <div id="home-content">
-          <div class="hero-section">
-            <h2>Welcome to Your Library</h2>
-            <p>Discover, Learn, and Grow with Us</p>
-          </div>
+      <div class="hero-section">
+        <h2>Welcome to Your Library</h2>
+        <p>Discover, Learn, and Grow with Us</p>
+      </div>
 
-          <h2 class="section-heading">Books</h2>
-          <div class="container-with-arrows">
-            <button id="prevBooks" class="pagination-arrow prev" disabled>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div class="scroll-content" id="booksContainer">
-              <!-- Books will be loaded here using JavaScript -->
-            </div>
-            <button id="nextBooks" class="pagination-arrow next">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            <a href="books.html" class="btn action-btn">Rent a Book</a>
-          </div>
-
-          <h2 class="section-heading">Events</h2>
-          <div class="container-with-arrows">
-            <button id="prevEvents" class="pagination-arrow prev" disabled>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <div class="scroll-content" id="eventsContainer">
-              <!-- Events will be loaded here using JavaScript -->
-            </div>
-            <button id="nextEvents" class="pagination-arrow next">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            <a href="events.html" class="btn action-btn">Register for an Event</a>
-          </div>
+      <h2 class="section-heading">Books</h2>
+      <div class="container-with-arrows">
+        <button id="prevBooks" class="pagination-arrow prev" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="scroll-content" id="booksContainer">
+          <!-- Books will be loaded here using JavaScript -->
         </div>
-        
-        <div id="contact-content" style="display: none;">
-          <div class="contact-container">
-            <h2>Contact Us</h2>
-            <p>We're here to help! Reach out to us through any of the following methods:</p>
+        <button id="nextBooks" class="pagination-arrow next">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <a href="pages/books.html" class="btn action-btn">Rent a Book</a>
+      </div>
 
-            <div class="contact-item">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <span>Email: <a href="mailto:info@affirmationlibrary.org">info@affirmationlibrary.org</a></span>
-            </div>
-
-            <div class="contact-item">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372a1.125 1.125 0 00-.852-1.09l-4.423-1.106a1.125 1.125 0 00-1.173.417l-.97 1.293a1.125 1.125 0 01-1.21.38 12.035 12.035 0 01-7.143-7.143 1.125 1.125 0 01.38-1.21l1.293-.97a1.125 1.125 0 00.417-1.173L6.963 3.102A1.125 1.125 0 005.872 2.25H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-              </svg>
-              <span>Phone: (123) 456-7890</span>
-            </div>
-
-            <div class="contact-item">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-              </svg>
-              <span>Address: 123 Library Lane, Booktown, NY 10001</span>
-            </div>
-          </div>
+      <h2 class="section-heading">Events</h2>
+      <div class="container-with-arrows">
+        <button id="prevEvents" class="pagination-arrow prev" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="scroll-content" id="eventsContainer">
+          <!-- Events will be loaded here using JavaScript -->
         </div>
+        <button id="nextEvents" class="pagination-arrow next">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        <a href="pages/events.html" class="btn action-btn">Register for an Event</a>
       </div>
     </main>
 
@@ -334,51 +250,9 @@
       <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
     </footer>
 
-    <script src="../js/theme-toggle.js"></script>
-    <script src="../js/user-auth.js"></script>
+    <script src="js/theme-toggle.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        // Handle Contact button
-        const contactBtn = document.getElementById('contact-btn');
-        const homeBtn = document.getElementById('home-btn');
-        const homeContent = document.getElementById('home-content');
-        const contactContent = document.getElementById('contact-content');
-        
-        contactBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          homeContent.style.display = 'none';
-          contactContent.style.display = 'block';
-          
-          // Update active state in navigation
-          document.querySelectorAll('.nav-buttons a').forEach(link => {
-            link.classList.remove('active');
-          });
-          contactBtn.classList.add('active');
-        });
-        
-        // Handle Home button
-        homeBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          showHomeContent();
-        });
-        
-        // Function to show home content
-        function showHomeContent() {
-          homeContent.style.display = 'block';
-          contactContent.style.display = 'none';
-          
-          // Update active state in navigation
-          document.querySelectorAll('.nav-buttons a').forEach(link => {
-            link.classList.remove('active');
-          });
-          homeBtn.classList.add('active');
-        }
-        
-        // Add click handler for logo to return to home
-        document.querySelector('.logo').addEventListener('click', function() {
-          showHomeContent();
-        });
-        
         const booksContainer = document.getElementById('booksContainer');
         const eventsContainer = document.getElementById('eventsContainer');
         const prevEventsBtn = document.getElementById('prevEvents');
@@ -387,7 +261,7 @@
         const nextBooksBtn = document.getElementById('nextBooks');
         
         // Fix the base URL to include the correct path
-        const baseUrl = '../api';
+        const baseUrl = './api';
         
         let allEvents = [];
         let allBooks = [];

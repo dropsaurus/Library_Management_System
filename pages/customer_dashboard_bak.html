@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Dashboard - Public Affirmation Library</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <link rel="stylesheet" href="../css/customer_dashboard.css" />
+    <style>
+      /* Ensure content area has proper background color */
+      #dashboard-content {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        border-radius: 12px;
+        min-height: 400px;
+        padding: 20px;
+      }
+
+      /* Fix for loaded content pages */
+      #dashboard-content > div {
+        background-color: var(--bg-primary);
+        padding: 15px;
+      }
+
+      /* Ensure tables and other elements inherit the theme colors */
+      #dashboard-content table {
+        color: var(--text-primary);
+        background-color: var(--card-bg);
+        border-spacing: 0;
+        padding: 10px;
+      }
+
+      #dashboard-content .table-container {
+        background-color: var(--card-bg);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      /* Ensure forms and inputs match the theme */
+      #dashboard-content form {
+        background-color: var(--bg-primary);
+        padding: 15px;
+      }
+
+      /* Reduce icon sizes */
+      .timeline-icon svg,
+      .sidebar-nav-item svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Add padding to cards and elements */
+      .stats-card,
+      .event-card,
+      .timeline-item {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      /* Add spacing between elements */
+      .dashboard-title {
+        margin-bottom: 20px;
+        padding: 10px 0;
+      }
+
+      /* Better spacing for text elements */
+      p,
+      h3,
+      h4 {
+        margin: 8px 0;
+      }
+
+      /* Table cell padding */
+      td,
+      th {
+        padding: 10px 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <h1>Public Affirmation Library</h1>
+        </div>
+        <div class="nav-buttons">
+          <button
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            aria-label="Toggle theme"
+          >
+            <svg
+              class="sun-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 111.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+              />
+            </svg>
+            <svg
+              class="moon-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+              />
+            </svg>
+          </button>
+          <div class="dropdown">
+            <button class="btn dropdown-toggle" id="user-button">👤</button>
+            <div class="dropdown-content">
+              <a href="#" onclick="loadPage('cust_profile.html')"
+                >👤 Profile Settings</a
+              >
+              <a href="#" onclick="loadPage('change_password.html')"
+                >🔒 Update Password</a
+              >
+              <hr />
+              <a href="#" class="sign-out" onclick="logout()">🚪 Sign Out</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="dashboard-container">
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-profile">
+          <div
+            class="user-avatar-placeholder"
+            aria-label="User Avatar"
+            id="user-avatar"
+          ></div>
+          <div class="sidebar-profile-info">
+            <div class="sidebar-profile-name" id="sidebar-user-name">
+              User Name
+            </div>
+            <div class="sidebar-profile-role">Library Member</div>
+          </div>
+        </div>
+
+        <ul class="sidebar-nav">
+          <li class="sidebar-nav-item active" onclick="loadDashboardContent()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            Dashboard
+          </li>
+          <li class="sidebar-nav-item" onclick="loadPage('books.html', this)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+            Books
+          </li>
+          <li class="sidebar-nav-item" onclick="loadPage('events.html', this)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            Events
+          </li>
+          <li
+            class="sidebar-nav-item"
+            onclick="loadPage('study_room.html', this)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
+            </svg>
+            Study Rooms
+          </li>
+          <li
+            class="sidebar-nav-item"
+            onclick="loadPage('my_rentals.html', this)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            My Rentals
+          </li>
+          <li
+            class="sidebar-nav-item"
+            onclick="loadPage('my_bookings.html', this)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              />
+            </svg>
+            My Bookings
+          </li>
+          <li class="sidebar-nav-item" onclick="loadPage('cust_contact.html', this)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            Contact
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div id="content-area">
+          <div class="hero-section">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Explore and interact with our library services</p>
+          </div>
+
+          <div id="dashboard-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2024 Public Affirmation Library. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/theme-toggle.js"></script>
+    <script src="../js/customer_dashboard.js"></script>
+    
