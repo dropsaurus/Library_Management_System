@@ -125,34 +125,71 @@
 
 
       function loadDashboardContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-          <div class="dashboard-stats">
-            <div class="stat-card">
-              <h3>Total Customers</h3>
-              <p class="stat-number">1,234</p>
-            </div>
-            <div class="stat-card">
-              <h3>Total Employees</h3>
-              <p class="stat-number">45</p>
-            </div>
-            <div class="stat-card">
-              <h3>New Customers This Month</h3>
-              <p class="stat-number">78</p>
-            </div>
-          </div>
-          <div class="dashboard-charts">
-            <div class="chart-container">
-              <h3>Customer Growth Trend</h3>
-              <div class="chart-placeholder">Chart Area</div>
-            </div>
-            <div class="chart-container">
-              <h3>Employee Distribution</h3>
-              <div class="chart-placeholder">Chart Area</div>
-            </div>
-          </div>
-        `;
-      }
+  const pageContent = document.getElementById("pageContent");
+
+  pageContent.innerHTML = `
+    <div class="dashboard-stats" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <div class="stat-card"><h3>Total Customers</h3><p id="statCustomers">...</p></div>
+      <div class="stat-card"><h3>Total Employees</h3><p id="statEmployees">...</p></div>
+      <div class="stat-card"><h3>Total Rentals</h3><p id="statRentals">...</p></div>
+      <div class="stat-card"><h3>Total Room Bookings</h3><p id="statRoomBookings">...</p></div>
+      <div class="stat-card"><h3>Total Exhibition Reservations</h3><p id="statExhibitionRes">...</p></div>
+      <div class="stat-card"><h3>Total Seminar Reservations</h3><p id="statSeminarRes">...</p></div>
+    </div>
+
+    <div id="dashboardChart" style="height: 400px; margin-top: 40px;"></div>
+  `;
+
+  const endpoints = [
+    { id: "statCustomers", url: "../api/stats_total_customers.php", label: "Total Customers" },
+    { id: "statEmployees", url: "../api/stats_total_employees.php", label: "Total Employees" },
+    { id: "statRentals", url: "../api/stats_total_rentals.php", label: "Total Rentals" },
+    { id: "statRoomBookings", url: "../api/stats_total_room_bookings.php", label: "Room Bookings" },
+    { id: "statExhibitionRes", url: "../api/stats_total_exhibition_res.php", label: "Exhibition Reservations" },
+    { id: "statSeminarRes", url: "../api/stats_total_seminar_res.php", label: "Seminar Reservations" }
+  ];
+
+  const chartData = [];
+
+  let loaded = 0;
+  endpoints.forEach(stat => {
+    fetch(stat.url)
+      .then(res => res.json())
+      .then(data => {
+        const count = data.count ?? 0;
+        document.getElementById(stat.id).textContent = count;
+        chartData.push({ label: stat.label, y: count });
+      })
+      .catch(err => {
+        console.error(`Error loading ${stat.id}`, err);
+        document.getElementById(stat.id).textContent = "Error";
+        chartData.push({ label: stat.label, y: 0 });
+      })
+      .finally(() => {
+        loaded++;
+        if (loaded === endpoints.length) {
+          renderChart(chartData);
+        }
+      });
+  });
+}
+
+function renderChart(dataPoints) {
+  const chart = new CanvasJS.Chart("dashboardChart", {
+    animationEnabled: true,
+    theme: "dark1",
+    title: { text: "Library Statistics Overview" },
+    axisX: { title: "Count" },
+    axisY: { title: "Category" },
+    data: [{
+      type: "bar",
+      indexLabel: "{y}",
+      indexLabelFontColor: "#fff",
+      dataPoints: dataPoints
+    }]
+  });
+  chart.render();
+}
 
 
 
