@@ -1,885 +1,1095 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Employee Dashboard - Library Management System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/style.css" />
-  <style>
-    /* Base Styles */
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #f8f9fa;
-    }
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Dashboard - Library Management System</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/theme-toggle.css" />
+    <style>
+      /* Base Styles */
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background-color: #f8f9fa;
+      }
 
-    /* Layout */
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
+      /* Layout */
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
 
-    /* Sidebar */
-    .sidebar {
-      width: 260px;
-      background: #fff;
-      border-right: 1px solid #e9ecef;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .sidebar-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: flex-start;
-    }
-
-    .user-details h3 {
-      margin: 0;
-      font-size: 1.125rem;
-      font-weight: 500;
-      color: #212529;
-    }
-
-    .user-details p {
-      margin: 0.25rem 0 0;
-      font-size: 0.875rem;
-      color: #6c757d;
-    }
-
-    /* Navigation Menu */
-    .sidebar-nav {
-      padding: 1rem 0;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1.5rem;
-      color: #495057;
-      text-decoration: none;
-      gap: 0.75rem;
-      transition: all 0.2s;
-    }
-
-    .nav-item:hover {
-      background: #f8f9fa;
-      color: #0d6efd;
-    }
-
-    .nav-item.active {
-      background: #e7f1ff;
-      color: #0d6efd;
-    }
-
-    .nav-item svg {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    /* Submenu */
-    .nav-group {
-      margin: 0.25rem 0;
-    }
-
-    .nav-group .nav-item {
-      justify-content: space-between;
-    }
-
-    .arrow-icon {
-      transition: transform 0.2s;
-    }
-
-    .nav-group.active .arrow-icon {
-      transform: rotate(180deg);
-    }
-
-    .sub-menu {
-      display: none;
-      background: #f8f9fa;
-    }
-
-    .nav-group.active .sub-menu {
-      display: block;
-    }
-
-    .sub-item {
-      display: block;
-      padding: 0.625rem 1.5rem 0.625rem 3.5rem;
-      color: #6c757d;
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: all 0.2s;
-    }
-
-    .sub-item:hover {
-      color: #0d6efd;
-      background: #e7f1ff;
-    }
-
-    .sub-item.active {
-      color: #0d6efd;
-      background: #e7f1ff;
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
-      margin-left: 260px;
-      padding: 1.5rem;
-    }
-
-    /* Top Bar */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .page-title h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: #212529;
-    }
-
-    /* Stat Cards */
-    .dashboard-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: #fff;
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .stat-card h3 {
-      margin: 0;
-      font-size: 0.875rem;
-      color: #6c757d;
-      font-weight: 500;
-    }
-
-    .stat-number {
-      margin: 0.5rem 0 0;
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: #212529;
-    }
-
-    /* Chart Containers */
-    .dashboard-charts {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .chart-container {
-      background: #fff;
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .chart-container h3 {
-      margin: 0 0 1rem;
-      font-size: 1rem;
-      font-weight: 500;
-      color: #212529;
-    }
-
-    .chart-placeholder {
-      height: 300px;
-      background: #f8f9fa;
-      border-radius: 0.375rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6c757d;
-    }
-
-    /* Form Styles */
-    .form-container {
-      background: #fff;
-      border-radius: 0.5rem;
-      padding: 2rem;
-      max-width: 600px;
-      margin: 0 auto;
-      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #212529;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #dee2e6;
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-      color: #212529;
-      transition: border-color 0.2s;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      border-color: #0d6efd;
-      outline: none;
-    }
-
-    /* Button Styles */
-    .btn-primary {
-      background: #0d6efd;
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .btn-primary:hover {
-      background: #0b5ed7;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
+      /* Sidebar */
       .sidebar {
-        transform: translateX(-100%);
-        z-index: 1000;
+        width: 260px;
+        background: var(--card-bg);
+        border-right: 1px solid var(--border-color);
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
       }
 
-      .sidebar.active {
-        transform: translateX(0);
+      .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
       }
 
+      .user-info {
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .user-details h3 {
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .user-details p {
+        margin: 0.25rem 0 0;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+
+      /* Navigation Menu */
+      .sidebar-nav {
+        padding: 1rem 0;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        gap: 0.75rem;
+        transition: all 0.2s;
+      }
+
+      .nav-item:hover {
+        background: var(--bg-secondary);
+        color: var(--accent-primary);
+      }
+
+      .nav-item.active {
+        background: var(--bg-secondary);
+        color: var(--accent-primary);
+      }
+
+      .nav-item svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        stroke: currentColor;
+      }
+
+      /* Submenu */
+      .nav-group {
+        margin: 0.25rem 0;
+      }
+
+      .nav-group .nav-item {
+        justify-content: space-between;
+      }
+
+      .arrow-icon {
+        transition: transform 0.2s;
+      }
+
+      .nav-group.active .arrow-icon {
+        transform: rotate(180deg);
+      }
+
+      .sub-menu {
+        display: none;
+        background: var(--bg-secondary);
+      }
+
+      .nav-group.active .sub-menu {
+        display: block;
+      }
+
+      .sub-item {
+        display: block;
+        padding: 0.625rem 1.5rem 0.625rem 3.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+      }
+
+      .sub-item:hover {
+        color: var(--accent-primary);
+        background: var(--hover-bg);
+      }
+
+      .sub-item.active {
+        color: var(--accent-primary);
+        background: var(--hover-bg);
+      }
+
+      /* Main Content */
       .main-content {
-        margin-left: 0;
+        flex: 1;
+        margin-left: 260px;
+        padding: 1.5rem;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
       }
 
+      /* Top Bar */
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .page-title h1 {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 300;
+        color: var(--text-primary);
+      }
+      
+      .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .action-buttons .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        padding: 0 1.25rem;
+      }
+      
+      /* Theme toggle styling specific to this page */
+      .action-buttons .theme-toggle {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Stat Cards */
       .dashboard-stats {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
       }
 
+      .stat-card {
+        background: var(--card-bg);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 0.125rem 0.25rem var(--shadow-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .stat-card h3 {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .stat-number {
+        margin: 0.5rem 0 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      /* Chart Containers */
       .dashboard-charts {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="user-info">
-          <div class="user-details">
-            <h3 id="userName">Employee Name</h3>
-            <p>Library Staff</p>
+
+      .chart-container {
+        background: var(--card-bg);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 0.125rem 0.25rem var(--shadow-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .chart-container h3 {
+        margin: 0 0 1rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .chart-placeholder {
+        height: 300px;
+        background: var(--bg-secondary);
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+      }
+
+      /* Form Styles */
+      .form-container {
+        background: var(--card-bg);
+        border-radius: 0.5rem;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 0.125rem 0.25rem var(--shadow-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        background-color: var(--input-bg);
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        border-color: var(--accent-primary);
+        outline: none;
+        box-shadow: 0 0 0 2px var(--shadow-color);
+      }
+
+      /* Button Styles */
+      .btn-primary {
+        background: var(--accent-primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 25px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-secondary);
+        transform: translateY(-2px);
+      }
+
+      /* Table Styles */
+      .table-container {
+        overflow-x: auto;
+        background-color: var(--card-bg);
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .data-table th {
+        background-color: var(--table-header);
+        padding: 1rem;
+        text-align: left;
+        color: var(--text-primary);
+        font-weight: 500;
+        border-bottom: 1px solid var(--table-border);
+      }
+
+      .data-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--table-border);
+        color: var(--text-primary);
+      }
+
+      .data-table tr:hover {
+        background-color: var(--hover-bg);
+      }
+
+      /* Search and Filters */
+      .search-filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+
+      .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        background-color: var(--input-bg);
+        color: var(--text-primary);
+      }
+
+      .filter-select {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        background-color: var(--input-bg);
+        color: var(--text-primary);
+      }
+
+      /* Content Header */
+      .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .content-header h2 {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          z-index: 1000;
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .dashboard-stats {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-charts {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="user-info">
+            <div class="user-details">
+              <h3 id="userName">Employee Name</h3>
+              <p>Library Staff</p>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <a href="#" class="nav-item active" data-page="dashboard">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-width="2"/>
-          </svg>
-          <span>Dashboard</span>
-        </a>
-        
-        <div class="nav-group">
-          <div class="nav-item" data-toggle="customers">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-width="2"/>
+
+        <nav class="sidebar-nav">
+          <a href="#" class="nav-item active" data-page="dashboard">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                stroke-width="2"
+              />
             </svg>
-            <span>Customer Management</span>
-            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
+            <span>Dashboard</span>
+          </a>
+
+          <div class="nav-group">
+            <div class="nav-item" data-toggle="customers">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                  stroke-width="2"
+                />
+              </svg>
+              <span>Customer Management</span>
+              <svg
+                class="arrow-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="sub-menu">
+              <a href="#" class="sub-item" data-page="manage_customers"
+                >Manage Customers</a
+              >
+              <a href="#" class="sub-item" data-page="customer_reports"
+                >Customer Reports</a
+              >
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-item" data-toggle="employees">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+                  stroke-width="2"
+                />
+              </svg>
+              <span>Employee Management</span>
+              <svg
+                class="arrow-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="sub-menu">
+              <a href="#" class="sub-item" data-page="manage_employees"
+                >Manage Employees</a
+              >
+              <a href="#" class="sub-item" data-page="add_employee"
+                >Add Employee</a
+              >
+              <a href="#" class="sub-item" data-page="employee_report"
+                >Employee Report</a
+              >
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-item" data-toggle="authors">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                  stroke-width="2"
+                />
+              </svg>
+              <span>Author Management</span>
+              <svg
+                class="arrow-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="sub-menu">
+              <a href="#" class="sub-item" data-page="manage_authors"
+                >Manage Authors</a
+              >
+              <a href="#" class="sub-item" data-page="add_author">Add Author</a>
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-item" data-toggle="books">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                  stroke-width="2"
+                />
+              </svg>
+              <span>Book Management</span>
+              <svg
+                class="arrow-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="sub-menu">
+              <a href="#" class="sub-item" data-page="manage_books"
+                >Manage Books</a
+              >
+              <a href="#" class="sub-item" data-page="manage_rentals"
+                >Manage Rentals</a
+              >
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-item" data-toggle="events">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                  stroke-width="2"
+                />
+              </svg>
+              <span>Event Management</span>
+              <svg
+                class="arrow-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="sub-menu">
+              <a href="#" class="sub-item" data-page="manage_exhibition"
+                >Manage Exhibition</a
+              >
+              <a href="#" class="sub-item" data-page="manage_seminar"
+                >Manage Seminar</a
+              >
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-item" data-toggle="rooms">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21"
+                  stroke-width="2"
+                />
+              </svg>
+              <span>Room Management</span>
+              <svg
+                class="arrow-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M19 9l-7 7-7-7" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="sub-menu">
+              <a href="#" class="sub-item" data-page="manage_rooms"
+                >Manage Rooms</a
+              >
+              <a href="#" class="sub-item" data-page="room_bookings"
+                >Manage Room Bookings</a
+              >
+            </div>
+          </div>
+
+          <div class="nav-divider"></div>
+
+          <a href="#" class="nav-item" onclick="logout()">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+                stroke-width="2"
+              />
             </svg>
+            <span>Logout</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="page-title">
+            <h1>Dashboard</h1>
           </div>
-          <div class="sub-menu">
-            <a href="#" class="sub-item" data-page="manage_customers">Manage Customers</a>
-            <a href="#" class="sub-item" data-page="customer_reports">Customer Reports</a>
+          <div class="action-buttons">
+            <button
+              class="theme-toggle"
+              onclick="toggleTheme()"
+              aria-label="Toggle theme"
+            >
+              <svg
+                class="sun-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM12 21.75a.75.75 0 01-.75-.75v-2.25a.75.75 0 011.5 0V21a.75.75 0 01-.75.75zM3 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3.75A.75.75 0 013 12zM21 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25A.75.75 0 0121 12zM5.78 5.78a.75.75 0 011.06 0l1.5 1.5a.75.75 0 01-1.06 1.06l-1.5-1.5a.75.75 0 010-1.06zM18.22 18.22a.75.75 0 01-1.06 0l-1.5-1.5a.75.75 0 111.06-1.06l1.5 1.5a.75.75 0 010 1.06zM18.22 5.78a.75.75 0 010 1.06l-1.5 1.5a.75.75 0 11-1.06-1.06l1.5-1.5a.75.75 0 011.06 0zM5.78 18.22a.75.75 0 010-1.06l1.5-1.5a.75.75 0 111.06 1.06l-1.5 1.5a.75.75 0 01-1.06 0z"
+                />
+              </svg>
+              <svg
+                class="moon-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+            <a href="../index.html" class="btn">Home</a>
           </div>
+        </header>
+
+        <div id="pageContent" class="page-content">
+          <!-- Page content will be loaded dynamically -->
         </div>
+      </main>
+    </div>
 
-        <div class="nav-group">
-          <div class="nav-item" data-toggle="employees">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" stroke-width="2"/>
-            </svg>
-            <span>Employee Management</span>
-            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="sub-menu">
-            <a href="#" class="sub-item" data-page="manage_employees">Manage Employees</a>
-            <a href="#" class="sub-item" data-page="add_employee">Add Employee</a>
-            <a href="#" class="sub-item" data-page="employee_report">Employee Report</a>
-          </div>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-item" data-toggle="authors">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-width="2"/>
-            </svg>
-            <span>Author Management</span>
-            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="sub-menu">
-            <a href="#" class="sub-item" data-page="manage_authors">Manage Authors</a>
-            <a href="#" class="sub-item" data-page="add_author">Add Author</a>
-          </div>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-item" data-toggle="books">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-width="2"/>
-            </svg>
-            <span>Book Management</span>
-            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="sub-menu">
-            <a href="#" class="sub-item" data-page="manage_books">Manage Books</a>
-            <a href="#" class="sub-item" data-page="manage_rentals">Manage Rentals</a>
-          </div>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-item" data-toggle="events">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" stroke-width="2"/>
-            </svg>
-            <span>Event Management</span>
-            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="sub-menu">
-            <a href="#" class="sub-item" data-page="manage_exhibition">Manage Exhibition</a>
-            <a href="#" class="sub-item" data-page="manage_seminar">Manage Seminar</a>
-          </div>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-item" data-toggle="rooms">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" stroke-width="2"/>
-            </svg>
-            <span>Room Management</span>
-            <svg class="arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M19 9l-7 7-7-7" stroke-width="2"/>
-            </svg>
-          </div>
-          <div class="sub-menu">
-            <a href="#" class="sub-item" data-page="manage_rooms">Manage Rooms</a>
-            <a href="#" class="sub-item" data-page="room_bookings">Manage Room Bookings</a>
-          </div>
-        </div>
-
-        <div class="nav-divider"></div>
-
-        <a href="#" class="nav-item" onclick="logout()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" stroke-width="2"/>
-          </svg>
-          <span>Logout</span>
-        </a>
-      </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="top-bar">
-        <div class="page-title">
-          <h1>Dashboard</h1>
-        </div>
-      </header>
-
-      <div id="pageContent" class="page-content">
-        <!-- Page content will be loaded dynamically -->
-      </div>
-    </main>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      setupNavigation();
-      setupSubMenus();
-      loadDefaultPage();
-    });
-
-    function setupNavigation() {
-      const subItems = document.querySelectorAll('.sub-item');
-      subItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          
-          // Remove all active states
-          document.querySelectorAll('.sub-item').forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          
-          const page = item.getAttribute('data-page');
-          loadPage(page);
-        });
+    <script src="../js/theme-toggle.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        initializeTheme();
+        setupNavigation();
+        setupSubMenus();
+        loadDefaultPage();
       });
-    }
 
-    function setupSubMenus() {
-      const navGroups = document.querySelectorAll('.nav-group');
-      navGroups.forEach(group => {
-        const toggle = group.querySelector('[data-toggle]');
-        if (toggle) {
-          toggle.addEventListener('click', () => {
-            // Close other open submenus
-            navGroups.forEach(g => {
-              if (g !== group && g.classList.contains('active')) {
-                g.classList.remove('active');
-              }
-            });
-            // Toggle current submenu
-            group.classList.toggle('active');
+      function setupNavigation() {
+        const subItems = document.querySelectorAll(".sub-item");
+        subItems.forEach((item) => {
+          item.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            // Remove all active states
+            document
+              .querySelectorAll(".sub-item")
+              .forEach((i) => i.classList.remove("active"));
+            item.classList.add("active");
+
+            const page = item.getAttribute("data-page");
+            loadPage(page);
           });
-        }
-      });
-    }
-
-    function loadPage(page) {
-      const pageContent = document.getElementById('pageContent');
-      const pageTitle = document.querySelector('.page-title h1');
-      
-      // Update page title
-      const title = page.split('_').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
-      pageTitle.textContent = title;
-      
-      // Load page content
-      switch(page) {
-        case 'dashboard':
-          loadDashboardContent();
-          break;
-        case 'manage_customers':
-          loadManageCustomersContent();
-          break;
-        case 'customer_reports':
-          loadCustomerReportsContent();
-          break;
-        case 'manage_employees':
-          loadManageEmployeesContent();
-          break;
-        case 'add_employee':
-          loadAddEmployeeContent();
-          break;
-        case 'employee_report':
-          loadEmployeeReportContent();
-          break;
-        case 'manage_books':
-          loadManageBooksContent();
-          break;
-        case 'manage_rentals':
-          loadManageRentalsContent();
-          break;
-        case 'manage_rooms':
-          loadManageRoomsContent();
-          break;
-        case 'room_bookings':
-          loadRoomBookingsContent();
-          break;
-        case 'manage_exhibition':
-          loadManageExhibitionContent();
-          break;
-        case 'manage_seminar':
-          loadManageSeminarContent();
-          break;
-        case 'manage_authors':
-          loadManageAuthorsContent();
-          break;
-        case 'add_author':
-          loadAddAuthorContent();
-          break;
+        });
       }
-    }
 
-    function loadDefaultPage() {
-      // Load dashboard page by default
-      loadPage('dashboard');
-    }
-
-    function loadDashboardContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="dashboard-stats">
-          <div class="stat-card">
-            <h3>Total Customers</h3>
-            <p class="stat-number">1,234</p>
-          </div>
-          <div class="stat-card">
-            <h3>Total Employees</h3>
-            <p class="stat-number">45</p>
-          </div>
-          <div class="stat-card">
-            <h3>New Customers This Month</h3>
-            <p class="stat-number">78</p>
-          </div>
-        </div>
-        <div class="dashboard-charts">
-          <div class="chart-container">
-            <h3>Customer Growth Trend</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-          <div class="chart-container">
-            <h3>Employee Distribution</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-        </div>
-      `;
-    }
-
-    function loadManageCustomersContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Customer Management</h2>
-          <button class="btn-primary" onclick="addNewCustomer()">Add New Customer</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search customers..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Registration Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Customer data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function loadCustomerReportsContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Customer Reports</h2>
-        </div>
-        <div class="report-filters">
-          <div class="date-range">
-            <input type="date" class="date-input">
-            <span>to</span>
-            <input type="date" class="date-input">
-          </div>
-          <button class="btn-primary">Generate Report</button>
-        </div>
-        <div class="report-container">
-          <div class="chart-container">
-            <h3>Customer Growth Trend</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-          <div class="chart-container">
-            <h3>Customer Activity Analysis</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-        </div>
-      `;
-    }
-
-    function loadEmployeeReportContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Employee Report</h2>
-        </div>
-        <div class="report-filters">
-          <div class="date-range">
-            <input type="date" class="date-input">
-            <span>to</span>
-            <input type="date" class="date-input">
-          </div>
-          <button class="btn-primary">Generate Report</button>
-        </div>
-        <div class="report-container">
-          <div class="chart-container">
-            <h3>Employee Performance Trend</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-          <div class="chart-container">
-            <h3>Employee Activity Analysis</h3>
-            <div class="chart-placeholder">Chart Area</div>
-          </div>
-        </div>
-      `;
-    }
-
-    function logout() {
-      window.location.href = 'login.html';
-    }
-
-    function loadManageRentalsContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Rentals</h2>
-          <button class="btn-primary">New Rental</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search rentals..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="overdue">Overdue</option>
-            <option value="returned">Returned</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Rental ID</th>
-                <th>Book Title</th>
-                <th>Customer</th>
-                <th>Rental Date</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Rental data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function loadManageExhibitionContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Exhibition</h2>
-          <button class="btn-primary">New Exhibition</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search exhibitions..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Exhibition ID</th>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Exhibition data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function loadManageSeminarContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Seminar</h2>
-          <button class="btn-primary">New Seminar</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search seminars..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Seminar ID</th>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Room</th>
-                <th>Speaker</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Seminar data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    // Load Manage Rooms Content
-    function loadManageRoomsContent() {
-    const pageContent = document.getElementById('pageContent');
-
-    fetch('../pages/manage_rooms.html')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.text();
-      })
-      .then(html => {
-        pageContent.innerHTML = html;
-
-        // Wait for DOM to load, then run room loader
-        const script = document.createElement('script');
-        script.src = '../js/manage_rooms.js';
-        script.onload = () => {
-          if (typeof loadRooms === 'function') {
-            loadRooms();
+      function setupSubMenus() {
+        const navGroups = document.querySelectorAll(".nav-group");
+        navGroups.forEach((group) => {
+          const toggle = group.querySelector("[data-toggle]");
+          if (toggle) {
+            toggle.addEventListener("click", () => {
+              // Close other open submenus
+              navGroups.forEach((g) => {
+                if (g !== group && g.classList.contains("active")) {
+                  g.classList.remove("active");
+                }
+              });
+              // Toggle current submenu
+              group.classList.toggle("active");
+            });
           }
-        };
-        document.body.appendChild(script);
-      })
-      .catch(error => {
-        console.error('Error loading manage_rooms.html:', error);
-        pageContent.innerHTML = '<p style="color:red;">Failed to load Manage Rooms page.</p>';
-      });
-}
+        });
+      }
 
+      function loadDefaultPage() {
+        // Load dashboard as default
+        loadDashboardContent();
+      }
 
+      function loadPage(page) {
+        const pageContent = document.getElementById("pageContent");
+        const pageTitle = document.querySelector(".page-title h1");
 
-    function loadManageAuthorsContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Manage Authors</h2>
-          <button class="btn-primary">Add New Author</button>
-        </div>
-        <div class="search-filters">
-          <input type="text" placeholder="Search authors..." class="search-input">
-          <select class="filter-select">
-            <option value="">All Categories</option>
-            <option value="fiction">Fiction</option>
-            <option value="non-fiction">Non-Fiction</option>
-            <option value="academic">Academic</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Author ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Books Count</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Author data will be loaded dynamically -->
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
+        // Update page title
+        const title = page
+          .split("_")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+        pageTitle.textContent = title;
 
-    function loadAddAuthorContent() {
-      const pageContent = document.getElementById('pageContent');
-      pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Add New Author</h2>
-        </div>
-        <div class="form-container">
-          <form id="addAuthorForm">
-            <div class="form-group">
-              <label for="name">Full Name</label>
-              <input type="text" id="name" name="name" required>
+        // Load page content
+        switch (page) {
+          case "dashboard":
+            loadDashboardContent();
+            break;
+          case "manage_customers":
+            loadManageCustomersContent();
+            break;
+          case "customer_reports":
+            loadCustomerReportsContent();
+            break;
+          case "manage_employees":
+            loadManageEmployeesContent();
+            break;
+          case "add_employee":
+            loadAddEmployeeContent();
+            break;
+          case "employee_report":
+            loadEmployeeReportContent();
+            break;
+          case "manage_books":
+            loadManageBooksContent();
+            break;
+          case "manage_rentals":
+            loadManageRentalsContent();
+            break;
+          case "manage_rooms":
+            loadManageRoomsContent();
+            break;
+          case "room_bookings":
+            loadRoomBookingsContent();
+            break;
+          case "manage_exhibition":
+            loadManageExhibitionContent();
+            break;
+          case "manage_seminar":
+            loadManageSeminarContent();
+            break;
+          case "manage_authors":
+            loadManageAuthorsContent();
+            break;
+          case "add_author":
+            loadAddAuthorContent();
+            break;
+          default:
+            pageContent.innerHTML = "<p>Content not found</p>";
+        }
+      }
+
+      function loadDashboardContent() {
+        const pageContent = document.getElementById("pageContent");
+        pageContent.innerHTML = `
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <h3>Total Books</h3>
+              <p class="stat-number">1,245</p>
             </div>
-            <div class="form-group">
-              <label for="category">Primary Category</label>
-              <select id="category" name="category" required>
-                <option value="">Select Category</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-Fiction</option>
-                <option value="academic">Academic</option>
-              </select>
+            <div class="stat-card">
+              <h3>Active Rentals</h3>
+              <p class="stat-number">87</p>
             </div>
-            <div class="form-group">
-              <label for="bio">Biography</label>
-              <textarea id="bio" name="bio" rows="4"></textarea>
+            <div class="stat-card">
+              <h3>Customers</h3>
+              <p class="stat-number">534</p>
             </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email">
+            <div class="stat-card">
+              <h3>Upcoming Events</h3>
+              <p class="stat-number">12</p>
             </div>
-            <div class="form-group">
-              <label for="website">Website</label>
-              <input type="url" id="website" name="website">
+          </div>
+
+          <div class="dashboard-charts">
+            <div class="chart-container">
+              <h3>Monthly Rentals</h3>
+              <div class="chart-placeholder">Chart Area</div>
             </div>
-            <button type="submit" class="btn-primary">Save Author</button>
-          </form>
-        </div>
-      `;
-    }
-  </script>
-</body>
+            <div class="chart-container">
+              <h3>Book Categories</h3>
+              <div class="chart-placeholder">Chart Area</div>
+            </div>
+          </div>
+
+          <div class="dashboard-charts">
+            <div class="chart-container">
+              <h3>Employee Performance Trend</h3>
+              <div class="chart-placeholder">Chart Area</div>
+            </div>
+            <div class="chart-container">
+              <h3>Employee Activity Analysis</h3>
+              <div class="chart-placeholder">Chart Area</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function logout() {
+        window.location.href = "login.html";
+      }
+
+      function loadManageRentalsContent() {
+        const pageContent = document.getElementById("pageContent");
+        pageContent.innerHTML = `
+          <div class="content-header">
+            <h2>Manage Rentals</h2>
+            <button class="btn-primary">New Rental</button>
+          </div>
+          <div class="search-filters">
+            <input type="text" placeholder="Search rentals..." class="search-input">
+            <select class="filter-select">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="overdue">Overdue</option>
+              <option value="returned">Returned</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Rental ID</th>
+                  <th>Book Title</th>
+                  <th>Customer</th>
+                  <th>Rental Date</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rental data will be loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      function loadManageExhibitionContent() {
+        const pageContent = document.getElementById("pageContent");
+        pageContent.innerHTML = `
+          <div class="content-header">
+            <h2>Manage Exhibition</h2>
+            <button class="btn-primary">New Exhibition</button>
+          </div>
+          <div class="search-filters">
+            <input type="text" placeholder="Search exhibitions..." class="search-input">
+            <select class="filter-select">
+              <option value="">All Status</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Exhibition ID</th>
+                  <th>Title</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Exhibition data will be loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      function loadManageSeminarContent() {
+        const pageContent = document.getElementById("pageContent");
+        pageContent.innerHTML = `
+          <div class="content-header">
+            <h2>Manage Seminar</h2>
+            <button class="btn-primary">New Seminar</button>
+          </div>
+          <div class="search-filters">
+            <input type="text" placeholder="Search seminars..." class="search-input">
+            <select class="filter-select">
+              <option value="">All Status</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Seminar ID</th>
+                  <th>Title</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Room</th>
+                  <th>Speaker</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Seminar data will be loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // Load Manage Rooms Content
+      function loadManageRoomsContent() {
+        const pageContent = document.getElementById("pageContent");
+
+        fetch("../pages/manage_rooms.html")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            pageContent.innerHTML = html;
+
+            // Wait for DOM to load, then run room loader
+            const script = document.createElement("script");
+            script.src = "../js/manage_rooms.js";
+            script.onload = () => {
+              if (typeof loadRooms === "function") {
+                loadRooms();
+              }
+            };
+            document.body.appendChild(script);
+          })
+          .catch((error) => {
+            console.error("Error loading manage_rooms.html:", error);
+            pageContent.innerHTML =
+              '<p style="color:red;">Failed to load Manage Rooms page.</p>';
+          });
+      }
+
+      function loadManageAuthorsContent() {
+        const pageContent = document.getElementById("pageContent");
+        pageContent.innerHTML = `
+          <div class="content-header">
+            <h2>Manage Authors</h2>
+            <button class="btn-primary">Add New Author</button>
+          </div>
+          <div class="search-filters">
+            <input type="text" placeholder="Search authors..." class="search-input">
+            <select class="filter-select">
+              <option value="">All Categories</option>
+              <option value="fiction">Fiction</option>
+              <option value="non-fiction">Non-Fiction</option>
+              <option value="academic">Academic</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Author ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Books Count</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Author data will be loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      function loadAddAuthorContent() {
+        const pageContent = document.getElementById("pageContent");
+        pageContent.innerHTML = `
+          <div class="content-header">
+            <h2>Add New Author</h2>
+          </div>
+          <div class="form-container">
+            <form id="addAuthorForm">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+              </div>
+              <div class="form-group">
+                <label for="category">Primary Category</label>
+                <select id="category" name="category" required>
+                  <option value="">Select Category</option>
+                  <option value="fiction">Fiction</option>
+                  <option value="non-fiction">Non-Fiction</option>
+                  <option value="academic">Academic</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="bio">Biography</label>
+                <textarea id="bio" name="bio" rows="4"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+              </div>
+              <div class="form-group">
+                <label for="website">Website</label>
+                <input type="url" id="website" name="website">
+              </div>
+              <button type="submit" class="btn-primary">Save Author</button>
+            </form>
+          </div>
+        `;
+      }
+    </script>
+  </body>
 </html>
