@@ -109,7 +109,7 @@
                 >Manage Employees</a
               >
               <a href="#" class="sub-item" data-page="add_employee"
-                >Add Employee</a
+                >Add Employees</a
               >
               <a href="#" class="sub-item" data-page="employee_report"
                 >Employee Report</a
@@ -147,7 +147,7 @@
               <a href="#" class="sub-item" data-page="manage_authors"
                 >Manage Authors</a
               >
-              <a href="#" class="sub-item" data-page="add_author">Add Author</a>
+              <a href="#" class="sub-item" data-page="add_author"> Add Authors</a>
             </div>
           </div>
 
@@ -465,7 +465,7 @@
         pageContent.innerHTML = `
         <div class="content-header">
           <h2>Customer Management</h2>
-          <button class="btn-primary" onclick="addNewCustomer()">Add New Customer</button>
+          <button class="btn-primary" onclick="addNewCustomer()">Add New Customers</button>
         </div>
         <div class="search-filters">
           <input type="text" placeholder="Search customers..." class="search-input">
@@ -755,43 +755,94 @@
 
 
       function loadAddAuthorContent() {
-        const pageContent = document.getElementById("pageContent");
-        pageContent.innerHTML = `
-        <div class="content-header">
-          <h2>Add New Author</h2>
+  const pageContent = document.getElementById("pageContent");
+  pageContent.innerHTML = `
+    <div class="form-container">
+      <form id="addAuthorForm">
+        <div class="form-group">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" required />
         </div>
-        <div class="form-container">
-          <form id="addAuthorForm">
-            <div class="form-group">
-              <label for="name">Full Name</label>
-              <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-              <label for="category">Primary Category</label>
-              <select id="category" name="category" required>
-                <option value="">Select Category</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-Fiction</option>
-                <option value="academic">Academic</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="bio">Biography</label>
-              <textarea id="bio" name="bio" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email">
-            </div>
-            <div class="form-group">
-              <label for="website">Website</label>
-              <input type="url" id="website" name="website">
-            </div>
-            <button type="submit" class="btn-primary">Save Author</button>
-          </form>
+        <div class="form-group">
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" />
         </div>
-      `;
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+        <div class="form-group">
+          <label for="street">Street</label>
+          <input type="text" id="street" required />
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" required />
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" id="state" required />
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" required />
+        </div>
+        <div class="form-group">
+          <label for="zipcode">Zip Code</label>
+          <input type="text" id="zipcode" required />
+        </div>
+        <button type="submit" class="btn-primary">Save Author</button>
+      </form>
+    </div>
+  `;
+
+  // ✅ Add event listener AFTER the HTML has been set
+  const form = document.getElementById("addAuthorForm");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = {
+      fname: document.getElementById("fname").value.trim(),
+      lname: document.getElementById("lname").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      password: document.getElementById("password").value.trim(),
+      street: document.getElementById("street").value.trim(),
+      city: document.getElementById("city").value.trim(),
+      state: document.getElementById("state").value.trim(),
+      country: document.getElementById("country").value.trim(),
+      zipcode: document.getElementById("zipcode").value.trim()
+    };
+
+    fetch('../api/insert_author.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Author added successfully!');
+        loadManageAuthorsContent(); // refresh author list
+      } else {
+        alert('Error: ' + data.message);
       }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Request failed.');
+    });
+  });
+}
+
     </script>
   </body>
 </html>

@@ -14,38 +14,42 @@ require_once '../config/db_connect.php';
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (
-        !isset($data['fname']) ||
-        !isset($data['lname']) ||
-        !isset($data['street']) ||
-        !isset($data['city']) ||
-        !isset($data['state']) ||
-        !isset($data['country']) ||
-        !isset($data['zipcode']) ||
-        !isset($data['email'])
-    ) {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Missing required fields'
-        ]);
-        exit;
+    // Required field check
+    $required = ['fname', 'lname', 'phone', 'email', 'password', 'street', 'city', 'state', 'country', 'zipcode'];
+    foreach ($required as $field) {
+        if (empty($data[$field])) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => "Missing field: $field"
+            ]);
+            exit;
+        }
     }
 
-    $stmt = $pdo->prepare("
-        INSERT INTO JPN_AUTHOR 
-        (A_FNAME, A_LNAME, A_STREET, A_CITY, A_STATE, A_COUNTRY, A_ZIPCODE, A_EMAIL)
-        VALUES (:fname, :lname, :street, :city, :state, :country, :zipcode, :email)
-    ");
+    $stmt = $pdo->prepare("CALL SP_INSERT_JPN_USER_AUTHOR(
+        :fname,
+        :lname,
+        :phone,
+        :email,
+        :pwd,
+        :street,
+        :city,
+        :state,
+        :country,
+        :zipcode
+    )");
 
     $stmt->execute([
         ':fname'   => $data['fname'],
         ':lname'   => $data['lname'],
+        ':phone'   => $data['phone'],
+        ':email'   => $data['email'],
+        ':pwd'     => $data['password'],
         ':street'  => $data['street'],
         ':city'    => $data['city'],
         ':state'   => $data['state'],
         ':country' => $data['country'],
-        ':zipcode' => $data['zipcode'],
-        ':email'   => $data['email']
+        ':zipcode' => $data['zipcode']
     ]);
 
     echo json_encode([
