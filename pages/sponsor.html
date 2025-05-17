@@ -100,7 +100,7 @@
           opacity: 1;
         }
       }
-      
+
       /* Override spacing to match index.html */
       .nav-buttons {
         gap: 1rem;
@@ -197,7 +197,7 @@
             </div>
           </div>
 
-          <div id="organizationFields" style="display: none;">
+          <div id="organizationFields" style="display: none">
             <div class="form-group">
               <label for="orgName">Organization Name *</label>
               <input type="text" id="orgName" />
@@ -221,6 +221,7 @@
     </footer>
 
     <script src="../js/theme-toggle.js"></script>
+    <script src="../js/sample-data.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         initializeTheme();
@@ -231,7 +232,8 @@
       function toggleSponsorFields() {
         const sponsorType = document.getElementById("sponsorType").value;
         const individualFields = document.getElementById("individualFields");
-        const organizationFields = document.getElementById("organizationFields");
+        const organizationFields =
+          document.getElementById("organizationFields");
         const fnameInput = document.getElementById("fname");
         const lnameInput = document.getElementById("lname");
         const orgNameInput = document.getElementById("orgName");
@@ -256,6 +258,7 @@
       }
 
       function loadSeminars() {
+        // Try the API first
         fetch("../api/get_seminars.php")
           .then((res) => res.json())
           .then((data) => {
@@ -265,7 +268,7 @@
             if (data.status === "success" && data.data.length > 0) {
               // Store seminar data globally to access names later
               window.seminarData = data.data;
-              
+
               data.data.forEach((seminar) => {
                 const opt = document.createElement("option");
                 opt.value = seminar.E_ID;
@@ -273,15 +276,53 @@
                 select.appendChild(opt);
               });
             } else {
-              select.innerHTML =
-                '<option value="">No seminars available</option>';
+              loadSampleSeminars();
             }
           })
           .catch((err) => {
             console.error(err);
-            document.getElementById("seminarSelect").innerHTML =
-              '<option value="">Error loading</option>';
+            loadSampleSeminars();
           });
+      }
+
+      function loadSampleSeminars() {
+        try {
+          // Check if sample data is available
+          if (typeof sampleEvents !== "undefined") {
+            const select = document.getElementById("seminarSelect");
+            select.innerHTML = '<option value="">-- Select Seminar --</option>';
+
+            // Filter only seminar events (type S)
+            const seminars = sampleEvents.filter(
+              (event) => event.E_TYPE === "S"
+            );
+
+            if (seminars.length > 0) {
+              // Store seminar data globally
+              window.seminarData = seminars.map((seminar, index) => ({
+                E_ID: "sample_" + (index + 1),
+                E_NAME: seminar.E_NAME,
+              }));
+
+              seminars.forEach((seminar, index) => {
+                const opt = document.createElement("option");
+                opt.value = "sample_" + (index + 1);
+                opt.textContent = seminar.E_NAME;
+                select.appendChild(opt);
+              });
+            } else {
+              select.innerHTML =
+                '<option value="">No seminars available</option>';
+            }
+          } else {
+            document.getElementById("seminarSelect").innerHTML =
+              '<option value="">No seminars available</option>';
+          }
+        } catch (error) {
+          console.error("Error loading sample seminars:", error);
+          document.getElementById("seminarSelect").innerHTML =
+            '<option value="">No seminars available</option>';
+        }
       }
 
       function handleSponsor(e) {
@@ -289,11 +330,11 @@
         const seminarId = document.getElementById("seminarSelect").value;
         const sponsorType = document.getElementById("sponsorType").value;
         const amount = document.getElementById("amount").value;
-        
+
         let name = "";
         let sp_fname = "";
         let sp_lname = null;
-        
+
         if (sponsorType === "individual") {
           sp_fname = document.getElementById("fname").value;
           sp_lname = document.getElementById("lname").value;
@@ -312,16 +353,18 @@
           alert("Please select a sponsor type.");
           return;
         }
-        
+
         // Get the seminar name from our stored data
-        let seminarName = 'the selected seminar';
+        let seminarName = "the selected seminar";
         if (window.seminarData) {
-          const seminar = window.seminarData.find(s => s.E_ID === seminarId);
+          const seminar = window.seminarData.find((s) => s.E_ID === seminarId);
           if (seminar) {
             seminarName = seminar.E_NAME;
           } else {
             // Try with string comparison in case E_ID is stored as string
-            const seminarWithStringId = window.seminarData.find(s => String(s.E_ID) === String(seminarId));
+            const seminarWithStringId = window.seminarData.find(
+              (s) => String(s.E_ID) === String(seminarId)
+            );
             if (seminarWithStringId) {
               seminarName = seminarWithStringId.E_NAME;
             }
@@ -332,7 +375,7 @@
         const sponsorData = {
           sp_fname: sp_fname,
           sp_lname: sp_lname,
-          sp_type: sponsorType === "individual" ? "I" : "O"
+          sp_type: sponsorType === "individual" ? "I" : "O",
         };
 
         // Insert sponsor first
@@ -355,7 +398,7 @@
                 body: JSON.stringify({
                   sp_id: data.sponsor_id,
                   e_id: seminarId,
-                  amount: amount
+                  amount: amount,
                 }),
               });
             } else {
@@ -368,10 +411,10 @@
               const resultMsg = document.getElementById("resultMessage");
               resultMsg.textContent = `Thank you, ${name}, for sponsoring "${seminarName}" with $${amount}!`;
               resultMsg.classList.add("show");
-              
+
               document.getElementById("sponsorForm").reset();
               toggleSponsorFields(); // Reset form fields visibility
-              
+
               // Hide the message after 5 seconds
               setTimeout(() => {
                 resultMsg.classList.remove("show");
@@ -382,7 +425,9 @@
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("There was an error processing your request: " + error.message);
+            alert(
+              "There was an error processing your request: " + error.message
+            );
           });
       }
     </script>
