@@ -163,6 +163,14 @@ The database schema follows a normalized design with proper relationships betwee
 
 For a detailed schema description, refer to the `JPN_PAL_DDL.sql` file.
 
+## Team Credits
+
+This project was developed by:
+
+- Pradeep Kulkarni
+- Jiayi Chen
+- Neil Noronha
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
